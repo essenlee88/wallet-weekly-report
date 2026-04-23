@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>MemeRush Quickbuy 全链路延迟 &amp; 成功率测试方案</title>
+<style>
+  :root { --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a; --text: #e1e4eb; --dim: #8b8fa3; --accent: #6c7aff; --green: #22c55e; --yellow: #f59e0b; --red: #ef4444; --orange: #f97316; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 40px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .subtitle { color: var(--dim); font-size: 14px; margin-bottom: 40px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; color: var(--accent); }
+  h4 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  p, li { font-size: 14px; color: var(--text); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 8px 0 16px 20px; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border: 1px solid var(--border); }
+  th { background: #1e2130; font-weight: 600; color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+  td { background: var(--card); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .tag-p0 { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-p1 { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .tag-p2 { background: rgba(108,122,255,0.15); color: var(--accent); }
+  .tag-new { background: rgba(34,197,94,0.15); color: var(--green); }
+  .pipeline { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin: 16px 0; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 2; overflow-x: auto; white-space: pre; }
+  .delta { color: var(--yellow); font-weight: 600; }
+  .node { color: var(--green); }
+  .note { color: var(--dim); font-style: italic; }
+  .callout { background: rgba(108,122,255,0.08); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+  .callout-warn { background: rgba(245,158,11,0.08); border-left-color: var(--yellow); }
+  .callout-red { background: rgba(239,68,68,0.08); border-left-color: var(--red); }
+  .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .matrix-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .matrix-card h4 { margin-top: 0; }
+  code { background: rgba(108,122,255,0.12); padding: 2px 6px; border-radius: 3px; font-size: 12px; font-family: 'SF Mono', monospace; }
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 20px 0; }
+  .toc a { color: var(--accent); text-decoration: none; font-size: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { margin: 8px 0 0 20px; }
+  .toc li { margin-bottom: 6px; }
+  .section-num { color: var(--dim); margin-right: 4px; }
+  .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--dim); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>MemeRush Quickbuy 全链路延迟 &amp; 成功率测试方案</h1>
+<p class="subtitle">Task #130 · v2 · 2026-04-23 · Owner: Elsa · Executor: Trading Team</p>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#bg">背景与目标</a></li>
+    <li><a href="#pipeline">全链路模型</a></li>
+    <li><a href="#scenarios">测试场景矩阵</a></li>
+    <li><a href="#network">网络路径测试</a></li>
+    <li><a href="#competitors">竞品对照</a></li>
+    <li><a href="#method">测试方法</a></li>
+    <li><a href="#metrics">测量指标</a></li>
+    <li><a href="#template">记录模板</a></li>
+    <li><a href="#plan">执行计划</a></li>
+    <li><a href="#optimization">预期优化方向</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="bg"><span class="section-num">1.</span> 背景与目标</h2>
+
+<p>用户反馈在高竞争场景（New Token / 毕业抢开盘）下 Quickbuy「抢不过别人」。本方案旨在：</p>
+<ol>
+  <li><strong>量化全链路每一段的延迟</strong>——定位瓶颈在哪里</li>
+  <li><strong>衡量不同网络路径的影响</strong>——VPN 出口、弱网、多跳对成功率的实际影响</li>
+  <li><strong>与竞品做受控对比</strong>——同一 Token、同一时刻、多平台同测</li>
+  <li><strong>输出数据驱动的优化建议</strong>——给交易侧明确的改进方向和优先级</li>
+</ol>
+
+<h3>交易成功的定义</h3>
+
+<table>
+  <tr><th>结果</th><th>定义</th><th>判定依据</th></tr>
+  <tr>
+    <td style="color:#22c55e;"><strong>成功</strong></td>
+    <td>交易上链且 swap 实际执行，用户获得目标 Token</td>
+    <td>链上 tx status = success 且包含 swap event</td>
+  </tr>
+  <tr>
+    <td style="color:#ef4444;"><strong>失败 — 链上 revert</strong></td>
+    <td>交易上链但执行失败（滑点超限、流动性不足等）</td>
+    <td>链上 tx status = failed，记录 revert 原因</td>
+  </tr>
+  <tr>
+    <td style="color:#ef4444;"><strong>失败 — 未上链</strong></td>
+    <td>交易未被打包上链（blockhash 过期、RPC 丢弃、Priority Fee 过低被挤出）</td>
+    <td>提交后超时无 tx hash，或 tx hash 查无记录</td>
+  </tr>
+  <tr>
+    <td style="color:#ef4444;"><strong>失败 — 客户端错误</strong></td>
+    <td>交易未发出（网络超时、API 报错、签名失败）</td>
+    <td>客户端返回错误提示，无 tx hash</td>
+  </tr>
+</table>
+
+<p>所有场景（A1-A4）均统计交易成功率 = 成功次数 / 总尝试次数。失败时必须记录失败类型和具体原因。</p>
+
+<div class="callout">
+  <strong>关键发现（调研阶段）：</strong>Migrating 期间 Bonding Curve 合约未锁定。GMGN / Binance 仍走 BC 直接买入（立即成交），Axiom 跳过 BC 直接排队 DEX Snipe（等池子上线）。两种路径的成交价和风险不同，需要在测试中验证哪种路由策略更优。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="pipeline"><span class="section-num">2.</span> 全链路模型</h2>
+
+<p>一笔 Quickbuy 交易从 Token 诞生到用户收到成交确认，经历以下 6 段延迟：</p>
+
+<div class="pipeline"><span class="node">T0</span> Token 上链（block timestamp）
+ │ <span class="delta">△1 发现延迟</span> ← 链上事件监听 + 数据管道处理
+<span class="node">T1</span> 我方数据管道检测到新 Token
+ │ <span class="delta">△2 推送延迟</span> ← WebSocket / API 推送到客户端
+<span class="node">T2</span> 客户端展示新 Token（用户可见）
+ │ <span class="delta">△3 用户网络延迟</span> ← 用户设备 → [VPN 出口] → 平台 API 服务器
+<span class="node">T3</span> Buy 请求到达 API 服务器
+ │ <span class="delta">△4 服务端处理</span> ← 构造 tx + 签名（MPC）+ 发送到 RPC
+<span class="node">T4</span> Transaction 发送到 RPC 节点
+ │ <span class="delta">△5 链上执行</span> ← RPC → Leader Validator → 打包上链
+<span class="node">T5</span> Transaction 上链确认（on-chain timestamp）
+ │ <span class="delta">△6 确认回传</span> ← 链上确认 → 服务端 → 客户端展示
+<span class="node">T6</span> 用户收到成交结果</div>
+
+<table>
+  <tr><th>段</th><th>延迟段</th><th>影响因素</th><th>可控性</th><th>备注</th></tr>
+  <tr><td><span class="delta">△1</span></td><td>发现延迟</td><td>链上事件订阅方式、数据管道架构</td><td>我方可优化</td><td>决定「谁先看到新币」</td></tr>
+  <tr><td><span class="delta">△2</span></td><td>推送延迟</td><td>WebSocket 连接质量、服务端推送逻辑</td><td>我方可优化</td><td>—</td></tr>
+  <tr><td><span class="delta">△3</span></td><td>用户网络延迟</td><td>用户地理位置、VPN 出口、VPN 跳数、网络质量</td><td>用户侧，我方无法控制</td><td><strong>本次重点测试项</strong></td></tr>
+  <tr><td><span class="delta">△4</span></td><td>服务端处理</td><td>tx 构造逻辑、MPC 签名延迟、服务器位置</td><td>我方可优化</td><td>含 API 服务器 → RPC 节点的内网延迟</td></tr>
+  <tr><td><span class="delta">△5</span></td><td>链上执行</td><td>RPC 节点位置和质量、Priority Fee、网络拥堵</td><td>部分可优化（RPC 选择、Fee 策略）</td><td>Jito Bundle 可提升优先级</td></tr>
+  <tr><td><span class="delta">△6</span></td><td>确认回传</td><td>确认订阅方式</td><td>我方可优化</td><td>影响用户体验但不影响成交</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="scenarios"><span class="section-num">3.</span> 测试场景矩阵</h2>
+
+<h3>维度 A — Token 生命周期阶段</h3>
+
+<table>
+  <tr><th>编号</th><th>阶段</th><th>说明</th><th>竞争强度</th><th>测试重点</th></tr>
+  <tr>
+    <td><strong>A1</strong></td>
+    <td><span class="tag tag-p0">New（内盘）</span></td>
+    <td>Token 刚创建，Bonding Curve 阶段首批买入</td>
+    <td>🔴 极高</td>
+    <td>△1 发现延迟 + △5 上链速度 + 交易成功率</td>
+  </tr>
+  <tr>
+    <td><strong>A2</strong></td>
+    <td><span class="tag tag-p0">Migrating（迁移中）</span></td>
+    <td>BC 已满触发迁移，但 BC 合约未锁定，DEX 池子未上线</td>
+    <td>🟡 中</td>
+    <td>△5 上链速度 + 交易成功率</td>
+  </tr>
+  <tr>
+    <td><strong>A3</strong></td>
+    <td><span class="tag tag-p0">Just Graduated（刚毕业）</span></td>
+    <td>DEX 池子刚上线 0-10s，外盘第一批交易</td>
+    <td>🔴 极高</td>
+    <td>△1 发现延迟 + △5 上链速度 + 交易成功率</td>
+  </tr>
+  <tr>
+    <td><strong>A4</strong></td>
+    <td><span class="tag tag-p1">Migrated（外盘稳态）</span></td>
+    <td>已上 DEX，流动性稳定</td>
+    <td>🟢 低</td>
+    <td>基准对照；正常交易的延迟 + 交易成功率</td>
+  </tr>
+</table>
+
+
+<h4>按链 × 协议拆分</h4>
+<table>
+  <tr><th>链</th><th>协议</th><th>适用阶段</th><th>说明</th></tr>
+  <tr><td>SOL</td><td>Pump.fun → PumpAMM / Raydium</td><td>A1 / A2 / A3 / A4</td><td>主战场，样本最充足</td></tr>
+  <tr><td>BSC</td><td>Four.Meme → PancakeSwap</td><td>A1 / A2 / A3 / A4</td><td>活跃度低于 SOL，能测多少测多少</td></tr>
+  <tr><td>Base</td><td>Flaunch（无 BC，直接 AMM）</td><td>A1 / A4</td><td>无 Migrating 阶段；新币频率待观察</td></tr>
+</table>
+
+<h3>维度 B — 弱网条件</h3>
+
+<p>使用 macOS Network Link Conditioner 模拟，在 A4（稳态）场景下测试，排除竞争因素。</p>
+
+<table>
+  <tr><th>编号</th><th>条件</th><th>目的</th></tr>
+  <tr>
+    <td><strong>W1</strong></td>
+    <td>高延迟（RTT +300ms）</td>
+    <td>模拟跨洲 VPN 多跳</td>
+  </tr>
+  <tr>
+    <td><strong>W2</strong></td>
+    <td>丢包 10%</td>
+    <td>模拟不稳定网络</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="network"><span class="section-num">4.</span> 网络路径测试</h2>
+
+<h3>维度 C — VPN 出口节点</h3>
+
+<p>我们的核心用户群在中国大陆，必须经 VPN 访问。不同 VPN 出口到平台 API 服务器的延迟差异显著。</p>
+
+<table>
+  <tr><th>编号</th><th>VPN 出口</th><th>到美东 RTT（估）</th><th>到亚太 RTT（估）</th><th>说明</th></tr>
+  <tr>
+    <td><strong>C1</strong></td>
+    <td>🇯🇵 日本（东京）</td>
+    <td>~160ms</td>
+    <td>~30ms</td>
+    <td>亚太用户最常用出口；到亚太服务器快，到美东较慢</td>
+  </tr>
+  <tr>
+    <td><strong>C2</strong></td>
+    <td>🇺🇸 美国（US East / West）</td>
+    <td>~10-30ms</td>
+    <td>~180ms</td>
+    <td>如果平台 API / RPC 在美东，这是最优出口</td>
+  </tr>
+  <tr>
+    <td><strong>C3</strong></td>
+    <td>🇩🇪 法兰克福</td>
+    <td>~80ms</td>
+    <td>~200ms</td>
+    <td>欧洲节点；Solana validator 密集区之一</td>
+  </tr>
+  <tr>
+    <td><strong>C4</strong></td>
+    <td>🇭🇰 香港</td>
+    <td>~190ms</td>
+    <td>~10ms</td>
+    <td>物理距离最近但 GFW 干扰风险</td>
+  </tr>
+  <tr>
+    <td><strong>C5</strong></td>
+    <td>🇸🇬 新加坡</td>
+    <td>~230ms</td>
+    <td>~20ms</td>
+    <td>亚太常用出口；Binance 基础设施重要节点</td>
+  </tr>
+  <tr>
+    <td><strong>C0</strong></td>
+    <td>（基准）无 VPN — 美东直连</td>
+    <td>—</td>
+    <td>—</td>
+    <td>对照组，排除 VPN 开销</td>
+  </tr>
+</table>
+
+<h3>网络路径 × 延迟链路分析</h3>
+
+<div class="pipeline"><span class="note">以大陆用户 → 日本 VPN → 平台 API（假设美东）为例：</span>
+
+用户设备（大陆）
+ │ ~50-80ms  ← 大陆 → 日本 VPN 节点（单跳）
+ │ ~30-50ms  ← VPN 加密/解密开销
+日本 VPN 出口
+ │ ~150ms    ← 日本 → 美东（跨太平洋）
+平台 API 服务器（美东）
+ │ ~1-5ms    ← 同机房 / 同区域
+RPC 节点
+ │ ~10-50ms  ← RPC → 当前 Leader Validator
+Solana Leader
+────────────────────────────────
+<span class="delta">△3 总计 ≈ 230-330ms</span>（用户点击到请求到达 API）
+
+<span class="note">对比：美东直连用户 △3 ≈ 10-30ms → 差距 200-300ms</span>
+<span class="note">对比：多跳 VPN（大陆→日本→美国）△3 ≈ 350-500ms</span></div>
+
+<h3>测试方法</h3>
+
+<p>在各 VPN 出口节点上部署测试环境（或使用同一台设备切换 VPN 节点），对同一 Token 执行 Quickbuy，记录各段耗时。</p>
+
+<table>
+  <tr><th>测试项</th><th>方法</th><th>指标</th></tr>
+  <tr>
+    <td>各出口到平台 API 的 RTT</td>
+    <td>每个出口 ping 平台 API 域名 100 次</td>
+    <td>P50 / P90 / P99 RTT + 丢包率</td>
+  </tr>
+  <tr>
+    <td>各出口的 Quickbuy 端到端延迟</td>
+    <td>在 A4 场景下，每个出口执行 ≥10 次买入</td>
+    <td>T_total 的 P50 / P90 + 成功率</td>
+  </tr>
+  <tr>
+    <td>高竞争场景下各出口的差异</td>
+    <td>在 A1/A3 场景下，2-3 个出口同时买入同一 Token</td>
+    <td>成交排序差异 + 价差</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="competitors"><span class="section-num">5.</span> 竞品对照</h2>
+
+<table>
+  <tr><th>能力</th><th>Binance Web3</th><th>GMGN</th><th>Axiom</th><th>Terminal.gg</th><th>OKX Web3</th></tr>
+  <tr><td><strong>一键买入</strong>（跳过确认）</td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>Sniper / Auto-Buy</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>Priority Fee 档位</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>Jito Bundle 支持</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>自定义 RPC</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>Migration Snipe</strong></td><td>？</td><td>？</td><td>✅ 提前排队</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>Migrating 阶段 BC 买入</strong></td><td>✅</td><td>✅</td><td>❌ 仅 Snipe</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>失败自动重试</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>交易预构建 / 预签名</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td><strong>滑点默认值</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+  <tr><td colspan="6" style="background:#1e2130; color:var(--dim); font-weight:600;">链支持</td></tr>
+  <tr><td><strong>SOL</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+  <tr><td><strong>BSC</strong></td><td>✅</td><td>✅</td><td>❌</td><td>？</td><td>✅</td></tr>
+  <tr><td><strong>Base</strong></td><td>✅</td><td>？</td><td>❌</td><td>❌</td><td>✅</td></tr>
+</table>
+
+<div class="callout">
+  <strong>测试前填写：</strong>先在各平台完成一轮完整体验，填满上表中的「？」。重点关注 Axiom Turbo 模式、GMGN Auto-Snipe、Terminal.gg 的交易引擎特性、OKX Web3 的 DEX 聚合路由。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="method"><span class="section-num">6.</span> 测试方法</h2>
+
+<h3>6.1 多平台同步实测（主方法）</h3>
+
+<h4>环境准备</h4>
+<table>
+  <tr><th>项目</th><th>要求</th></tr>
+  <tr><td>钱包</td><td>6 个独立钱包 × 3 链（SOL / BSC / Base），每个充入等额小额资金</td></tr>
+  <tr><td>设备</td><td>6 个浏览器窗口（或设备），同一网络环境</td></tr>
+  <tr><td>平台</td><td>Binance Web3 / GMGN / Axiom / Terminal.gg / OKX Web3 /（预留 1 个补测位）</td></tr>
+  <tr><td>录屏</td><td>OBS 同时录制所有窗口，带毫秒级时间戳水印</td></tr>
+  <tr><td>预设</td><td>统一组：相同买入金额 + 滑点 + Fee；默认组：各平台默认配置</td></tr>
+</table>
+
+<h4>统一参数</h4>
+<table>
+  <tr><th>参数</th><th>统一组</th><th>默认组</th></tr>
+  <tr><td>买入金额</td><td>0.01 SOL / 0.01 BNB / 0.001 ETH</td><td>同</td></tr>
+  <tr><td>滑点</td><td>20%</td><td>各平台默认</td></tr>
+  <tr><td>Priority Fee</td><td>手动统一 0.001 SOL</td><td>各平台默认</td></tr>
+  <tr><td>确认方式</td><td>跳过弹窗（如支持）</td><td>各平台默认</td></tr>
+</table>
+
+<h4>执行流程（每轮）</h4>
+<ol>
+  <li>所有窗口同屏排列，录屏开始</li>
+  <li>监控新 Token 出现（以链上事件或最快平台的 feed 为准）</li>
+  <li>新 Token 出现后 → 所有窗口尽可能同时点击 Quickbuy</li>
+  <li>记录：发现时间、点击时间、确认/失败时间、失败原因</li>
+  <li>获取所有交易的 tx hash，链上核查 block 位置和实际成交价</li>
+  <li>填入记录表</li>
+</ol>
+
+<h3>6.2 网络路径测试</h3>
+
+<ol>
+  <li><strong>基准测试（C0-C5）</strong>：同一台设备，切换 VPN 出口节点，在 A4（Migrated 稳态）场景下各执行 10+ 次 Quickbuy</li>
+  <li><strong>弱网测试（W1-W2）</strong>：在最优 VPN 出口上叠加弱网模拟，在 A4 场景下各执行 10+ 次 Quickbuy</li>
+  <li><strong>高竞争 × 网络路径</strong>：选 2-3 个代表性出口（如日本 + 美国 + 新加坡），在 A1/A3 场景下同时买入同一 Token</li>
+</ol>
+
+<h3>6.3 链上数据回溯（辅助验证）</h3>
+
+<ol>
+  <li><strong>实测交易链上深挖</strong>：Block 内排序位置、是否被 sandwich、实际 Gas 消耗</li>
+  <li><strong>同 Token 其他交易者分析</strong>：前 20 笔交易中各平台占比和排序</li>
+  <li><strong>批量统计</strong>：近 7 天新 Token 前 5 笔交易的平台分布（大样本验证实测结论）</li>
+</ol>
+
+<h3>6.4 样本量</h3>
+
+<table>
+  <tr><th>场景</th><th>最低次数</th><th>说明</th></tr>
+  <tr><td>A1 New（SOL）</td><td>15</td><td>主战场，样本最多</td></tr>
+  <tr><td>A1 New（BSC）</td><td>10</td><td>Four.Meme 活跃度较低</td></tr>
+  <tr><td>A1 New（Base）</td><td>5</td><td>Flaunch 新币频率待观察</td></tr>
+  <tr><td>A2 Migrating（SOL）</td><td>5</td><td>需等毕业时机；记录 BC 买入 vs Snipe 两种路径</td></tr>
+  <tr><td>A3 Just Graduated（SOL）</td><td>10</td><td><strong>核心场景</strong>，DEX 开盘 0-10s 抢跑</td></tr>
+  <tr><td>A3 Just Graduated（BSC）</td><td>5</td><td>同上</td></tr>
+  <tr><td>A4 Migrated 稳态</td><td>10</td><td>基准对照</td></tr>
+  <tr><td>弱网测试 W1-W2</td><td>每组 5</td><td>在 A4 场景下执行，共 10 次</td></tr>
+  <tr><td>网络路径 C1-C5</td><td>每出口 10</td><td>在 A4 场景下执行，共 50 次</td></tr>
+  <tr><td>高竞争 + 拥堵</td><td>5</td><td>遇到即测，不主动制造</td></tr>
+  <tr><td colspan="2" style="font-weight:600;">合计</td><td><strong>~125 次</strong></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="metrics"><span class="section-num">7.</span> 测量指标</h2>
+
+<h3>核心指标（每次必记录）</h3>
+
+<table>
+  <tr><th>指标</th><th>对应段</th><th>定义</th><th>数据来源</th></tr>
+  <tr><td><strong>T_discover</strong></td><td>△1+△2</td><td>Token 链上创建 → 平台列表展示</td><td>链上 timestamp vs 录屏帧</td></tr>
+  <tr><td><strong>T_submit</strong></td><td>△3+△4</td><td>用户点击 Buy → 平台显示"交易已提交"</td><td>录屏帧</td></tr>
+  <tr><td><strong>T_confirm</strong></td><td>△5</td><td>交易提交 → 链上确认</td><td>tx hash timestamp</td></tr>
+  <tr><td><strong>T_feedback</strong></td><td>△6</td><td>链上确认 → 用户看到成交结果</td><td>录屏帧 vs tx timestamp</td></tr>
+  <tr><td><strong>T_total</strong></td><td>全链路</td><td>T_discover + T_submit + T_confirm + T_feedback</td><td>计算</td></tr>
+  <tr><td><strong>成功/失败</strong></td><td>—</td><td>交易是否成功上链</td><td>tx status</td></tr>
+  <tr><td><strong>失败原因</strong></td><td>—</td><td>Slippage exceeded / Blockhash expired / RPC timeout / 未打包 / 其他</td><td>错误信息 + 链上</td></tr>
+  <tr><td><strong>Block 排序</strong></td><td>—</td><td>交易在 block 中的位置（第几笔 swap）</td><td>链上</td></tr>
+  <tr><td><strong>实际成交价</strong></td><td>—</td><td>swap 事件中的实际价格</td><td>链上</td></tr>
+  <tr><td><strong>实际滑点</strong></td><td>—</td><td>(实际价 - 下单时显示价) / 下单价</td><td>计算</td></tr>
+  <tr><td><strong>Gas / Fee</strong></td><td>—</td><td>Priority Fee + Base Fee + Jito Tip（如有）</td><td>链上</td></tr>
+</table>
+
+<h3>辅助指标</h3>
+<table>
+  <tr><th>指标</th><th>定义</th></tr>
+  <tr><td>前 5 名占位率</td><td>在该 Token 前 5 笔成功交易中是否占有席位</td></tr>
+  <tr><td>重试次数</td><td>平台是否自动重试，重试了几次</td></tr>
+  <tr><td>Sandwich 检测</td><td>交易前后是否有同地址的夹子交易</td></tr>
+  <tr><td>VPN 出口</td><td>本次测试使用的 VPN 出口节点</td></tr>
+  <tr><td>弱网条件</td><td>本次是否叠加弱网模拟，什么配置</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="template"><span class="section-num">8.</span> 记录模板</h2>
+
+<h4>主记录表</h4>
+<table style="font-size:11px;">
+  <tr>
+    <th>#</th><th>日期</th><th>Token CA</th><th>链</th><th>场景</th><th>平台</th>
+    <th>VPN出口</th><th>弱网</th>
+    <th>T_disc(s)</th><th>T_sub(s)</th><th>T_conf(s)</th><th>T_fb(s)</th><th>Total(s)</th>
+    <th>成功?</th><th>失败原因</th><th>Block#</th><th>排序</th><th>成交价</th><th>滑点%</th><th>Fee</th><th>前5</th><th>备注</th>
+  </tr>
+  <tr>
+    <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>MemeRush</td>
+    <td>JP</td><td>—</td>
+    <td>1.2</td><td>0.8</td><td>0.4</td><td>0.3</td><td>2.7</td>
+    <td>✅</td><td>—</td><td>28xx</td><td>#3</td><td>0.0001</td><td>5%</td><td>0.001</td><td>✅</td><td>—</td>
+  </tr>
+  <tr>
+    <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>GMGN</td>
+    <td>JP</td><td>—</td>
+    <td>0.8</td><td>0.5</td><td>0.4</td><td>0.2</td><td>1.9</td>
+    <td>✅</td><td>—</td><td>28xx</td><td>#1</td><td>0.00009</td><td>2%</td><td>0.003</td><td>✅</td><td>Jito bundle</td>
+  </tr>
+</table>
+
+<h4>网络路径记录表</h4>
+<table style="font-size:12px;">
+  <tr><th>#</th><th>VPN出口</th><th>弱网条件</th><th>Ping RTT(ms)</th><th>丢包率</th><th>T_submit P50(s)</th><th>T_total P50(s)</th><th>成功率</th><th>样本数</th></tr>
+  <tr><td>1</td><td>C0 无VPN</td><td>—</td><td>12</td><td>0%</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>2</td><td>C1 日本</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>3</td><td>C2 美国</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>4</td><td>C3 法兰克福</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>5</td><td>C4 香港</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>6</td><td>C5 新加坡</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
+  <tr><td>7</td><td>C1 日本</td><td>W1 +300ms</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td></tr>
+  <tr><td>8</td><td>C1 日本</td><td>W2 丢包10%</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="plan"><span class="section-num">9.</span> 执行计划</h2>
+
+<table>
+  <tr><th>阶段</th><th>天</th><th>任务</th><th>产出</th></tr>
+  <tr>
+    <td>准备</td><td>D0</td>
+    <td>
+      ① 6 平台注册 + 充值钱包<br>
+      ② 填写竞品功能对比表<br>
+      ③ 各平台做 1 笔交易，熟悉操作流程<br>
+      ④ 准备 VPN 节点（JP / US / DE / HK / SG）<br>
+      ⑤ 配置弱网模拟工具
+    </td>
+    <td>钱包就绪 + 对比表 + VPN 环境</td>
+  </tr>
+  <tr>
+    <td>实测 1</td><td>D1</td>
+    <td>
+      ⑥ SOL A1 New 15 次（多平台同测）<br>
+      ⑦ SOL A3 Just Graduated 尽量 5+ 次
+    </td>
+    <td>录屏 + 数据记录</td>
+  </tr>
+  <tr>
+    <td>实测 2</td><td>D2</td>
+    <td>
+      ⑧ SOL A2 Migrating + A3 Just Graduated 补充<br>
+      ⑨ BSC A1 + A3（15 次）<br>
+      ⑩ Base A1（5 次）
+    </td>
+    <td>录屏 + 数据记录</td>
+  </tr>
+  <tr>
+    <td>网络测试</td><td>D3</td>
+    <td>
+      ⑪ 网络路径 C0-C5 基准测试（50 次）<br>
+      ⑫ 弱网 W1-W2 测试（10 次）<br>
+      ⑬ 高竞争 × 不同出口 交叉测试
+    </td>
+    <td>网络路径数据</td>
+  </tr>
+  <tr>
+    <td>补测</td><td>D4</td>
+    <td>
+      ⑭ 补充未达标样本<br>
+      ⑮ 拥堵场景（遇到即测）<br>
+      ⑯ 链上数据交叉验证
+    </td>
+    <td>完整数据集</td>
+  </tr>
+  <tr>
+    <td>分析</td><td>D5</td>
+    <td>
+      ⑰ 数据汇总 + 可视化<br>
+      ⑱ 全链路延迟瀑布图<br>
+      ⑲ 根因分析 + 优化建议
+    </td>
+    <td>调研报告</td>
+  </tr>
+</table>
+
+<h3>交付物</h3>
+<ol>
+  <li><strong>全链路延迟瀑布图</strong> — 每段（△1~△6）的耗时占比可视化，定位瓶颈</li>
+  <li><strong>成功率热力图</strong> — Token 阶段 × 网络路径 × 弱网条件 的成功率矩阵</li>
+  <li><strong>VPN 出口推荐</strong> — 基于数据给出最优 VPN 出口建议（可反馈给用户）</li>
+  <li><strong>竞品差距表</strong> — 各关键指标 vs GMGN vs Axiom vs Terminal.gg vs OKX Web3</li>
+  <li><strong>优化建议（按 ROI 排序）</strong> — 给交易侧的具体改进方向和优先级</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="optimization"><span class="section-num">10.</span> 预期优化方向（按 ROI 排序）</h2>
+
+<table>
+  <tr><th>优先级</th><th>方向</th><th>影响段</th><th>描述</th><th>难度</th><th>收益</th></tr>
+  <tr>
+    <td><span class="tag tag-p0">P0</span></td>
+    <td>Token 发现加速</td><td>△1</td>
+    <td>优化链上事件监听延迟——这是全链路中变量最大的一段</td>
+    <td>中</td><td>高</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p0">P0</span></td>
+    <td>Jito Bundle</td><td>△5</td>
+    <td>SOL 通过 Jito 提交 bundle 获得优先打包</td>
+    <td>中</td><td>高</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p0">P0</span></td>
+    <td>Priority Fee 动态调整</td><td>△5</td>
+    <td>新币/毕业场景自动 Turbo Fee，稳态自动降低</td>
+    <td>低</td><td>高</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p1">P1</span></td>
+    <td>专用 / 多 RPC 冗余</td><td>△5</td>
+    <td>替换公共 RPC，多节点并发提交取最快</td>
+    <td>低</td><td>中</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p1">P1</span></td>
+    <td>API 服务器多区域部署</td><td>△3+△4</td>
+    <td>亚太区域部署 API 节点，减少用户 → 服务器的 RTT</td>
+    <td>高</td><td>中</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p1">P1</span></td>
+    <td>失败自动重试</td><td>△5</td>
+    <td>失败后自动加 fee 重试（可配次数）</td>
+    <td>低</td><td>中</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p1">P1</span></td>
+    <td>Migrating 路由优化</td><td>△4</td>
+    <td>基于测试数据决定 Migrating 阶段走 BC 还是等 DEX Snipe</td>
+    <td>低</td><td>中</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p2">P2</span></td>
+    <td>Migration 预感知</td><td>△1</td>
+    <td>监控 BC 进度，接近毕业时预构建交易</td>
+    <td>高</td><td>高</td>
+  </tr>
+  <tr>
+    <td><span class="tag tag-p2">P2</span></td>
+    <td>Auto-Snipe</td><td>全链路</td>
+    <td>设条件 → 自动监控 → 自动下单，去掉人工操作延迟</td>
+    <td>高</td><td>高</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>风险与注意事项</h2>
+<ol>
+  <li><strong>资金安全</strong>：测试用小额资金（0.01 SOL / 0.01 BNB），新币极高风险，测完立即卖出</li>
+  <li><strong>公平性</strong>：同一网络环境、同时操作，尽量排除人为误差</li>
+  <li><strong>样本偏差</strong>：热门 Token vs 冷门 Token 的竞争激烈程度不同，需记录 Token 热度</li>
+  <li><strong>合规</strong>：仅用于产品调研，不做任何市场操纵行为</li>
+  <li><strong>弱网模拟准确性</strong>：Network Link Conditioner 只模拟本机出口，不完全等同真实弱网；有条件时用真实弱网环境验证</li>
+  <li><strong>竞品覆盖</strong>：Axiom 和 Terminal.gg 不支持 Base 链，Base 对比主要看 GMGN / OKX Web3 vs 我们</li>
+</ol>
+
+<div class="footer">
+  Task #130 · MemeRush Quickbuy 全链路延迟 &amp; 成功率测试方案 v2<br>
+  Updated: 2026-04-23 · Author: Elsa
+</div>
+
+</body>
+</html>

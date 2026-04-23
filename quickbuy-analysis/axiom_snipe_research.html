@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axiom Migration Snipe 机制调研</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: #0f1117; color: #e1e4e8; padding: 40px 20px; line-height: 1.7; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .subtitle { color: #8b949e; font-size: 13px; margin-bottom: 36px; }
+  h2 { font-size: 17px; font-weight: 600; color: #58a6ff; margin: 36px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+  h3 { font-size: 15px; font-weight: 600; color: #c9d1d9; margin: 20px 0 10px; }
+  h4 { font-size: 13px; font-weight: 600; color: #8b949e; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  p { font-size: 13px; color: #8b949e; margin-bottom: 8px; }
+  ul { margin: 4px 0 12px 20px; font-size: 13px; }
+  li { margin-bottom: 4px; color: #c9d1d9; }
+  li .dim { color: #8b949e; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; margin-right: 4px; }
+  .tag-chain { background: rgba(88,166,255,0.12); color: #58a6ff; border: 1px solid rgba(88,166,255,0.25); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; font-size: 13px; }
+  th, td { padding: 8px 12px; text-align: left; border: 1px solid #21262d; }
+  th { background: #161b22; color: #58a6ff; font-weight: 600; white-space: nowrap; }
+  td { background: #0d1117; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 18px 20px; margin: 12px 0; }
+  .card-title { font-size: 15px; font-weight: 600; color: #e1e4e8; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .card-sub { font-size: 12px; color: #8b949e; margin-bottom: 12px; }
+  .formula { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; font-family: 'SF Mono', Menlo, monospace; font-size: 13px; color: #f0883e; margin: 8px 0 12px; }
+  .formula .op { color: #8b949e; }
+  .formula .var { color: #58a6ff; }
+  .formula .note { color: #8b949e; font-size: 11px; font-family: -apple-system, sans-serif; }
+  .dim { color: #8b949e; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Axiom Migration Snipe 机制调研</h1>
+<p class="subtitle">Task #130 关联 · 2026-04-23 · 基于实操截图的竞品分析</p>
+
+<!-- ============================================ -->
+<h2>一、核心发现</h2>
+
+<p>Axiom 在 Token 接近毕业（Migrating）时，<strong>不走 Bonding Curve 内盘买入</strong>，而是提供专用的 Migration Snipe 功能——用户提前设置参数并给出 Bribe Fee（Jito Tip），由服务端在迁移完成的瞬间通过 Jito Bundle 抢入外盘第一批交易。</p>
+
+<p style="color:#f0883e;"><strong>如果用户提前布置了 Sniper 并给出足够高的 Bribe Fee，在 Migrating 窗口期确实有结构性优势。</strong></p>
+
+<!-- ============================================ -->
+<h2>二、机制对比：普通买入 vs Axiom Snipe</h2>
+
+<table>
+  <tr>
+    <th></th>
+    <th>普通 Buy（GMGN / Binance）</th>
+    <th>Axiom Migration Snipe</th>
+  </tr>
+  <tr>
+    <td><strong>Migrating 期间行为</strong></td>
+    <td>路由到 Bonding Curve 内盘直接成交</td>
+    <td>不走内盘，预挂单等外盘开盘</td>
+  </tr>
+  <tr>
+    <td><strong>触发方式</strong></td>
+    <td>用户点击 → 客户端立即构建+广播</td>
+    <td>用户预挂 → 迁移完成后自动触发交易（<span style="color:#d29922">具体机制待确认</span>）</td>
+  </tr>
+  <tr>
+    <td><strong>执行机制</strong></td>
+    <td>用户浏览器（客户端）</td>
+    <td><span style="color:#d29922">两种可能（见下方分析）：</span><br>① 链上限价单（合约自动执行）<br>② 服务端监听 migration 后发市价单</td>
+  </tr>
+  <tr>
+    <td><strong>VPN / 用户网络影响</strong></td>
+    <td>全链路影响（发现+构建+广播）</td>
+    <td>仅影响预挂环节；无论哪种机制，交易执行本身不经过用户网络</td>
+  </tr>
+  <tr>
+    <td><strong>Fee 结构</strong></td>
+    <td>仅 Priority Fee</td>
+    <td>Priority Fee + Bribe Fee（Jito Tip），平台建议 Bribe ≥ 0.044 SOL (~$3.7)</td>
+  </tr>
+</table>
+
+<h3 style="color:#d29922;">Snipe 执行机制：两种可能</h3>
+
+<div class="card" style="border-color:#d29922;">
+  <div class="card-title">可能 A：链上限价单（合约自动执行）</div>
+  <div class="card-sub">用户提交 Snipe → 链上部署一笔条件触发的限价单 → DEX 池子上线时合约自动 match</div>
+  <ul>
+    <li>交易由链上合约触发，不需要服务端监听</li>
+    <li>Bribe Fee 作为 Jito Tip 打包进交易，确保优先上链</li>
+    <li>优势：去中心化、不依赖服务端可用性</li>
+    <li>劣势：链上 Gas 开销更高、合约逻辑复杂</li>
+  </ul>
+</div>
+
+<div class="card" style="border-color:#d29922;">
+  <div class="card-title">可能 B：服务端监听 migration 后发市价单</div>
+  <div class="card-sub">用户提交 Snipe → 参数存储在 Axiom 服务端 → 服务端监听链上迁移事件 → 触发后立即构建 Jito Bundle 广播</div>
+  <ul>
+    <li>交易由服务端触发，类似中心化 Sniper Bot</li>
+    <li>Bribe Fee 作为 Jito Tip 确保在 migration block 中优先打包</li>
+    <li>优势：执行速度更快（服务端直连 RPC/Jito Relay）</li>
+    <li>劣势：依赖平台服务端可用性和诚信</li>
+  </ul>
+</div>
+
+<div class="formula">
+  <span class="note">无论哪种机制，核心结论一致：</span><br><br>
+  <strong>用户网络（VPN 延迟）不在交易执行的关键路径上。</strong><br>
+  用户只需提前完成预挂单，实际交易由链上合约或服务端执行。<br><br>
+  <span class="note">确认方法：抓包分析 Snipe 提交后的网络请求，或链上查找 Axiom 相关的限价单合约。</span>
+</div>
+
+<!-- ============================================ -->
+<h2>三、实操证据（2026-04-23 截图记录）</h2>
+
+<p>示例 Token: Red Bull (7fGd...pygc)，SOL Pump.fun / Meteora DBC，状态 Migrating。</p>
+
+<div class="card">
+  <div class="card-title">1. Final Stretch 列表</div>
+  <div class="card-sub">Axiom 将即将毕业的 Token 归入 "Final Stretch" 专区，Migrating 标签 + 一键 Snipe 按钮（Preset 金额 0.02 SOL）</div>
+  <img src="screenshots/axiom_migration/01_final_stretch_list.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card">
+  <div class="card-title">2. Token 详情页 Snipe 入口</div>
+  <div class="card-sub">B.Curve 显示 "Migrating"，右侧交易面板 Buy 按钮变为 "Snipe RED BULL"</div>
+  <img src="screenshots/axiom_migration/02_token_detail_snipe.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card">
+  <div class="card-title">3. Adv. → Migration 高级订单</div>
+  <div class="card-sub">专用 Migration 订单类型，可配置金额 + 滑点 + Priority Fee + Bribe Fee（Jito Tip）</div>
+  <img src="screenshots/axiom_migration/03_adv_migration_order.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card">
+  <div class="card-title">4. Bribe Fee 最低限制 + 迁移进度 9%</div>
+  <div class="card-sub">错误提示 "Bribe fee must be at least 0.000001 SOL" — 证明订单提交到 Axiom 服务端（非纯客户端）</div>
+  <img src="screenshots/axiom_migration/04_bribe_fee_error.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card">
+  <div class="card-title">5. 平台建议 Fee + 迁移进度 23%</div>
+  <div class="card-sub">警告 "Consider increasing to at least 0.000036 priority fee and <strong>0.044 bribe fee</strong>"。Axiom 认为 Migration Snipe 需 Jito Tip ≥ 0.044 SOL (~$3.7) 才有竞争力</div>
+  <img src="screenshots/axiom_migration/05_fee_warning.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card">
+  <div class="card-title">6. Network 面板：客户端轮询行为</div>
+  <div class="card-sub">DevTools 显示 Snipe 等待期间，客户端持续轮询 ping / gethealth / getTipAccounts / aura</div>
+  <img src="screenshots/axiom_migration/06_network_polling.png" style="max-width:100%; border:1px solid #30363d; border-radius:6px; margin:8px 0;" />
+</div>
+
+<div class="card" style="border-color:#f97316;">
+  <div class="card-title" style="color:#f97316;">7. 三平台实时行为对比（关键发现）</div>
+  <div class="card-sub">同一时间、同一 Token，三个平台的交易入口差异</div>
+  <table>
+    <tr>
+      <th>Token</th>
+      <th>Axiom</th>
+      <th>GMGN</th>
+      <th>Binance Web3</th>
+    </tr>
+    <tr>
+      <td>Red Bull (7fGd...pygc)<br><span class="dim">Meteora DBC，未毕业</span></td>
+      <td style="color:#f97316;"><strong>Snipe</strong>（Migrating）</td>
+      <td style="color:#3fb950;">Buy（直接买入）</td>
+      <td style="color:#3fb950;">Buy（直接买入）</td>
+    </tr>
+    <tr>
+      <td>NVDIA (Gnox...SYoD)<br><span class="dim">Meteora DBC，未毕业</span></td>
+      <td style="color:#f97316;"><strong>Snipe</strong>（Migrating）</td>
+      <td style="color:#3fb950;">Buy（直接买入）</td>
+      <td style="color:#3fb950;">Buy（直接买入）</td>
+    </tr>
+  </table>
+  <p style="margin-top:12px;"><strong>含义：</strong>GMGN / Binance 路由到 Bonding Curve 内盘直接成交。Axiom 检测到 Token 接近毕业，<strong>不走内盘</strong>，预挂单等外盘开盘第一时间通过 Jito Bundle 冲入。</p>
+</div>
+
+<!-- ============================================ -->
+<h2>四、Axiom Snipe 用户流程还原</h2>
+
+<div class="formula" style="font-size:12px; line-height:1.8;">
+  <strong>Step 1</strong> 用户点击 "Snipe RED BULL" 或进入 Adv. → Migration 高级订单<br>
+  <span class="op">→</span> 配置金额 + 滑点 + Priority Fee + Bribe Fee<br><br>
+  <strong>Step 2</strong> 提交订单，平台校验参数（Bribe ≥ 0.000001 SOL），失败则返回错误<br><br>
+  <strong>Step 3</strong> 进入等待状态，页面显示迁移进度（9% → 23% ...）<br>
+  &nbsp;&nbsp;客户端持续轮询：<span class="var">ping</span> 保活 · <span class="var">gethealth</span> 检查 RPC · <span class="var">getTipAccounts</span> 预取 Jito Tip 地址 · <span class="var">aura</span> 同步状态<br><br>
+  <strong>Step 4</strong> 迁移完成 → 交易自动执行（通过 Jito Bundle 优先打包）<br><br>
+  <span class="note" style="color:#d29922;">Step 4 的执行方是链上合约还是 Axiom 服务端？目前从截图无法确认，需进一步抓包或链上合约分析。</span>
+</div>
+
+<!-- ============================================ -->
+<h2>五、关键发现汇总</h2>
+
+<table>
+  <tr>
+    <th>发现</th>
+    <th>详情</th>
+    <th>证据</th>
+  </tr>
+  <tr>
+    <td><strong>三种下单方式</strong></td>
+    <td>Market（一键 Snipe）/ Limit（限价单）/ Adv. → Migration（高级迁移订单）</td>
+    <td>截图 1, 2, 3</td>
+  </tr>
+  <tr>
+    <td><strong>双 Fee 结构</strong></td>
+    <td>Priority Fee（Solana 优先级）+ Bribe Fee（Jito Bundle Tip），平台建议 Bribe ≥ 0.044 SOL (~$3.7)</td>
+    <td>截图 3, 5</td>
+  </tr>
+  <tr>
+    <td><strong>订单提交到平台</strong></td>
+    <td>"Limit order creation failed" 错误 → 订单由平台处理（服务端或链上合约），非纯客户端本地执行</td>
+    <td>截图 4</td>
+  </tr>
+  <tr>
+    <td><strong>客户端持续轮询</strong></td>
+    <td>ping（保活）/ gethealth（RPC 健康）/ getTipAccounts（Jito Tip 账户列表）/ aura（内部状态同步），间隔 3-10s</td>
+    <td>截图 6</td>
+  </tr>
+  <tr>
+    <td><strong>迁移进度可视化</strong></td>
+    <td>列表中实时显示迁移百分比（9% → 23%），帮助用户判断时机</td>
+    <td>截图 4, 5</td>
+  </tr>
+  <tr>
+    <td><strong>结构性优势</strong></td>
+    <td>Snipe 将用户网络从交易执行的关键路径中移除——无论底层是链上限价单还是服务端市价单，执行阶段都不经过用户网络</td>
+    <td>截图 7 + 机制分析</td>
+  </tr>
+</table>
+
+<!-- ============================================ -->
+<h2>六、对我们的启示</h2>
+
+<div class="card" style="border-color:#f97316;">
+  <div class="card-title" style="color:#f97316;">这不是速度优化能追平的差距，是功能层缺失</div>
+  <div class="card-sub">Axiom 的 Migration Snipe 是一个独立的产品功能，不是简单的交易加速</div>
+  <ul>
+    <li><strong>当前状态：</strong>我方和 GMGN 在 Migrating 期间走 Bonding Curve 内盘买入，用户操作时效性完全依赖客户端网络链路</li>
+    <li><strong>Axiom 优势：</strong>用户提前预挂 + 高 Bribe Fee → 迁移完成瞬间自动通过 Jito Bundle 抢入（具体是链上限价单还是服务端市价单待确认），用户网络延迟不影响成交</li>
+    <li><strong>适用人群：</strong>愿意为抢开盘支付额外费用（~$3.7 Jito Tip）的高频/专业交易者</li>
+    <li><strong>待确认：</strong>实际成功率和价格优势有多大（需链上数据验证 Axiom 在 migration block 的占比）</li>
+  </ul>
+</div>
+
+<p style="color:#8b949e; margin-top:36px; padding-top:16px; border-top:1px solid #21262d; font-size:12px;">
+  Task #130 关联调研 · Axiom Migration Snipe 机制分析<br>
+  Updated: 2026-04-23 · Author: Elsa
+</p>
+
+</div>
+</body>
+</html>
