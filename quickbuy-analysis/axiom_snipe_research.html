@@ -248,6 +248,90 @@
   </ul>
 </div>
 
+<!-- ============================================ -->
+<h2>附录：内盘末期 vs 外盘首买 —— 哪个价格更优？</h2>
+
+<p>Axiom 选择放弃内盘、等外盘 Snipe，是否真的在价格上有优势？这需要链上数据验证。</p>
+
+<h3>Bonding Curve 毕业的三个阶段与价格变化</h3>
+
+<div class="formula" style="font-size:12px; line-height:1.8;">
+  <strong>阶段 1：接近毕业</strong>（Bonding Curve ~85-99%）<br>
+  <span class="op">→</span> 内盘可交易，价格沿曲线上升，<span class="var">越接近毕业价格越高</span><br><br>
+  <strong>阶段 2：Dead Zone</strong>（Curve 100%，迁移进行中）<br>
+  <span class="op">→</span> 内盘锁定，外盘未创建，<span class="var">无法交易</span>（数秒~数十秒）<br><br>
+  <strong>阶段 3：外盘上线</strong>（DEX 池子创建）<br>
+  <span class="op">→</span> 初始价格由迁移注入的流动性决定，通常 ≈ 内盘毕业价<br>
+  <span class="op">→</span> 但首批买入推高价格，<span class="var">越早买价格越低</span>
+</div>
+
+<h3>待验证的关键问题</h3>
+<table>
+  <tr>
+    <th>问题</th>
+    <th>验证方法</th>
+    <th>意义</th>
+  </tr>
+  <tr>
+    <td><strong>B-内盘：内盘末期买入体验</strong><br><span class="dim">接近毕业时在内盘买，价格和成交如何？</span></td>
+    <td>实测：在 Binance/GMGN 上对 Migrating Token 点 Buy，记录成交价<br>链上：取 Bonding Curve 最后 5 笔交易的价格</td>
+    <td>确认我方用户当前能获得的价格基线</td>
+  </tr>
+  <tr>
+    <td><strong>B-外盘：Dead Zone 后谁先买到？</strong><br><span class="dim">我们没有 Snipe，只能手动 vs Axiom 自动</span></td>
+    <td>实测：对比手动 Buy vs Axiom Snipe 的 slot 差<br>链上：统计 migration block 后前 10 笔交易的来源平台</td>
+    <td>量化 Snipe 的速度优势（block offset）</td>
+  </tr>
+  <tr>
+    <td><strong>B-收益：内盘末期 vs 外盘首买，价格差多少？</strong><br><span class="dim">Axiom 放弃内盘等外盘，价格上真的更优吗？</span></td>
+    <td>
+      <strong>链上分析（大样本）：</strong><br>
+      取近 7 天毕业的 Token（预计 200+ 个），对每个 Token 对比：<br>
+      <ul style="margin:4px 0 0 16px">
+        <li>内盘最后 5 笔交易的成交价（P_internal）</li>
+        <li>外盘前 5 笔交易的成交价（P_external）</li>
+        <li>计算 <code>price_gap = P_external / P_internal - 1</code></li>
+      </ul>
+      如果 price_gap &lt; 0 → 外盘开盘价更低（Snipe 有价格优势）<br>
+      如果 price_gap &gt; 0 → 外盘开盘价更高（不一定值得等）
+    </td>
+    <td>
+      <strong>决定产品策略：</strong><br>
+      <ul style="margin:4px 0 0 16px">
+        <li>如果外盘首买通常更便宜 → Migration Snipe 有明确价值，应该做</li>
+        <li>如果外盘首买通常更贵 → Snipe 价值主要在"抢到"而非"便宜"，优先级可调</li>
+        <li>如果差异很小 → 直接内盘买就够了，Snipe 是锦上添花</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<h3>预期结论分支</h3>
+<div class="card">
+  <table>
+    <tr>
+      <th>数据结果</th>
+      <th>结论</th>
+      <th>产品建议</th>
+    </tr>
+    <tr>
+      <td style="color:#3fb950;">外盘首买价 &lt; 内盘末期价<br><span class="dim">price_gap &lt; -5%（多数 Token）</span></td>
+      <td>Migration Snipe 有<strong>价格 + 速度</strong>双重优势</td>
+      <td>高优做 Migration Snipe 功能</td>
+    </tr>
+    <tr>
+      <td style="color:#d29922;">价差不明显<br><span class="dim">-5% &lt; price_gap &lt; +5%</span></td>
+      <td>Snipe 优势主要在"确保买到"，非价格</td>
+      <td>中优，对高频用户有价值</td>
+    </tr>
+    <tr>
+      <td style="color:#f85149;">外盘首买价 &gt; 内盘末期价<br><span class="dim">price_gap &gt; +5%（多数 Token）</span></td>
+      <td>内盘直接买更划算，Snipe 让用户多付了钱</td>
+      <td>低优，可先优化内盘买入体验</td>
+    </tr>
+  </table>
+</div>
+
 <p style="color:#8b949e; margin-top:36px; padding-top:16px; border-top:1px solid #21262d; font-size:12px;">
   Task #130 关联调研 · Axiom Migration Snipe 机制分析<br>
   Updated: 2026-04-23 · Author: Elsa
