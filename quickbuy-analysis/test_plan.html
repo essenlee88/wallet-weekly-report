@@ -106,7 +106,7 @@
 <p>所有场景（A1-A4）均统计交易成功率 = 成功次数 / 总尝试次数。失败时必须记录失败类型和具体原因。</p>
 
 <div class="callout">
-  <strong>关键发现（调研阶段）：</strong>Migrating 期间 Bonding Curve 合约未锁定。GMGN / Binance 仍走 BC 直接买入（立即成交），Axiom 跳过 BC 直接排队 DEX Snipe（等池子上线）。两种路径的成交价和风险不同，需要在测试中验证哪种路由策略更优。
+  <strong>关键发现（调研阶段）：</strong>Bonding Curve 打满后、迁移交易执行前（即 BC 满额待迁移阶段），BC 合约仍未锁定。GMGN / Binance 在此阶段仍走 BC 直接买入（立即成交），Axiom 则跳过 BC 直接排队 DEX Snipe（等池子上线）。两种路径的成交价和风险不同，需要在测试中验证哪种路由策略更优。
 </div>
 
 <!-- ============================================================ -->
@@ -154,8 +154,8 @@
   </tr>
   <tr>
     <td><strong>A2</strong></td>
-    <td><span class="tag tag-p0">Migrating（迁移中）</span></td>
-    <td>BC 已满触发迁移，但 BC 合约未锁定，DEX 池子未上线</td>
+    <td><span class="tag tag-p0">BC 满额待迁移</span></td>
+    <td>Bonding Curve 已打满，毕业事件已触发但迁移尚未执行；BC 合约未锁定（仍可买入），DEX 池子未上线</td>
     <td>🟡 中</td>
     <td>△5 上链速度 + 交易成功率</td>
   </tr>
@@ -299,29 +299,108 @@ Solana Leader
 </table>
 
 <!-- ============================================================ -->
-<h2 id="competitors"><span class="section-num">5.</span> 竞品对照</h2>
+<h2 id="competitors"><span class="section-num">5.</span> 测试条件确认（待 Damon 确认）</h2>
+
+<h3>5.1 统一购买设置（公平对比基线）</h3>
+
+<p>为确保对比实验的公平性，所有平台必须在统一条件下测试。以下参数需交易侧确认是否合理：</p>
 
 <table>
-  <tr><th>能力</th><th>Binance Web3</th><th>GMGN</th><th>Axiom</th><th>Terminal.gg</th><th>OKX Web3</th></tr>
-  <tr><td><strong>一键买入</strong>（跳过确认）</td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>Sniper / Auto-Buy</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>Priority Fee 档位</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>Jito Bundle 支持</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>自定义 RPC</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>Migration Snipe</strong></td><td>？</td><td>？</td><td>✅ 提前排队</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>Migrating 阶段 BC 买入</strong></td><td>✅</td><td>✅</td><td>❌ 仅 Snipe</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>失败自动重试</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>交易预构建 / 预签名</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td><strong>滑点默认值</strong></td><td>？</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
-  <tr><td colspan="6" style="background:#1e2130; color:var(--dim); font-weight:600;">链支持</td></tr>
+  <tr><th>参数</th><th>建议值</th><th>说明</th><th style="color:var(--yellow);">交易侧确认</th></tr>
+  <tr>
+    <td><strong>买入金额</strong></td>
+    <td>0.01 SOL / 0.01 BNB / 0.001 ETH</td>
+    <td>小额测试，控制风险</td>
+    <td style="color:var(--yellow);">⬜ 金额是否合理？过小是否影响成交优先级？</td>
+  </tr>
+  <tr>
+    <td><strong>滑点</strong></td>
+    <td>统一组 20%；默认组各平台默认值</td>
+    <td>高滑点确保成交，排除因滑点不足导致的失败干扰</td>
+    <td style="color:var(--yellow);">⬜ 20% 是否足够覆盖高竞争场景？</td>
+  </tr>
+  <tr>
+    <td><strong>Priority Fee（SOL）</strong></td>
+    <td>统一组 0.001 SOL；默认组各平台默认</td>
+    <td>统一 Fee 排除因 Fee 差异导致的上链速度差异</td>
+    <td style="color:var(--yellow);">⬜ 0.001 SOL 在当前网络环境下是否处于合理档位？</td>
+  </tr>
+  <tr>
+    <td><strong>Gas Price（BSC）</strong></td>
+    <td>统一组 5 Gwei；默认组各平台默认</td>
+    <td>BSC 的 Gas 策略</td>
+    <td style="color:var(--yellow);">⬜ 需确认合理值</td>
+  </tr>
+  <tr>
+    <td><strong>确认方式</strong></td>
+    <td>所有平台关闭二次确认弹窗（如支持）</td>
+    <td>排除人工操作差异</td>
+    <td style="color:var(--yellow);">⬜ 我方 Quickbuy 是否支持跳过确认？</td>
+  </tr>
+  <tr>
+    <td><strong>Jito Bundle</strong></td>
+    <td>统一组关闭；额外组开启对比</td>
+    <td>Jito 对上链速度影响大，需单独对比</td>
+    <td style="color:var(--yellow);">⬜ 我方是否已支持 Jito？竞品哪些默认开启？</td>
+  </tr>
+</table>
+
+<h3>5.2 竞品差异化功能确认</h3>
+
+<p>以下功能在竞品中存在但我方可能未支持。需交易侧确认：<strong>（1）这些功能是否可能导致用户体感竞品比我们快？（2）我们是否需要增加相应功能？</strong></p>
+
+<table>
+  <tr><th>功能</th><th>竞品现状（待填写）</th><th>对速度的影响</th><th style="color:var(--yellow);">交易侧评估</th></tr>
+  <tr>
+    <td><strong>Turbo / Fast 模式</strong><br><span style="color:var(--dim);">如 Axiom Turbo</span></td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
+    <td>自动拉高 Priority Fee + 跳过确认，可能显著提升上链速度</td>
+    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否需要类似模式？</td>
+  </tr>
+  <tr>
+    <td><strong>Auto-Snipe / 预排队</strong><br><span style="color:var(--dim);">如 Axiom Migration Snipe</span></td>
+    <td>Axiom: ✅ 毕业前排队<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
+    <td>BC 满额待迁移阶段提前排队，DEX 池子上线瞬间自动成交，人工无法追赶</td>
+    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否需要支持？</td>
+  </tr>
+  <tr>
+    <td><strong>BC 满额待迁移阶段路由</strong></td>
+    <td>Binance: ✅ 走 BC 买入<br>GMGN: ✅ 走 BC 买入<br>Axiom: ❌ 仅走 Snipe</td>
+    <td>BC 合约未锁定时继续买入 vs 等 DEX 上线后 Snipe，两种策略成交价和风险不同</td>
+    <td style="color:var(--yellow);">⬜ 我方当前走哪种路由？<br>⬜ 是否需要支持两种策略可选？</td>
+  </tr>
+  <tr>
+    <td><strong>失败自动重试</strong></td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
+    <td>失败后自动加 Fee 重试，减少用户手动重试的延迟</td>
+    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否已支持？</td>
+  </tr>
+  <tr>
+    <td><strong>交易预构建 / 预签名</strong></td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
+    <td>提前构建交易模板，用户点击后只需注入参数即发送，省去 △4 中的构造时间</td>
+    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否可实现？</td>
+  </tr>
+  <tr>
+    <td><strong>自定义 RPC</strong></td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
+    <td>用户自带高性能 RPC（如 Helius / Triton），直接影响 △5 上链速度</td>
+    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否需要开放？</td>
+  </tr>
+</table>
+
+<div class="callout-warn callout">
+  <strong>Action Required：</strong>请 Damon 及交易侧确认以上两张表。5.1 确保测试条件公平可执行；5.2 识别可能导致用户体感差距的功能差异，决定是否需要补齐。确认后进入测试执行阶段。
+</div>
+
+<h3>5.3 链支持范围</h3>
+
+<table>
+  <tr><th>链</th><th>Binance Web3</th><th>GMGN</th><th>Axiom</th><th>Terminal.gg</th><th>OKX Web3</th></tr>
   <tr><td><strong>SOL</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
   <tr><td><strong>BSC</strong></td><td>✅</td><td>✅</td><td>❌</td><td>？</td><td>✅</td></tr>
   <tr><td><strong>Base</strong></td><td>✅</td><td>？</td><td>❌</td><td>❌</td><td>✅</td></tr>
 </table>
-
-<div class="callout">
-  <strong>测试前填写：</strong>先在各平台完成一轮完整体验，填满上表中的「？」。重点关注 Axiom Turbo 模式、GMGN Auto-Snipe、Terminal.gg 的交易引擎特性、OKX Web3 的 DEX 聚合路由。
-</div>
 
 <!-- ============================================================ -->
 <h2 id="method"><span class="section-num">6.</span> 测试方法</h2>
@@ -380,7 +459,7 @@ Solana Leader
   <tr><td>A1 New（SOL）</td><td>15</td><td>主战场，样本最多</td></tr>
   <tr><td>A1 New（BSC）</td><td>10</td><td>Four.Meme 活跃度较低</td></tr>
   <tr><td>A1 New（Base）</td><td>5</td><td>Flaunch 新币频率待观察</td></tr>
-  <tr><td>A2 Migrating（SOL）</td><td>5</td><td>需等毕业时机；记录 BC 买入 vs Snipe 两种路径</td></tr>
+  <tr><td>A2 BC 满额待迁移（SOL）</td><td>5</td><td>需等毕业时机；记录 BC 买入 vs Snipe 两种路径</td></tr>
   <tr><td>A3 Just Graduated（SOL）</td><td>10</td><td><strong>核心场景</strong>，DEX 开盘 0-10s 抢跑</td></tr>
   <tr><td>A3 Just Graduated（BSC）</td><td>5</td><td>同上</td></tr>
   <tr><td>A4 Migrated 稳态</td><td>10</td><td>基准对照</td></tr>
@@ -485,7 +564,7 @@ Solana Leader
   <tr>
     <td>实测 2</td><td>D2</td>
     <td>
-      ⑧ SOL A2 Migrating + A3 Just Graduated 补充<br>
+      ⑧ SOL A2 BC 满额待迁移 + A3 Just Graduated 补充<br>
       ⑨ BSC A1 + A3（15 次）<br>
       ⑩ Base A1（5 次）
     </td>
@@ -572,8 +651,8 @@ Solana Leader
   </tr>
   <tr>
     <td><span class="tag tag-p1">P1</span></td>
-    <td>Migrating 路由优化</td><td>△4</td>
-    <td>基于测试数据决定 Migrating 阶段走 BC 还是等 DEX Snipe</td>
+    <td>BC 满额待迁移路由优化</td><td>△4</td>
+    <td>基于测试数据决定 BC 满额待迁移阶段走 BC 买入还是等 DEX Snipe</td>
     <td>低</td><td>中</td>
   </tr>
   <tr>
