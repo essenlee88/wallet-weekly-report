@@ -345,46 +345,49 @@ Solana Leader
   </tr>
 </table>
 
-<h3>5.2 竞品差异化功能确认</h3>
+<h3>5.2 平台间差异变量（控制条件）</h3>
 
-<p>以下功能在竞品中存在但我方可能未支持。需交易侧确认：<strong>（1）这些功能是否可能导致用户体感竞品比我们快？（2）我们是否需要增加相应功能？</strong></p>
+<p>以下变量在各平台间可能不同，会直接影响测试结果的可比性。需 Damon 确认每项的<strong>控制方式</strong>：能统一的统一设置，不能统一的作为记录变量纳入分析。如竞品有独有功能导致体感更快，需评估我方是否需要补齐。</p>
 
 <table>
-  <tr><th>功能</th><th>竞品现状（待填写）</th><th>对速度的影响</th><th style="color:var(--yellow);">交易侧评估</th></tr>
+  <tr><th>控制变量</th><th>影响的延迟段</th><th>各平台差异（待测试前填写）</th><th style="color:var(--yellow);">控制方式（待确认）</th></tr>
   <tr>
-    <td><strong>Turbo / Fast 模式</strong><br><span style="color:var(--dim);">如 Axiom Turbo</span></td>
-    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
-    <td>自动拉高 Priority Fee + 跳过确认，可能显著提升上链速度</td>
-    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否需要类似模式？</td>
+    <td><strong>交易模式</strong><br><span style="color:var(--dim);">普通 / Turbo / Fast 等</span></td>
+    <td>△4 + △5</td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？<br>Binance: ？</td>
+    <td style="color:var(--yellow);">⬜ 统一用普通模式？还是各平台用最快模式对比上限？<br>⬜ 如竞品有 Turbo 而我方没有，是否需要增加？</td>
   </tr>
   <tr>
-    <td><strong>Auto-Snipe / 预排队</strong><br><span style="color:var(--dim);">如 Axiom Migration Snipe</span></td>
-    <td>Axiom: ✅ 毕业前排队<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
-    <td>BC 满额待迁移阶段提前排队，DEX 池子上线瞬间自动成交，人工无法追赶</td>
-    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否需要支持？</td>
+    <td><strong>Snipe / 预排队</strong><br><span style="color:var(--dim);">BC 满额待迁移阶段的自动排队</span></td>
+    <td>全链路</td>
+    <td>Axiom: ✅ 毕业前排队<br>GMGN: ？<br>Terminal: ？<br>OKX: ？<br>Binance: ？</td>
+    <td style="color:var(--yellow);">⬜ A2 场景是否单独对比"有 Snipe vs 无 Snipe"？<br>⬜ 如竞品支持而我方不支持，是否需要增加？</td>
   </tr>
   <tr>
-    <td><strong>BC 满额待迁移阶段路由</strong></td>
-    <td>Binance: ✅ 走 BC 买入<br>GMGN: ✅ 走 BC 买入<br>Axiom: ❌ 仅走 Snipe</td>
-    <td>BC 合约未锁定时继续买入 vs 等 DEX 上线后 Snipe，两种策略成交价和风险不同</td>
-    <td style="color:var(--yellow);">⬜ 我方当前走哪种路由？<br>⬜ 是否需要支持两种策略可选？</td>
+    <td><strong>BC 满额待迁移路由</strong><br><span style="color:var(--dim);">继续走 BC 买入 vs 等 DEX Snipe</span></td>
+    <td>△4 + △5</td>
+    <td>Binance: ✅ 走 BC<br>GMGN: ✅ 走 BC<br>Axiom: ❌ 仅 Snipe</td>
+    <td style="color:var(--yellow);">⬜ 我方当前走哪种路由？<br>⬜ 测试时两种路径是否分别记录？</td>
   </tr>
   <tr>
-    <td><strong>失败自动重试</strong></td>
-    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
-    <td>失败后自动加 Fee 重试，减少用户手动重试的延迟</td>
-    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否已支持？</td>
+    <td><strong>失败重试策略</strong><br><span style="color:var(--dim);">自动重试 / 手动重试</span></td>
+    <td>△5（累计）</td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？<br>Binance: ？</td>
+    <td style="color:var(--yellow);">⬜ 统一关闭自动重试？还是保持默认记录差异？<br>⬜ 如竞品有而我方没有，是否需要增加？</td>
   </tr>
   <tr>
     <td><strong>交易预构建 / 预签名</strong></td>
-    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？</td>
-    <td>提前构建交易模板，用户点击后只需注入参数即发送，省去 △4 中的构造时间</td>
-    <td style="color:var(--yellow);">⬜ 是否影响体感？<br>⬜ 我方是否可实现？</td>
+    <td>△4</td>
+    <td>Axiom: ？<br>GMGN: ？<br>Terminal: ？<br>OKX: ？<br>Binance: ？</td>
+    <td style="color:var(--yellow);">⬜ 无法统一（平台内部实现），作为记录变量<br>⬜ 如竞品 △4 显著更短，是否需要优化我方构造流程？</td>
   </tr>
 </table>
 
 <div class="callout-warn callout">
-  <strong>Action Required：</strong>请 Damon 及交易侧确认以上两张表。5.1 确保测试条件公平可执行；5.2 识别可能导致用户体感差距的功能差异，决定是否需要补齐。确认后进入测试执行阶段。
+  <strong>Action Required：</strong>请 Damon 及交易侧确认以上两张表：<br>
+  · <strong>5.1</strong> 统一购买设置 — 确保各平台在相同基线下对比<br>
+  · <strong>5.2</strong> 控制条件 — 确认每项的控制方式（统一 or 记录），并评估竞品独有功能是否导致用户体感差距、我方是否需要补齐<br>
+  确认后进入测试执行阶段。
 </div>
 
 <h3>5.3 链支持范围</h3>
