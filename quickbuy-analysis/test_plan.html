@@ -129,14 +129,18 @@
 <span class="node">T6</span> 用户收到成交结果</div>
 
 <table>
-  <tr><th>段</th><th>延迟段</th><th>影响因素</th><th>可控性</th><th>备注</th></tr>
-  <tr><td><span class="delta">△1</span></td><td>发现延迟</td><td>链上事件订阅方式、数据管道架构</td><td>我方可优化</td><td>决定「谁先看到新币」</td></tr>
-  <tr><td><span class="delta">△2</span></td><td>推送延迟</td><td>WebSocket 连接质量、服务端推送逻辑</td><td>我方可优化</td><td>—</td></tr>
-  <tr><td><span class="delta">△3</span></td><td>用户网络延迟</td><td>用户地理位置、VPN 出口、VPN 跳数、网络质量</td><td>用户侧，我方无法控制</td><td><strong>本次重点测试项</strong></td></tr>
-  <tr><td><span class="delta">△4</span></td><td>服务端处理</td><td>tx 构造逻辑、MPC 签名延迟、服务器位置</td><td>我方可优化</td><td>含 API 服务器 → RPC 节点的内网延迟</td></tr>
-  <tr><td><span class="delta">△5</span></td><td>链上执行</td><td>RPC 节点位置和质量、Priority Fee、网络拥堵</td><td>部分可优化（RPC 选择、Fee 策略）</td><td>Jito Bundle 可提升优先级</td></tr>
-  <tr><td><span class="delta">△6</span></td><td>确认回传</td><td>确认订阅方式</td><td>我方可优化</td><td>影响用户体验但不影响成交</td></tr>
+  <tr><th>段</th><th>延迟段</th><th>影响因素</th><th>可控性</th><th>可观测性</th></tr>
+  <tr><td><span class="delta">△1</span></td><td>发现延迟</td><td>链上事件订阅方式、数据管道架构</td><td>我方可优化</td><td rowspan="2" style="background:rgba(245,158,11,0.1);"><strong>合并可测</strong><br>Token 链上创建时间 vs 各平台 UI 展示时间（录屏帧）</td></tr>
+  <tr><td><span class="delta">△2</span></td><td>推送延迟</td><td>WebSocket 连接质量、服务端推送逻辑</td><td>我方可优化</td></tr>
+  <tr><td><span class="delta">△3</span></td><td>用户网络延迟</td><td>用户地理位置、VPN 出口、VPN 跳数、网络质量</td><td>用户侧，我方无法控制</td><td rowspan="3" style="background:rgba(245,158,11,0.1);"><strong>合并可测</strong><br>用户点击 Buy → 链上 tx 确认时间<br><span style="color:var(--dim);">竞品无法拆分 △3/△4/△5；<br>仅我方可通过服务端日志拆分</span></td></tr>
+  <tr><td><span class="delta">△4</span></td><td>服务端处理</td><td>tx 构造逻辑、MPC 签名延迟、服务器位置</td><td>我方可优化</td></tr>
+  <tr><td><span class="delta">△5</span></td><td>链上执行</td><td>RPC 节点位置和质量、Priority Fee、网络拥堵</td><td>部分可优化（RPC 选择、Fee 策略）</td></tr>
+  <tr><td><span class="delta">△6</span></td><td>确认回传</td><td>确认订阅方式</td><td>我方可优化</td><td style="background:rgba(34,197,94,0.1);"><strong>直接可测</strong><br>链上 tx 时间 vs UI 显示结果时间（录屏帧）</td></tr>
 </table>
+
+<div class="callout-warn callout">
+  <strong>可观测性说明：</strong>竞品的 △1/△2（发现+推送）和 △3/△4/△5（点击→上链）内部拆分无法获取，延迟记录在竞品服务内部。测试时只能测到<strong>合并后的端到端时间差</strong>。仅我方平台可通过服务端日志进一步拆分各段。
+</div>
 
 <!-- ============================================================ -->
 <h2 id="scenarios"><span class="section-num">3.</span> 测试场景矩阵</h2>
@@ -469,22 +473,39 @@ Solana Leader
 <!-- ============================================================ -->
 <h2 id="metrics"><span class="section-num">7.</span> 测量指标</h2>
 
-<h3>核心指标（每次必记录）</h3>
+<h3>Layer 1：外部可观测指标（所有平台通用）</h3>
+
+<p>QA 可通过<strong>录屏帧 + 链上数据</strong>直接测量，不依赖平台内部日志。</p>
 
 <table>
   <tr><th>指标</th><th>对应段</th><th>定义</th><th>数据来源</th></tr>
-  <tr><td><strong>T_discover</strong></td><td>△1+△2</td><td>Token 链上创建 → 平台列表展示</td><td>链上 timestamp vs 录屏帧</td></tr>
-  <tr><td><strong>T_submit</strong></td><td>△3+△4</td><td>用户点击 Buy → 平台显示"交易已提交"</td><td>录屏帧</td></tr>
-  <tr><td><strong>T_confirm</strong></td><td>△5</td><td>交易提交 → 链上确认</td><td>tx hash timestamp</td></tr>
-  <tr><td><strong>T_feedback</strong></td><td>△6</td><td>链上确认 → 用户看到成交结果</td><td>录屏帧 vs tx timestamp</td></tr>
-  <tr><td><strong>T_total</strong></td><td>全链路</td><td>T_discover + T_submit + T_confirm + T_feedback</td><td>计算</td></tr>
+  <tr><td><strong>T_discover</strong></td><td>△1+△2</td><td>Token 链上创建时间 → 平台 UI 展示新 Token</td><td>链上 block timestamp vs 录屏帧</td></tr>
+  <tr><td><strong>T_click_to_chain</strong></td><td>△3+△4+△5</td><td>用户点击 Buy → 交易上链确认</td><td>录屏帧（点击时刻） vs 链上 tx timestamp</td></tr>
+  <tr><td><strong>T_feedback</strong></td><td>△6</td><td>链上确认 → 用户看到成交结果</td><td>链上 tx timestamp vs 录屏帧（结果展示时刻）</td></tr>
+  <tr><td><strong>T_total</strong></td><td>全链路</td><td>Token 链上创建 → 用户看到成交结果</td><td>计算：T_discover + T_click_to_chain + T_feedback</td></tr>
   <tr><td><strong>成功/失败</strong></td><td>—</td><td>交易是否成功上链</td><td>tx status</td></tr>
-  <tr><td><strong>失败原因</strong></td><td>—</td><td>Slippage exceeded / Blockhash expired / RPC timeout / 未打包 / 其他</td><td>错误信息 + 链上</td></tr>
+  <tr><td><strong>失败原因</strong></td><td>—</td><td>Slippage exceeded / Blockhash expired / RPC timeout / 未打包 / 其他</td><td>平台错误提示 + 链上</td></tr>
   <tr><td><strong>Block 排序</strong></td><td>—</td><td>交易在 block 中的位置（第几笔 swap）</td><td>链上</td></tr>
   <tr><td><strong>实际成交价</strong></td><td>—</td><td>swap 事件中的实际价格</td><td>链上</td></tr>
-  <tr><td><strong>实际滑点</strong></td><td>—</td><td>(实际价 - 下单时显示价) / 下单价</td><td>计算</td></tr>
   <tr><td><strong>Gas / Fee</strong></td><td>—</td><td>Priority Fee + Base Fee + Jito Tip（如有）</td><td>链上</td></tr>
 </table>
+
+<h3>Layer 2：内部可追踪指标（仅我方平台）</h3>
+
+<p>需要<strong>服务端日志配合</strong>，用于拆分 T_click_to_chain 的内部组成，定位我方瓶颈。</p>
+
+<table>
+  <tr><th>指标</th><th>对应段</th><th>定义</th><th>数据来源</th></tr>
+  <tr><td><strong>T_api_receive</strong></td><td>△3</td><td>用户点击 → API 服务器收到请求</td><td>服务端 access log timestamp vs 录屏帧</td></tr>
+  <tr><td><strong>T_tx_build</strong></td><td>△4a</td><td>API 收到请求 → tx 构造完成</td><td>服务端日志</td></tr>
+  <tr><td><strong>T_mpc_sign</strong></td><td>△4b</td><td>MPC 签名耗时</td><td>服务端日志</td></tr>
+  <tr><td><strong>T_rpc_submit</strong></td><td>△4c</td><td>签名完成 → 发送到 RPC</td><td>服务端日志</td></tr>
+  <tr><td><strong>T_chain_confirm</strong></td><td>△5</td><td>RPC 提交 → 链上确认</td><td>服务端日志 vs 链上 timestamp</td></tr>
+</table>
+
+<div class="callout">
+  <strong>对竞品的分析策略：</strong>竞品无法拆分 △3/△4/△5，但可以通过 T_click_to_chain 的整体对比判断差距大小。如果竞品显著更快，再结合 Layer 2 数据定位我方具体是哪段慢。
+</div>
 
 <h3>辅助指标</h3>
 <table>
@@ -499,27 +520,29 @@ Solana Leader
 <!-- ============================================================ -->
 <h2 id="template"><span class="section-num">8.</span> 记录模板</h2>
 
-<h4>主记录表</h4>
+<h4>主记录表（所有平台通用）</h4>
 <table style="font-size:11px;">
   <tr>
     <th>#</th><th>日期</th><th>Token CA</th><th>链</th><th>场景</th><th>平台</th>
-    <th>VPN出口</th><th>弱网</th>
-    <th>T_disc(s)</th><th>T_sub(s)</th><th>T_conf(s)</th><th>T_fb(s)</th><th>Total(s)</th>
-    <th>成功?</th><th>失败原因</th><th>Block#</th><th>排序</th><th>成交价</th><th>滑点%</th><th>Fee</th><th>前5</th><th>备注</th>
+    <th>VPN出口</th>
+    <th>T_disc(s)</th><th>T_c2c(s)</th><th>T_fb(s)</th><th>Total(s)</th>
+    <th>成功?</th><th>失败原因</th><th>Block#</th><th>排序</th><th>成交价</th><th>Fee</th><th>前5</th><th>备注</th>
   </tr>
   <tr>
     <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>MemeRush</td>
-    <td>JP</td><td>—</td>
-    <td>1.2</td><td>0.8</td><td>0.4</td><td>0.3</td><td>2.7</td>
-    <td>✅</td><td>—</td><td>28xx</td><td>#3</td><td>0.0001</td><td>5%</td><td>0.001</td><td>✅</td><td>—</td>
+    <td>JP</td>
+    <td>1.2</td><td>1.2</td><td>0.3</td><td>2.7</td>
+    <td>✅</td><td>—</td><td>28xx</td><td>#3</td><td>0.0001</td><td>0.001</td><td>✅</td><td>—</td>
   </tr>
   <tr>
     <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>GMGN</td>
-    <td>JP</td><td>—</td>
-    <td>0.8</td><td>0.5</td><td>0.4</td><td>0.2</td><td>1.9</td>
-    <td>✅</td><td>—</td><td>28xx</td><td>#1</td><td>0.00009</td><td>2%</td><td>0.003</td><td>✅</td><td>Jito bundle</td>
+    <td>JP</td>
+    <td>0.8</td><td>0.9</td><td>0.2</td><td>1.9</td>
+    <td>✅</td><td>—</td><td>28xx</td><td>#1</td><td>0.00009</td><td>0.003</td><td>✅</td><td>Jito bundle</td>
   </tr>
 </table>
+
+<p style="color:var(--dim); font-size:12px;">T_disc = Token 链上创建→平台展示 | T_c2c = 点击 Buy→链上确认（click-to-chain）| T_fb = 链上确认→UI 展示结果</p>
 
 <h4>网络路径记录表</h4>
 <table style="font-size:12px;">
@@ -598,7 +621,7 @@ Solana Leader
 
 <h3>交付物</h3>
 <ol>
-  <li><strong>全链路延迟瀑布图</strong> — 每段（△1~△6）的耗时占比可视化，定位瓶颈</li>
+  <li><strong>端到端延迟对比图</strong> — T_discover / T_click_to_chain / T_feedback 三段对比（竞品）+ 内部拆分瀑布图（仅我方）</li>
   <li><strong>成功率热力图</strong> — Token 阶段 × 网络路径 × 弱网条件 的成功率矩阵</li>
   <li><strong>VPN 出口推荐</strong> — 基于数据给出最优 VPN 出口建议（可反馈给用户）</li>
   <li><strong>竞品差距表</strong> — 各关键指标 vs GMGN vs Axiom vs Terminal.gg vs OKX Web3</li>
