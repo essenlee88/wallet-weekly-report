@@ -117,7 +117,7 @@
 <!-- ============================================================ -->
 <h2 id="pipeline"><span class="section-num">2.</span> 全链路模型</h2>
 
-<p>一笔 Quickbuy 交易从 Token 诞生到用户收到成交确认，经历以下 6 段延迟：</p>
+<p>一笔 Quickbuy 交易从 Token 诞生到用户收到成交确认，全链路共 6 段延迟。其中交易侧（T_click → T_success）以用户可见的两个 Toast 为锚点，上链确认以区块数（Block +N）而非绝对时间计量：</p>
 
 <div class="pipeline"><span class="node">T0</span> Token 上链（block timestamp）
  │ <span class="delta">△1 发现延迟</span> ← 链上事件监听 + 数据管道处理
@@ -125,13 +125,13 @@
  │ <span class="delta">△2 推送延迟</span> ← WebSocket / API 推送到客户端
 <span class="node">T2</span> 客户端展示新 Token（用户可见）
  │ <span class="delta">△3 用户网络延迟</span> ← 用户设备 → [VPN 出口] → 平台 API 服务器
-<span class="node">T3</span> Buy 请求到达 API 服务器
- │ <span class="delta">△4 服务端处理</span> ← 构造 tx + 签名（MPC）+ 发送到 RPC
-<span class="node">T4</span> Transaction 发送到 RPC 节点
- │ <span class="delta">△5 链上执行</span> ← RPC → Leader Validator → 打包上链
-<span class="node">T5</span> Transaction 上链确认（on-chain timestamp）
- │ <span class="delta">△6 确认回传</span> ← 链上确认 → 服务端 → 客户端展示
-<span class="node">T6</span> 用户收到成交结果</div>
+<span class="node" style="color:var(--update)">T_click</span> 用户点击 Buy
+ │ <span class="delta">△3 请求处理</span> ← 用户网络 + order API + 构造 tx + MPC 签名 + 发送 RPC
+<span class="node" style="color:var(--update)">T_toast1</span> <span style="color:var(--update)">"开始处理" Toast 出现</span>（用户体感 ①）
+ │ <span class="delta">△4 上链等待</span> ← RPC → Leader Validator → 打包确认 <span style="color:var(--update)">（记录区块数 +N）</span>
+<span class="node">T_chain</span> 交易上链确认（on-chain timestamp · <span style="color:var(--update)">Block +N</span>）
+ │ <span class="delta">△5 确认回传</span> ← 链上确认 → 服务端 → WebSocket → 客户端
+<span class="node" style="color:var(--update)">T_success</span> <span style="color:var(--update)">"交易成功" Toast 出现</span>（用户体感 ②）</div>
 
 <table>
   <tr><th>段</th><th>延迟段</th><th>影响因素</th><th>可控性</th><th>可观测性</th></tr>
@@ -516,8 +516,9 @@ Solana Leader
 
 <div class="callout-update">
   <strong>【v3 调整】用户体感两段计时：</strong>基于当前实现方案（点击→order 接口→Toast1"开始处理"→WS 返回→Toast2"交易成功"），竞品对比重点拆分为两个 Period：<br>
-  · <strong>Period 1</strong>：T_click_to_toast1 — 点击到第一个 Toast，体现服务响应速度<br>
-  · <strong>Period 2</strong>：T_toast1_to_success — 第一个 Toast 到成功 Toast，体现上链+回传速度<br>
+  · <strong>Period 1（T_click → T_toast1）</strong>：点击到"开始处理" Toast，体现服务响应速度（网络 + order API + MPC 签名）<br>
+  · <strong>Period 2（T_toast1 → T_success）</strong>：到"交易成功" Toast，体现上链速度（△4）+ 回传速度（△5）<br>
+  · <strong>上链锚点（T_chain）</strong>：按区块数 +N 计，N=1 为最优；N≥3 为异常；与竞品对比时作为独立指标
   用户实际能感知的只有这两个 Toast 的出现时机和 Toast 显示的总耗时。
 </div>
 
