@@ -312,45 +312,60 @@ Solana Leader
 
 <h3>5.1 统一购买设置（公平对比基线）</h3>
 
-<p>为确保对比实验的公平性，所有平台必须在统一条件下测试。以下参数需交易侧确认是否合理：</p>
+<p>测试分两组并行进行：</p>
+<ul>
+  <li><strong>默认组</strong>：各平台使用自身最快 / 高速模式（Turbo / Fast / 极速等），反映各平台实际交付的用户体验上限</li>
+  <li><strong>统一组</strong>：所有平台对齐 GMGN 高速模式的参数设置，排除因配置差异导致的速度差，横向可比</li>
+</ul>
 
 <table>
-  <tr><th>参数</th><th>建议值</th><th>说明</th><th style="color:var(--yellow);">交易侧确认</th></tr>
+  <tr><th>参数</th><th>默认组</th><th>统一组（对齐 GMGN 高速）</th><th>说明</th><th style="color:var(--yellow);">待确认</th></tr>
+  <tr>
+    <td><strong>交易模式</strong></td>
+    <td>各平台最快模式<br><span style="color:var(--dim);font-size:12px;">GMGN: Fast / Axiom: Turbo / 其余: 默认最快</span></td>
+    <td>统一用 GMGN Fast 模式对应参数</td>
+    <td>默认组反映竞争天花板；统一组排除模式差异</td>
+    <td style="color:var(--yellow);">⬜ GMGN Fast 模式的具体参数（Fee / Slippage）是多少？</td>
+  </tr>
   <tr>
     <td><strong>买入金额</strong></td>
-    <td>0.01 SOL / 0.01 BNB / 0.001 ETH</td>
-    <td>小额测试，控制风险</td>
-    <td style="color:var(--yellow);">⬜ 金额是否合理？过小是否影响成交优先级？</td>
+    <td colspan="2" style="text-align:center;">0.01 SOL / 0.01 BNB（两组相同）</td>
+    <td>小额控制风险</td>
+    <td style="color:var(--yellow);">⬜ 过小是否影响成交优先级？</td>
   </tr>
   <tr>
     <td><strong>滑点</strong></td>
-    <td>统一组 20%；默认组各平台默认值</td>
-    <td>高滑点确保成交，排除因滑点不足导致的失败干扰</td>
-    <td style="color:var(--yellow);">⬜ 20% 是否足够覆盖高竞争场景？</td>
+    <td>各平台默认值</td>
+    <td>对齐 GMGN Fast 默认滑点</td>
+    <td>高滑点确保成交，排除失败干扰</td>
+    <td style="color:var(--yellow);">⬜ GMGN Fast 默认滑点值？</td>
   </tr>
   <tr>
     <td><strong>Priority Fee（SOL）</strong></td>
-    <td>统一组 0.001 SOL；默认组各平台默认</td>
-    <td>统一 Fee 排除因 Fee 差异导致的上链速度差异</td>
-    <td style="color:var(--yellow);">⬜ 0.001 SOL 在当前网络环境下是否处于合理档位？</td>
+    <td>各平台默认</td>
+    <td>对齐 GMGN Fast 默认 Fee</td>
+    <td>统一 Fee 排除上链速度差异</td>
+    <td style="color:var(--yellow);">⬜ GMGN Fast 对应 Fee 值？</td>
   </tr>
   <tr>
     <td><strong>Gas Price（BSC）</strong></td>
-    <td>统一组 5 Gwei；默认组各平台默认</td>
-    <td>BSC 的 Gas 策略</td>
-    <td style="color:var(--yellow);">⬜ 需确认合理值</td>
+    <td>各平台默认</td>
+    <td>对齐 GMGN Fast 默认 Gas</td>
+    <td>BSC Gas 策略</td>
+    <td style="color:var(--yellow);">⬜ GMGN Fast BSC Gas 值？</td>
   </tr>
   <tr>
-    <td><strong>确认方式</strong></td>
-    <td>所有平台关闭二次确认弹窗（如支持）</td>
+    <td><strong>确认弹窗</strong></td>
+    <td colspan="2" style="text-align:center;">所有平台关闭（如支持）— 两组相同</td>
     <td>排除人工操作差异</td>
     <td style="color:var(--yellow);">⬜ 我方 Quickbuy 是否支持跳过确认？</td>
   </tr>
-  <tr>
-    <td><strong>Jito Bundle</strong></td>
-    <td>统一组关闭；额外组开启对比</td>
-    <td>Jito 对上链速度影响大，需单独对比</td>
-    <td style="color:var(--yellow);">⬜ 我方是否已支持 Jito？竞品哪些默认开启？</td>
+  <tr style="background:rgba(45,212,191,0.06);">
+    <td><strong style="color:var(--update)">MEV 保护开关</strong><br><span style="color:var(--dim);font-size:12px;">SOL + BSC</span></td>
+    <td style="color:var(--dim);">— （不纳入默认组）</td>
+    <td><strong>统一组下</strong>额外对比：<br>MEV 开 vs MEV 关<br><span style="color:var(--dim);font-size:12px;">SOL 和 BSC 各跑一轮</span></td>
+    <td>MEV 保护对上链速度影响大，需在可控条件下单独量化</td>
+    <td style="color:var(--yellow);">⬜ 我方 SOL / BSC 是否支持 MEV 开关？<br>⬜ 竞品（GMGN / Axiom）各链默认开关状态？</td>
   </tr>
 </table>
 
