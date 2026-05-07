@@ -124,13 +124,12 @@
 <span class="node">T1</span> 我方数据管道检测到新 Token
  │ <span class="delta">△2 推送延迟</span> ← WebSocket / API 推送到客户端
 <span class="node">T2</span> 客户端展示新 Token（用户可见）
- │ <span class="delta">△3 用户网络延迟</span> ← 用户设备 → [VPN 出口] → 平台 API 服务器
 <span class="node" style="color:var(--update)">T_click</span> 用户点击 Buy
- │ <span class="delta">△3 请求处理</span> ← 用户网络 + order API + 构造 tx + MPC 签名 + 发送 RPC
+ │ <span class="delta">△3+△4 请求处理</span> ← 用户网络 + order API + 构造 tx + MPC 签名 + 发送 RPC
 <span class="node" style="color:var(--update)">T_toast1</span> <span style="color:var(--update)">"开始处理" Toast 出现</span>（用户体感 ①）
- │ <span class="delta">△4 上链等待</span> ← RPC → Leader Validator → 打包确认 <span style="color:var(--update)">（记录区块数 +N）</span>
+ │ <span class="delta">△5 上链执行</span> ← RPC → Leader Validator → 打包确认 <span style="color:var(--update)">（记录区块数 +N）</span>
 <span class="node">T_chain</span> 交易上链确认（on-chain timestamp · <span style="color:var(--update)">Block +N</span>）
- │ <span class="delta">△5 确认回传</span> ← 链上确认 → 服务端 → WebSocket → 客户端
+ │ <span class="delta">△6 确认回传</span> ← 链上确认 → 服务端 → WebSocket → 客户端
 <span class="node" style="color:var(--update)">T_success</span> <span style="color:var(--update)">"交易成功" Toast 出现</span>（用户体感 ②）</div>
 
 <table>
