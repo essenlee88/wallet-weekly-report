@@ -64,8 +64,8 @@
     <li><a href="#network">网络路径测试</a></li>
     <li><a href="#competitors">竞品对照</a></li>
     <li><a href="#method">测试方法</a></li>
-    <li><a href="#metrics">测量指标</a></li>
-    <li><a href="#template">记录模板</a></li>
+    
+    
     <li><a href="#plan">执行计划</a></li>
     <li><a href="#optimization">预期优化方向</a></li>
   </ol>
@@ -476,121 +476,7 @@ Solana Leader
   <tr><td colspan="2" style="font-weight:600;">合计</td><td><strong>~125 次</strong></td></tr>
 </table>
 
-<!-- ============================================================ -->
-<h2 id="metrics"><span class="section-num">7.</span> 测量指标</h2>
-
-<h3>Layer 1：外部可观测指标（所有平台通用）</h3>
-
-<p>QA 可通过<strong>录屏帧 + 链上数据</strong>直接测量，不依赖平台内部日志。</p>
-
-<table>
-  <tr><th>指标</th><th>对应段</th><th>定义</th><th>数据来源</th></tr>
-  <tr><td><strong>T_discover</strong></td><td>△1+△2</td><td>Token 链上创建时间 → 平台 UI 展示新 Token</td><td>链上 block timestamp vs 录屏帧</td></tr>
-  <tr><td><strong>T_click_to_chain</strong></td><td>△3+△4+△5</td><td>用户点击 Buy → 交易上链确认</td><td>录屏帧（点击时刻） vs 链上 tx timestamp</td></tr>
-  <tr class="update-row">
-    <td><strong>T_click_to_toast1</strong> <span class="tag tag-update">新增</span></td>
-    <td>△3+△4</td>
-    <td>用户点击 Buy → 第一个 Toast 出现（"开始处理"）<br><span style="color:var(--dim);font-size:12px;">对应 FE 收到 order 接口响应，给用户反馈已受理</span></td>
-    <td>录屏帧（点击时刻） vs 录屏帧（Toast1 出现时刻）</td>
-  </tr>
-  <tr class="update-row">
-    <td><strong>T_toast1_to_success</strong> <span class="tag tag-update">新增</span></td>
-    <td>△5+△6</td>
-    <td>第一个 Toast（"开始处理"）→ 交易成功 Toast<br><span style="color:var(--dim);font-size:12px;">用户体感等待的核心时段；FE 等待 WS 返回上链结果</span></td>
-    <td>录屏帧（Toast1 出现时刻） vs 录屏帧（成功 Toast 出现时刻）</td>
-  </tr>
-  <tr class="update-row">
-    <td><strong>T_chain_to_ws</strong> <span class="tag tag-update">新增·待验证</span></td>
-    <td>△6</td>
-    <td>链上确认时间 → WS 消息到达 FE 时间<br><span style="color:var(--dim);font-size:12px;">拆分"上链成功"与"前端感知到上链成功"是否有额外延迟</span></td>
-    <td>链上 tx timestamp vs 服务端 WS 推送时间戳（需服务端日志配合）</td>
-  </tr>
-  <tr><td><strong>T_feedback</strong></td><td>△6</td><td>链上确认 → 用户看到成交结果</td><td>链上 tx timestamp vs 录屏帧（结果展示时刻）</td></tr>
-  <tr><td><strong>T_total</strong></td><td>全链路</td><td>Token 链上创建 → 用户看到成交结果</td><td>计算：T_discover + T_click_to_chain + T_feedback</td></tr>
-  <tr><td><strong>成功/失败</strong></td><td>—</td><td>交易是否成功上链</td><td>tx status</td></tr>
-  <tr><td><strong>失败原因</strong></td><td>—</td><td>Slippage exceeded / Blockhash expired / RPC timeout / 未打包 / 其他</td><td>平台错误提示 + 链上</td></tr>
-  <tr><td><strong>Block 排序</strong></td><td>—</td><td>交易在 block 中的位置（第几笔 swap）</td><td>链上</td></tr>
-  <tr><td><strong>实际成交价</strong></td><td>—</td><td>swap 事件中的实际价格</td><td>链上</td></tr>
-  <tr><td><strong>Gas / Fee</strong></td><td>—</td><td>Priority Fee + Base Fee + Jito Tip（如有）</td><td>链上</td></tr>
-</table>
-
-<div class="callout-update">
-  <strong>【v3 调整】用户体感两段计时：</strong>基于当前实现方案（点击→order 接口→Toast1"开始处理"→WS 返回→Toast2"交易成功"），竞品对比重点拆分为两个 Period：<br>
-  · <strong>Period 1（T_click → T_toast1）</strong>：点击到"开始处理" Toast，体现服务响应速度（网络 + order API + MPC 签名）<br>
-  · <strong>Period 2（T_toast1 → T_success）</strong>：到"交易成功" Toast，体现上链速度（△4）+ 回传速度（△5）<br>
-  · <strong>上链锚点（T_chain）</strong>：按区块数 +N 计，N=1 为最优；N≥3 为异常；与竞品对比时作为独立指标
-  用户实际能感知的只有这两个 Toast 的出现时机和 Toast 显示的总耗时。
-</div>
-
-<h3>Layer 2：内部可追踪指标（仅我方平台）</h3>
-
-<p>需要<strong>服务端日志配合</strong>，用于拆分 T_click_to_chain 的内部组成，定位我方瓶颈。</p>
-
-<table>
-  <tr><th>指标</th><th>对应段</th><th>定义</th><th>数据来源</th></tr>
-  <tr><td><strong>T_api_receive</strong></td><td>△3</td><td>用户点击 → API 服务器收到请求</td><td>服务端 access log timestamp vs 录屏帧</td></tr>
-  <tr><td><strong>T_tx_build</strong></td><td>△4a</td><td>API 收到请求 → tx 构造完成</td><td>服务端日志</td></tr>
-  <tr><td><strong>T_mpc_sign</strong></td><td>△4b</td><td>MPC 签名耗时</td><td>服务端日志</td></tr>
-  <tr><td><strong>T_rpc_submit</strong></td><td>△4c</td><td>签名完成 → 发送到 RPC</td><td>服务端日志</td></tr>
-  <tr><td><strong>T_chain_confirm</strong></td><td>△5</td><td>RPC 提交 → 链上确认</td><td>服务端日志 vs 链上 timestamp</td></tr>
-</table>
-
-<div class="callout">
-  <strong>对竞品的分析策略：</strong>竞品无法拆分 △3/△4/△5，但可以通过 T_click_to_chain 的整体对比判断差距大小。如果竞品显著更快，再结合 Layer 2 数据定位我方具体是哪段慢。
-</div>
-
-<h3>辅助指标</h3>
-<table>
-  <tr><th>指标</th><th>定义</th></tr>
-  <tr><td>前 5 名占位率</td><td>在该 Token 前 5 笔成功交易中是否占有席位</td></tr>
-  <tr><td>重试次数</td><td>平台是否自动重试，重试了几次</td></tr>
-  <tr><td>Sandwich 检测</td><td>交易前后是否有同地址的夹子交易</td></tr>
-  <tr><td>VPN 出口</td><td>本次测试使用的 VPN 出口节点</td></tr>
-  <tr><td>弱网条件</td><td>本次是否叠加弱网模拟，什么配置</td></tr>
-</table>
-
-<!-- ============================================================ -->
-<h2 id="template"><span class="section-num">8.</span> 记录模板</h2>
-
-<h4>主记录表（所有平台通用）</h4>
-<table style="font-size:11px;">
-  <tr>
-    <th>#</th><th>日期</th><th>Token CA</th><th>链</th><th>场景</th><th>平台</th>
-    <th>VPN出口</th>
-    <th>T_disc(s)</th><th>T_c2c(s)</th><th style="color:var(--update)">T_c2toast(s)</th><th style="color:var(--update)">T_t2succ(s)</th><th>T_fb(s)</th><th>Total(s)</th>
-    <th>成功?</th><th>失败原因</th><th>Block#</th><th>排序</th><th>成交价</th><th>Fee</th><th>前5</th><th>备注</th>
-  </tr>
-  <tr>
-    <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>MemeRush</td>
-    <td>JP</td>
-    <td>1.2</td><td>1.2</td><td style="color:var(--update)">0.4</td><td style="color:var(--update)">0.8</td><td>0.3</td><td>2.7</td>
-    <td>✅</td><td>—</td><td>28xx</td><td>#3</td><td>0.0001</td><td>0.001</td><td>✅</td><td>—</td>
-  </tr>
-  <tr>
-    <td>1</td><td>4/25</td><td>xxx...</td><td>SOL</td><td>A1</td><td>GMGN</td>
-    <td>JP</td>
-    <td>0.8</td><td>0.9</td><td style="color:var(--update)">0.3</td><td style="color:var(--update)">0.6</td><td>0.2</td><td>1.9</td>
-    <td>✅</td><td>—</td><td>28xx</td><td>#1</td><td>0.00009</td><td>0.003</td><td>✅</td><td>Jito bundle</td>
-  </tr>
-</table>
-
-<p style="color:var(--dim); font-size:12px;">T_disc = Token 链上创建→平台展示 | T_c2c = 点击 Buy→链上确认 | <span style="color:var(--update)">T_c2toast = 点击→Toast1"开始处理" | T_t2succ = Toast1→Toast2"交易成功"</span> | T_fb = 链上确认→UI 展示结果</p>
-
-<h4>网络路径记录表</h4>
-<table style="font-size:12px;">
-  <tr><th>#</th><th>VPN出口</th><th>弱网条件</th><th>Ping RTT(ms)</th><th>丢包率</th><th>T_submit P50(s)</th><th>T_total P50(s)</th><th>成功率</th><th>样本数</th></tr>
-  <tr><td>1</td><td>C0 无VPN</td><td>—</td><td>12</td><td>0%</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>2</td><td>C1 日本</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>3</td><td>C2 美国</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>4</td><td>C3 法兰克福</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>5</td><td>C4 香港</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>6</td><td>C5 新加坡</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>10</td></tr>
-  <tr><td>7</td><td>C1 日本</td><td>W1 +300ms</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td></tr>
-  <tr><td>8</td><td>C1 日本</td><td>W2 丢包10%</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>5</td></tr>
-</table>
-
-<!-- ============================================================ -->
-<h2 id="plan"><span class="section-num">9.</span> 执行计划</h2>
+<h2 id="plan"><span class="section-num">7.</span> 执行计划</h2>
 
 <table>
   <tr><th>阶段</th><th>天</th><th>任务</th><th>产出</th></tr>
@@ -661,7 +547,7 @@ Solana Leader
 </ol>
 
 <!-- ============================================================ -->
-<h2 id="optimization"><span class="section-num">10.</span> 预期优化方向（按 ROI 排序）</h2>
+<h2 id="optimization"><span class="section-num">8.</span> 预期优化方向（按 ROI 排序）</h2>
 
 <table>
   <tr><th>优先级</th><th>方向</th><th>影响段</th><th>描述</th><th>难度</th><th>收益</th></tr>
