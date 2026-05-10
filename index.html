@@ -215,7 +215,12 @@ UV 可横向比较，WoW 仅反映流量变化</span></span></td><td style="back
     <li><b>其他产品（Alpha / Smart Money / Portfolio / Perpetuals）：</b>不受上述 bot 影响，数据基本可信。Portfolio −10.3%、Perpetuals −4.9%，整体偏弱。</li>
   </ul>
 
-  <p><b>待跟进：</b>Token Detail +123.6% 去 SG 后仍异常；新加坡 bot 来源未确认（Binance SSR / 第三方爬虫 / 外部 bot），建议同步 FE/BE 查服务器日志确认来源。</p>
+  <p><b>Bot 溯源结论：</b>两股流量均已排除真实用户和 AI Agent——异常 UV 的 PV/UV 仅 1.09，而正常用户为 5.7（Trending）/ 19（Meme Rush），说明程序拿到页面数据后立即退出，无任何浏览行为。</p>
+  <ul>
+    <li><b>新加坡 bot（Trending / Token Detail）</b>：5/1 突然启动，每天 12:00-24:00 活跃、00:00-11:00 静默，周日量级骤降。批量爆发式抓取（峰值 2.4万 UV/天）。判断为<b>外部商业数据爬虫</b>（数据聚合商或做市商行情监控），非 Binance 内部服务。</li>
+    <li><b>亚洲 bot（Meme Rush）</b>：4/28 启动，24/7 匀速 ~35 UV/小时，极度稳定。判断为<b>外部自动化交易信号监控</b>，轮询 Meme Rush 新币列表以捕捉早期机会。</li>
+  </ul>
+  <p><b>待跟进：</b>Token Detail 去 SG 后仍 +123.6%，来源未完全确定，建议 FE/BE 查服务器日志。</p>
 </div>
   <div class="footer">Generated 2026-05-10 &middot; Data source: Sensors Analytics &middot; W18 (05/01 ~ 05/07)</div>
 </body>
