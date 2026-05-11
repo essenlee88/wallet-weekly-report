@@ -46,6 +46,11 @@
   td.product .tip .tip-text { left: 0; transform: none; }
   td.product .tip .tip-text::before { left: 20px; transform: none; }
   .overall-table .tip { border-bottom-color: #bbb; color: #333; }
+
+.actions { background:#f0f9ff; border-left:3px solid #0ea5e9; border-radius:0 6px 6px 0;
+           padding:10px 16px; margin-top:12px; font-size:13px; }
+.actions ol { margin:6px 0 0 0; padding-left:18px; }
+.actions li { margin-bottom:5px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -134,6 +139,16 @@ WoW = 环比变化率</span></span></th></tr></thead><tbody><tr class="group-hea
     <li><b>收藏榜单（首页）：</b>W17 <b>-30.5%</b>（14.8万）、W18 -5.6%（14.0万），已连续多周大幅下降（28.6K → 21.4K → 14.8K → 14.0K）。CTR 反升（24.84%）说明来访用户目的性更强，但到达用户数大幅萎缩——需确认是 W14 埋点口径变更的滞后影响还是真实流失。</li>
     <li><b>Markets Perps 榜 CTR：</b>已修正口径（改用 market_list_page_token + df_6=perp_list），W17 12.46%、W18 26.97%（+14.51pp）。原 df_9=perps 口径会捕获来自页面外的点击，导致 CTR 虚高至 97.55%；修正后数据已与 Ondo Analytics 对齐。</li>
   </ul>
+<div class="actions">
+  <p><strong>💡 App 侧行动建议</strong></p>
+  <ol>
+    <li><strong>【立即】[PM+数据]</strong> 拆解首页收藏榜单渗透率持续下降的漏斗层级 — 已连续 5 周从 18.93% 降至 8.46%，但 CTR 反升至 24.84%，说明是入口曝光或流量分配问题，而非功能本身失效</li>
+    <li><strong>【本周内】[数据]</strong> 确认 Markets Stock / Perps 口径已更新的 W17 历史数据是否需要回补 SeaTable — 本次口径修正影响 W17 CTR 还原值（Stock 41.07%、Perps 12.46%），SeaTable 中仍是旧值</li>
+    <li><strong>【下期跟进】[PM]</strong> 评估 Meme Rush 是否需要产品层面干预 — Meme Rush CTR 已连续 4 周从 22.26% 降至 20.67%，UV 同步从 W16 峰值 7.86 万回落至 6.57 万，单纯行情波动还是产品疲劳待判断</li>
+    <li><strong>【下期跟进】[PM]</strong> 基于 Holdings 连续 4 周正增长（+3.5%/+3.3%），评估首页 Holdings 模块入口能否扩大曝光位 — 是两周内唯一持续上升的核心板块，CTR 19.09% 稳健</li>
+    <li><strong>【产品建议】[PM+FE]</strong> Topic Rush 深度指标（CTR/C/U）连续 3 周下滑，建议评估 feed 内容质量或 topic 聚类逻辑 — CTR 从 28.22% 降至 24.57%，用户对 topic 的消费意愿在减弱</li>
+  </ol>
+</div>
 </div>
   <div class="section">
     <h2>Web</h2>
@@ -222,6 +237,15 @@ UV 可横向比较，WoW 仅反映流量变化</span></span></td><td style="back
     <li><b>亚洲 bot（Meme Rush）</b>：4/28 启动，24/7 匀速 ~35 UV/小时，极度稳定。判断为<b>外部自动化交易信号监控</b>，轮询 Meme Rush 新币列表以捕捉早期机会。</li>
   </ul>
   <p><b>待跟进：</b>Token Detail 去 SG 后仍 +123.6%，来源未完全确定，建议 FE/BE 查服务器日志。</p>
+<div class="actions">
+  <p><strong>💡 Web 侧行动建议</strong></p>
+  <ol>
+    <li><strong>【立即】[BE+数据]</strong> 启动 W18 Bot 污染排查并确定清洗方案 — 名义 UV 16.3 万中估算 Bot UV >14 万，真实有效 UV ≈ 2 万，当前所有 Web WoW 数据均不可信</li>
+    <li><strong>【本周内】[数据]</strong> 建立 Bot 检测指标（UV 异常增长 + CTR 反向下降双重校验），纳入下期采集流程 — 本期 Web Meme Rush UV +78% 同时 CTR -7.1pp，靠人工发现延迟太高</li>
+    <li><strong>【下期跟进】[PM]</strong> 评估 Web 端真实流量是否已进入持续下行通道 — 去 Bot 后 W17 真实 UV ~5.6 万、W18 ~2 万，连续两周下降，需 3 周数据确认趋势</li>
+    <li><strong>【产品建议】[PM]</strong> Web Topic Rush CTR 稳定在 40%+，是 Web 端质量最高的产品，建议评估是否有入口扩大空间 — UV 规模小（1.2K）但转化质量真实可信</li>
+  </ol>
+</div>
 </div>
   <div class="footer">Generated 2026-05-10 &middot; Data source: Sensors Analytics &middot; W18 (05/01 ~ 05/07)</div>
 </body>
