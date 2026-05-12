@@ -8,20 +8,18 @@
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; font-size: 13px; line-height: 1.4; }
 .wrap { max-width: 1340px; margin: 0 auto; padding: 28px 20px; }
 h1 { font-size: 20px; font-weight: 700; color: #f8d56a; margin-bottom: 3px; }
-.meta { color: #4a5568; font-size: 12px; margin-bottom: 16px; }
+.meta { color: #4a5568; font-size: 12px; margin-bottom: 14px; }
 
-/* ── Summary table ── */
-.summary-box { background: #1a1f2e; border: 1px solid #2d3548; border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; }
-.summary-box h2 { font-size: 12px; color: #4a5568; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
-.stbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-.stbl th { color: #4a5568; font-weight: 500; padding: 5px 10px; text-align: center; border-bottom: 1px solid #2d3548; }
-.stbl th:first-child { text-align: left; }
-.stbl td { padding: 6px 10px; text-align: center; border-bottom: 1px solid #161b27; }
-.stbl td:first-child { text-align: left; font-weight: 600; }
-.stbl .row-old td { color: #94a3b8; }
-.stbl .row-new td { color: #f8d56a; }
-.gap-shrink { color: #4ade80; font-weight: 700; }
-.same-note { color: #4a5568; font-size: 10px; }
+/* ── Summary strip ── */
+.summary-strip { display: flex; gap: 0; align-items: stretch; margin-bottom: 18px; border: 1px solid #2d3548; border-radius: 6px; overflow: hidden; }
+.sum-cell { flex: 1; padding: 8px 14px; border-right: 1px solid #2d3548; }
+.sum-cell:last-child { border-right: none; }
+.sum-label { font-size: 10px; color: #4a5568; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+.sum-val { font-size: 12px; color: #94a3b8; }
+.sum-val .old { color: #64748b; }
+.sum-val .new { color: #f8d56a; }
+.sum-val .shrink { color: #4ade80; font-weight: 700; }
+.sum-val .same { color: #4a5568; font-size: 10px; }
 
 /* ── Proportion inline row ── */
 .prop-row { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px; flex-wrap: nowrap; }
@@ -68,7 +66,6 @@ table.main tr:hover td { background: #181e2d !important; }
 .score { font-family: monospace; font-size: 11px; color: #94a3b8; text-align: right; padding-right: 8px; }
 .change-cell { text-align: center; }
 .divider { background: #1a1f2e; padding: 0; }
-.empty { color: #2d3548; text-align: center; }
 .dropped { opacity: .4; }
 td.dropped strong { text-decoration: line-through; color: #fc8181; }
 .entered strong { color: #48bb78; }
@@ -86,29 +83,28 @@ td.dropped strong { text-decoration: line-through; color: #fc8181; }
   <h1>MemeRush Rank Top50 · 旧算法 vs 新算法</h1>
   <div class="meta">数据时间：2026-05-12 13:33/13:35 &nbsp;·&nbsp; BSC 链 · Franklin 实测</div>
 
-  <!-- Summary table -->
-  <div class="summary-box">
-    <h2>实测效果汇总</h2>
-    <table class="stbl">
-      <thead>
-        <tr>
-          <th>算法</th><th>Top10</th><th>Top20</th><th>Top30</th><th>Top50</th><th>均分差距</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="row-old">
-          <td>旧算法（Update2）</td>
-          <td>5 / 5</td><td>9 / 11</td><td>15 / 15</td><td>25 / 25</td>
-          <td>FLAP 领先 0.1630</td>
-        </tr>
-        <tr class="row-new">
-          <td>新算法（已上线）</td>
-          <td>5 / 5 <span class="same-note">不变</span></td>
-          <td>7 / 13</td><td>14 / 16</td><td>25 / 25</td>
-          <td>FLAP 领先 0.0579 <span class="gap-shrink">↓64.5%</span></td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Summary strip -->
+  <div class="summary-strip">
+    <div class="sum-cell">
+      <div class="sum-label">均分差距</div>
+      <div class="sum-val"><span class="old">旧 0.1630</span> → <span class="new">新 0.0579</span> &nbsp;<span class="shrink">↓64.5%</span></div>
+    </div>
+    <div class="sum-cell">
+      <div class="sum-label">Top10 &nbsp;FLAP / 4meme</div>
+      <div class="sum-val"><span class="old">5 / 5</span> → <span class="new">5 / 5</span> &nbsp;<span class="same">不变</span></div>
+    </div>
+    <div class="sum-cell">
+      <div class="sum-label">Top20 &nbsp;FLAP / 4meme</div>
+      <div class="sum-val"><span class="old">9 / 11</span> → <span class="new">7 / 13</span></div>
+    </div>
+    <div class="sum-cell">
+      <div class="sum-label">Top30 &nbsp;FLAP / 4meme</div>
+      <div class="sum-val"><span class="old">15 / 15</span> → <span class="new">14 / 16</span></div>
+    </div>
+    <div class="sum-cell">
+      <div class="sum-label">Top50 &nbsp;FLAP / 4meme</div>
+      <div class="sum-val"><span class="old">25 / 25</span> → <span class="new">25 / 25</span> &nbsp;<span class="same">不变</span></div>
+    </div>
   </div>
 
   <!-- Compact proportion row -->
@@ -117,13 +113,11 @@ td.dropped strong { text-decoration: line-through; color: #fc8181; }
       <div class="prop-group-label">全量 150</div>
       <div class="prop-item">
         <span class="prop-alg">旧</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:44.0%"></div><div class="bar-seg bar-four" style="width:56.0%"></div></div>
-        <span class="bar-nums"><span class="f">66 (44%)</span> / <span class="m">84 (56%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:44.0%"></div><div class="bar-seg bar-four" style="width:56.0%"></div></div><span class="bar-nums"><span class="f">66 (44%)</span> / <span class="m">84 (56%)</span></span>
       </div>
       <div class="prop-item">
         <span class="prop-alg">新</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:44.7%"></div><div class="bar-seg bar-four" style="width:55.3%"></div></div>
-        <span class="bar-nums"><span class="f">67 (45%)</span> / <span class="m">83 (55%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:44.7%"></div><div class="bar-seg bar-four" style="width:55.3%"></div></div><span class="bar-nums"><span class="f">67 (45%)</span> / <span class="m">83 (55%)</span></span>
       </div>
     </div>
     <div class="prop-divider"></div>
@@ -131,13 +125,11 @@ td.dropped strong { text-decoration: line-through; color: #fc8181; }
       <div class="prop-group-label">Top 10</div>
       <div class="prop-item">
         <span class="prop-alg">旧</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div>
-        <span class="bar-nums"><span class="f">5 (50%)</span> / <span class="m">5 (50%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div><span class="bar-nums"><span class="f">5 (50%)</span> / <span class="m">5 (50%)</span></span>
       </div>
       <div class="prop-item">
         <span class="prop-alg">新</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div>
-        <span class="bar-nums"><span class="f">5 (50%)</span> / <span class="m">5 (50%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div><span class="bar-nums"><span class="f">5 (50%)</span> / <span class="m">5 (50%)</span></span>
       </div>
     </div>
     <div class="prop-divider"></div>
@@ -145,13 +137,11 @@ td.dropped strong { text-decoration: line-through; color: #fc8181; }
       <div class="prop-group-label">Top 30</div>
       <div class="prop-item">
         <span class="prop-alg">旧</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div>
-        <span class="bar-nums"><span class="f">15 (50%)</span> / <span class="m">15 (50%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div><span class="bar-nums"><span class="f">15 (50%)</span> / <span class="m">15 (50%)</span></span>
       </div>
       <div class="prop-item">
         <span class="prop-alg">新</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:46.7%"></div><div class="bar-seg bar-four" style="width:53.3%"></div></div>
-        <span class="bar-nums"><span class="f">14 (47%)</span> / <span class="m">16 (53%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:46.7%"></div><div class="bar-seg bar-four" style="width:53.3%"></div></div><span class="bar-nums"><span class="f">14 (47%)</span> / <span class="m">16 (53%)</span></span>
       </div>
     </div>
     <div class="prop-divider"></div>
@@ -159,13 +149,11 @@ td.dropped strong { text-decoration: line-through; color: #fc8181; }
       <div class="prop-group-label">Top 50</div>
       <div class="prop-item">
         <span class="prop-alg">旧</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div>
-        <span class="bar-nums"><span class="f">25 (50%)</span> / <span class="m">25 (50%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div><span class="bar-nums"><span class="f">25 (50%)</span> / <span class="m">25 (50%)</span></span>
       </div>
       <div class="prop-item">
         <span class="prop-alg">新</span>
-        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div>
-        <span class="bar-nums"><span class="f">25 (50%)</span> / <span class="m">25 (50%)</span></span>
+        <div class="bar-wrap"><div class="bar-seg bar-flap" style="width:50.0%"></div><div class="bar-seg bar-four" style="width:50.0%"></div></div><span class="bar-nums"><span class="f">25 (50%)</span> / <span class="m">25 (50%)</span></span>
       </div>
     </div>
   </div>
