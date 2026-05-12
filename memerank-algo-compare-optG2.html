@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<title>MemeRank 算法对比 — Option B vs Option G'</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1117;color:#e8eaf0;font-family:'SF Pro Display',-apple-system,sans-serif;font-size:13px;padding:24px}
+h1{color:#f8d56a;font-size:20px;font-weight:700;margin-bottom:4px}
+.sub{color:#8892a4;font-size:12px;margin-bottom:24px}
+.summary-strip{display:flex;gap:32px;margin-bottom:24px;padding:14px 20px;background:#141820;border-radius:10px;border:1px solid #1e2532}
+.summary-strip .metric{display:flex;flex-direction:column;gap:4px}
+.summary-strip .metric .label{font-size:11px;color:#8892a4}
+.summary-strip .metric .value{font-size:16px;font-weight:700;color:#e8eaf0}
+.summary-strip .metric .value .flap-num{color:#b78af7}
+.summary-strip .metric .value .four-num{color:#f8d56a}
+.summary-strip .sep{width:1px;background:#1e2532}
+section{margin-bottom:32px}
+h2{color:#c8cfe0;font-size:14px;font-weight:600;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+table{width:100%;border-collapse:collapse}
+table th{background:#141820;color:#8892a4;font-size:11px;font-weight:600;padding:6px 10px;text-align:left;border-bottom:1px solid #1e2532}
+table td{padding:6px 10px;border-bottom:1px solid #14181e}
+tr.flap td{background:rgba(183,138,247,.04)}
+tr.four td{background:rgba(248,213,106,.03)}
+tr:hover td{background:#1a1f2e}
+.rank{font-weight:600;font-size:13px;color:#c8cfe0;white-space:nowrap}
+.up{color:#4ade80;font-size:11px;margin-left:4px}
+.dn{color:#f87171;font-size:11px;margin-left:4px}
+.eq{color:#8892a4;font-size:11px;margin-left:4px}
+.new{color:#60a5fa;font-size:10px;margin-left:4px}
+.rank-out{color:#3a4050}
+.badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.flap-badge{background:rgba(183,138,247,.2);color:#b78af7}
+.four-badge{background:rgba(248,213,106,.15);color:#f8d56a}
+.sym{font-weight:600;color:#e8eaf0}
+.addr a{color:#4a90d9;text-decoration:none;font-size:11px;font-family:monospace}
+.addr a:hover{text-decoration:underline}
+.tier-label{color:#8892a4;font-weight:600;width:90px}
+.pbar{display:flex;height:22px;border-radius:4px;overflow:hidden;width:200px}
+.seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;min-width:20px}
+.flap-seg{background:rgba(183,138,247,.55);color:#fff}
+.four-seg{background:rgba(248,213,106,.6);color:#1a1200}
+.other-seg{background:#2a3040;color:#8892a4}
+.legend{display:flex;gap:16px;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#8892a4}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+.ld-flap{background:rgba(183,138,247,.55)}
+.ld-four{background:rgba(248,213,106,.6)}
+.wt-table{max-width:420px}
+.wt-table th{text-align:center}
+.wt-table td{text-align:center}
+.wt-table td:first-child{text-align:left;color:#c8cfe0}
+tr.changed td{color:#e8eaf0}
+tr.changed td:first-child{font-weight:600}
+.w-up{color:#4ade80;font-weight:700}
+.w-dn{color:#f87171;font-weight:700}
+.w-eq{color:#8892a4}
+.col-b{color:#60a5fa}
+.col-g{color:#f8d56a}
+.section-cols{display:flex;gap:40px}
+.section-cols section{flex:1}
+</style>
+</head>
+<body>
+<h1>MemeRank 算法方案对比</h1>
+<p class="sub">数据来源：2026-05-12 Franklin 旧算法快照（687 → 150 tokens）· 模拟对比</p>
+
+<div class="summary-strip">
+  <div class="metric">
+    <span class="label">均分差距 (FLAP - 4meme)</span>
+    <span class="value">
+      <span class="flap-num">B: 0.1105</span>
+      &nbsp;→&nbsp;
+      <span class="four-num">G': 0.0644</span>
+      &nbsp;(-41.7%)
+    </span>
+  </div>
+  <div class="sep"></div>
+  <div class="metric">
+    <span class="label">Top30 4meme 数量</span>
+    <span class="value">
+      <span class="col-b">B: 17</span>&nbsp;→&nbsp;<span class="col-g">G': 18</span>
+    </span>
+  </div>
+  <div class="sep"></div>
+  <div class="metric">
+    <span class="label">BN Holders 权重</span>
+    <span class="value">
+      <span class="col-b">13.5%</span>&nbsp;→&nbsp;<span class="col-g">20.0%</span>
+    </span>
+  </div>
+</div>
+
+<div class="section-cols">
+<section>
+<h2>方案参数对比</h2>
+<table class="wt-table">
+<thead><tr><th>指标</th><th class="col-b">Option B (当前)</th><th class="col-g">Option G' (激进)</th><th>变化</th></tr></thead>
+<tbody>
+<tr class=" changed"><td>Market Cap</td><td>30.0%</td><td>26.5%</td><td class="w-dn">-3.5%</td></tr>
+<tr class=" changed"><td>Vol BN 7D</td><td>25.0%</td><td>23.0%</td><td class="w-dn">-2.0%</td></tr>
+<tr class=" changed"><td>BN Unique Holders</td><td>13.5%</td><td>20.0%</td><td class="w-up">+6.5%</td></tr>
+<tr class=""><td>Count BN 7D</td><td>5.0%</td><td>5.0%</td><td class="w-eq">0.0%</td></tr>
+<tr class=""><td>Unique Trader BN 7D</td><td>5.0%</td><td>5.0%</td><td class="w-eq">0.0%</td></tr>
+<tr class=""><td>Price Chg 24H</td><td>5.0%</td><td>5.0%</td><td class="w-eq">0.0%</td></tr>
+<tr class=""><td>Price Chg 7D</td><td>5.0%</td><td>5.0%</td><td class="w-eq">0.0%</td></tr>
+<tr class=""><td>Liquidity</td><td>7.5%</td><td>7.5%</td><td class="w-eq">0.0%</td></tr>
+<tr class=" changed"><td>Holders</td><td>2.0%</td><td>1.0%</td><td class="w-dn">-1.0%</td></tr>
+<tr class=""><td>Create Time</td><td>1.0%</td><td>1.0%</td><td class="w-eq">0.0%</td></tr>
+<tr class=""><td>Impression</td><td>1.0%</td><td>1.0%</td><td class="w-eq">0.0%</td></tr>
+
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>各分层分布</h2>
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot ld-flap"></div>FLAP</div>
+  <div class="legend-item"><div class="legend-dot ld-four"></div>Four.meme</div>
+</div>
+<table>
+<thead><tr><th>分层</th><th class="col-b">Option B</th><th class="col-g">Option G'</th></tr></thead>
+<tbody>
+<tr><td class="tier-label">全量 150</td><td><div class="pbar"><span class="seg flap-seg" style="width:44%">66</span><span class="seg four-seg" style="width:56%">84</span></div></td><td><div class="pbar"><span class="seg flap-seg" style="width:44%">66</span><span class="seg four-seg" style="width:56%">84</span></div></td></tr>
+<tr><td class="tier-label">Top 10</td><td><div class="pbar"><span class="seg flap-seg" style="width:50%">5</span><span class="seg four-seg" style="width:50%">5</span></div></td><td><div class="pbar"><span class="seg flap-seg" style="width:50%">5</span><span class="seg four-seg" style="width:50%">5</span></div></td></tr>
+<tr><td class="tier-label">Top 30</td><td><div class="pbar"><span class="seg flap-seg" style="width:43%">13</span><span class="seg four-seg" style="width:57%">17</span></div></td><td><div class="pbar"><span class="seg flap-seg" style="width:40%">12</span><span class="seg four-seg" style="width:60%">18</span></div></td></tr>
+<tr><td class="tier-label">Top 50</td><td><div class="pbar"><span class="seg flap-seg" style="width:50%">25</span><span class="seg four-seg" style="width:50%">25</span></div></td><td><div class="pbar"><span class="seg flap-seg" style="width:52%">26</span><span class="seg four-seg" style="width:48%">24</span></div></td></tr>
+
+</tbody>
+</table>
+</section>
+</div>
+
+<section style="margin-top:32px">
+<h2>Top 50 名次对比（按 G' 排序）</h2>
+<table>
+<thead><tr>
+<th class="col-b">Rank (B)</th>
+<th class="col-g">Rank (G')</th>
+<th>协议</th><th>Symbol</th><th>合约地址</th>
+<th class="col-b">Score B</th>
+<th class="col-g">Score G'</th>
+</tr></thead>
+<tbody>
+<tr class="flap"><td class="rank">1 <span class="eq">—</span></td><td class="rank">1 <span class="eq">—</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">VIRUS</td><td class="addr"><a href="https://bscscan.com/token/0xa1ed61902f13e162305f59e1b2475e269e647777" target="_blank">0xa1ed…7777</a></td><td>4.865</td><td>4.865</td></tr>
+<tr class="flap"><td class="rank">2 <span class="eq">—</span></td><td class="rank">2 <span class="eq">—</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">屎壳郎</td><td class="addr"><a href="https://bscscan.com/token/0x4d52562386c7aa854c7e9331843c5aa2e5e07777" target="_blank">0x4d52…7777</a></td><td>4.683</td><td>4.655</td></tr>
+<tr class="four"><td class="rank">4 <span class="dn">▼1</span></td><td class="rank">3 <span class="up">▲1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">共建</td><td class="addr"><a href="https://bscscan.com/token/0xb2acf3ae051c7f0b0b8de90cbb4ed99312574444" target="_blank">0xb2ac…4444</a></td><td>4.297</td><td>4.308</td></tr>
+<tr class="flap"><td class="rank">5 <span class="dn">▼1</span></td><td class="rank">4 <span class="up">▲1</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">雪球人生</td><td class="addr"><a href="https://bscscan.com/token/0x1a0d665ff8582fe135a8867bfd38b5e48baf7777" target="_blank">0x1a0d…7777</a></td><td>4.255</td><td>4.258</td></tr>
+<tr class="flap"><td class="rank">6 <span class="dn">▼1</span></td><td class="rank">5 <span class="up">▲1</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">马币</td><td class="addr"><a href="https://bscscan.com/token/0x0ae712fc86cbfc2754cbd0a10572fe88c9647777" target="_blank">0x0ae7…7777</a></td><td>4.247</td><td>4.235</td></tr>
+<tr class="four"><td class="rank">3 <span class="up">▲3</span></td><td class="rank">6 <span class="dn">▼3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">Libra</td><td class="addr"><a href="https://bscscan.com/token/0xd28e716fa02543962b3129f9e4d919c65f434444" target="_blank">0xd28e…4444</a></td><td>4.367</td><td>4.210</td></tr>
+<tr class="four"><td class="rank">10 <span class="dn">▼3</span></td><td class="rank">7 <span class="up">▲3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">春</td><td class="addr"><a href="https://bscscan.com/token/0x5b53a49fd048f7f4d60d212cc9fbfb390450ffff" target="_blank">0x5b53…ffff</a></td><td>4.110</td><td>4.147</td></tr>
+<tr class="four"><td class="rank">7 <span class="up">▲1</span></td><td class="rank">8 <span class="dn">▼1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">Hachiko</td><td class="addr"><a href="https://bscscan.com/token/0xf1c599e9a5fbdea408a7409c0176a2fe42c64444" target="_blank">0xf1c5…4444</a></td><td>4.160</td><td>4.138</td></tr>
+<tr class="flap"><td class="rank">13 <span class="dn">▼4</span></td><td class="rank">9 <span class="up">▲4</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">BANK</td><td class="addr"><a href="https://bscscan.com/token/0x46ddcc662a045770ce1e264819542c9617547777" target="_blank">0x46dd…7777</a></td><td>4.062</td><td>4.130</td></tr>
+<tr class="four"><td class="rank">12 <span class="dn">▼2</span></td><td class="rank">10 <span class="up">▲2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">AIBT</td><td class="addr"><a href="https://bscscan.com/token/0x3518d7aee5248b9307b8a82b7c3fa49e073c4444" target="_blank">0x3518…4444</a></td><td>4.065</td><td>4.105</td></tr>
+<tr class="four"><td class="rank">9 <span class="up">▲2</span></td><td class="rank">11 <span class="dn">▼2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">elizaOK</td><td class="addr"><a href="https://bscscan.com/token/0x7c1b951e9552b9295343cff464205739e713ffff" target="_blank">0x7c1b…ffff</a></td><td>4.145</td><td>4.090</td></tr>
+<tr class="flap"><td class="rank">14 <span class="dn">▼2</span></td><td class="rank">12 <span class="up">▲2</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">舍利子</td><td class="addr"><a href="https://bscscan.com/token/0x74972bef354e890dec5df1c0eb659b73ab337777" target="_blank">0x7497…7777</a></td><td>3.998</td><td>4.080</td></tr>
+<tr class="four"><td class="rank">11 <span class="up">▲2</span></td><td class="rank">13 <span class="dn">▼2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">熊猫头</td><td class="addr"><a href="https://bscscan.com/token/0xf3525965a4ad3ca0ac13f4d2f237113691194444" target="_blank">0xf352…4444</a></td><td>4.105</td><td>4.055</td></tr>
+<tr class="flap"><td class="rank">8 <span class="up">▲6</span></td><td class="rank">14 <span class="dn">▼6</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">COCO</td><td class="addr"><a href="https://bscscan.com/token/0x80f1ff15b887cb19295d88c8c16f89d47f6d8888" target="_blank">0x80f1…8888</a></td><td>4.155</td><td>4.045</td></tr>
+<tr class="four"><td class="rank">16 <span class="dn">▼1</span></td><td class="rank">15 <span class="up">▲1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">比特币</td><td class="addr"><a href="https://bscscan.com/token/0x18d0e455b3491e09210292d3953157a4bf104444" target="_blank">0x18d0…4444</a></td><td>3.925</td><td>3.985</td></tr>
+<tr class="four"><td class="rank">15 <span class="up">▲1</span></td><td class="rank">16 <span class="dn">▼1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">Moolah</td><td class="addr"><a href="https://bscscan.com/token/0xbab528425edb1e0e36d3719bc3307d9c8cce8888" target="_blank">0xbab5…8888</a></td><td>3.980</td><td>3.945</td></tr>
+<tr class="four"><td class="rank">20 <span class="dn">▼3</span></td><td class="rank">17 <span class="up">▲3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">4Ball</td><td class="addr"><a href="https://bscscan.com/token/0xd6423f99863e13b0a3fa00b5e1e5597792f74f8c" target="_blank">0xd642…4f8c</a></td><td>3.823</td><td>3.910</td></tr>
+<tr class="four"><td class="rank">18 <span class="eq">—</span></td><td class="rank">18 <span class="eq">—</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">安小将</td><td class="addr"><a href="https://bscscan.com/token/0x44449ba264dffdcf903128c6800d9e4d3998adaf" target="_blank">0x4444…adaf</a></td><td>3.835</td><td>3.853</td></tr>
+<tr class="four"><td class="rank">19 <span class="eq">—</span></td><td class="rank">19 <span class="eq">—</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">冲鸭</td><td class="addr"><a href="https://bscscan.com/token/0x7528f0abcb9e4fd65859c92255aa889d02094444" target="_blank">0x7528…4444</a></td><td>3.835</td><td>3.847</td></tr>
+<tr class="four"><td class="rank">17 <span class="up">▲3</span></td><td class="rank">20 <span class="dn">▼3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">Liberty</td><td class="addr"><a href="https://bscscan.com/token/0x6ea8211a1e47dbd8b55c487c0b906ebc57b94444" target="_blank">0x6ea8…4444</a></td><td>3.895</td><td>3.785</td></tr>
+<tr class="flap"><td class="rank">21 <span class="eq">—</span></td><td class="rank">21 <span class="eq">—</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">我是历史</td><td class="addr"><a href="https://bscscan.com/token/0x4358380b15fbf19d3d12dc73f1be133e924a7777" target="_blank">0x4358…7777</a></td><td>3.800</td><td>3.773</td></tr>
+<tr class="four"><td class="rank">24 <span class="dn">▼2</span></td><td class="rank">22 <span class="up">▲2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">bibi</td><td class="addr"><a href="https://bscscan.com/token/0x9212cf1f9f4a9c69bb010146ba5b0725169d4444" target="_blank">0x9212…4444</a></td><td>3.752</td><td>3.765</td></tr>
+<tr class="flap"><td class="rank">23 <span class="eq">—</span></td><td class="rank">23 <span class="eq">—</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">龙头</td><td class="addr"><a href="https://bscscan.com/token/0xf786a61afdab4769997f10576f8a2f63c7297777" target="_blank">0xf786…7777</a></td><td>3.758</td><td>3.725</td></tr>
+<tr class="flap"><td class="rank">29 <span class="dn">▼5</span></td><td class="rank">24 <span class="up">▲5</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">元宇宙狗</td><td class="addr"><a href="https://bscscan.com/token/0x9012f779bf967355435bd2b29b0fb0e3235a7777" target="_blank">0x9012…7777</a></td><td>3.665</td><td>3.712</td></tr>
+<tr class="four"><td class="rank">27 <span class="dn">▼2</span></td><td class="rank">25 <span class="up">▲2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">我是未来</td><td class="addr"><a href="https://bscscan.com/token/0x6d8d8df799279e761a4f49edc319b3bd50f14444" target="_blank">0x6d8d…4444</a></td><td>3.672</td><td>3.690</td></tr>
+<tr class="flap"><td class="rank">22 <span class="up">▲4</span></td><td class="rank">26 <span class="dn">▼4</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">火马</td><td class="addr"><a href="https://bscscan.com/token/0x1aa9d1df9ec8d5d205f0595612a6ecf0cf017777" target="_blank">0x1aa9…7777</a></td><td>3.785</td><td>3.655</td></tr>
+<tr class="four"><td class="rank">30 <span class="dn">▼3</span></td><td class="rank">27 <span class="up">▲3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">ClipX</td><td class="addr"><a href="https://bscscan.com/token/0xc269d59a0d608ea0bd672f2f4616c372d8554444" target="_blank">0xc269…4444</a></td><td>3.658</td><td>3.638</td></tr>
+<tr class="flap"><td class="rank">31 <span class="dn">▼3</span></td><td class="rank">28 <span class="up">▲3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">142857</td><td class="addr"><a href="https://bscscan.com/token/0xee555938ff391d3d2e748b8c1c07d68e06897777" target="_blank">0xee55…7777</a></td><td>3.645</td><td>3.635</td></tr>
+<tr class="four"><td class="rank">32 <span class="dn">▼3</span></td><td class="rank">29 <span class="up">▲3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">Exchange the world</td><td class="addr"><a href="https://bscscan.com/token/0xd45ff38d132114968091f154cdcc0dfea06b4444" target="_blank">0xd45f…4444</a></td><td>3.630</td><td>3.623</td></tr>
+<tr class="four"><td class="rank">35 <span class="dn">▼5</span></td><td class="rank">30 <span class="up">▲5</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">jelly</td><td class="addr"><a href="https://bscscan.com/token/0xf581ee357f11d7478fafd183b4a41347c35a4444" target="_blank">0xf581…4444</a></td><td>3.600</td><td>3.608</td></tr>
+<tr class="flap"><td class="rank">28 <span class="up">▲3</span></td><td class="rank">31 <span class="dn">▼3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">苍生</td><td class="addr"><a href="https://bscscan.com/token/0x8c5f51a348f6a3fb7ee150b1579f6a4e54b47777" target="_blank">0x8c5f…7777</a></td><td>3.670</td><td>3.607</td></tr>
+<tr class="four"><td class="rank">33 <span class="dn">▼1</span></td><td class="rank">32 <span class="up">▲1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">我的刀盾</td><td class="addr"><a href="https://bscscan.com/token/0x640c04ca09c5c5140e62fef42c59e3afdbbd4444" target="_blank">0x640c…4444</a></td><td>3.622</td><td>3.580</td></tr>
+<tr class="flap"><td class="rank">25 <span class="up">▲8</span></td><td class="rank">33 <span class="dn">▼8</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">RHC</td><td class="addr"><a href="https://bscscan.com/token/0x8ea350c0a5cd5247647b312515fe21e0fe597777" target="_blank">0x8ea3…7777</a></td><td>3.750</td><td>3.552</td></tr>
+<tr class="four"><td class="rank">26 <span class="up">▲8</span></td><td class="rank">34 <span class="dn">▼8</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">AICZ</td><td class="addr"><a href="https://bscscan.com/token/0xca9b5c8c97bd0c1fb02d347120fdc6cb05feffff" target="_blank">0xca9b…ffff</a></td><td>3.680</td><td>3.550</td></tr>
+<tr class="flap"><td class="rank">34 <span class="up">▲1</span></td><td class="rank">35 <span class="dn">▼1</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">BAPE</td><td class="addr"><a href="https://bscscan.com/token/0xbbd97e3ff9a67e9bdfe39afd1f00d9bfbf3c7777" target="_blank">0xbbd9…7777</a></td><td>3.620</td><td>3.548</td></tr>
+<tr class="flap"><td class="rank">38 <span class="dn">▼2</span></td><td class="rank">36 <span class="up">▲2</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">世界杯</td><td class="addr"><a href="https://bscscan.com/token/0xaa568ff04dce4348a7610c8d07823076cb7c7777" target="_blank">0xaa56…7777</a></td><td>3.562</td><td>3.535</td></tr>
+<tr class="flap"><td class="rank">40 <span class="dn">▼3</span></td><td class="rank">37 <span class="up">▲3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">嘻游记</td><td class="addr"><a href="https://bscscan.com/token/0xdf3def68778eb8ed612a893b8def2b3bf3027777" target="_blank">0xdf3d…7777</a></td><td>3.472</td><td>3.522</td></tr>
+<tr class="flap"><td class="rank">36 <span class="up">▲2</span></td><td class="rank">38 <span class="dn">▼2</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">吉祥马</td><td class="addr"><a href="https://bscscan.com/token/0x57ee375439bb01892d1f1fbbf933ad0ed16d7777" target="_blank">0x57ee…7777</a></td><td>3.595</td><td>3.445</td></tr>
+<tr class="flap"><td class="rank">37 <span class="up">▲2</span></td><td class="rank">39 <span class="dn">▼2</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">XCHAT</td><td class="addr"><a href="https://bscscan.com/token/0xbb8041a8d875234c952bd92b102f8861565e7777" target="_blank">0xbb80…7777</a></td><td>3.570</td><td>3.435</td></tr>
+<tr class="four"><td class="rank">39 <span class="up">▲1</span></td><td class="rank">40 <span class="dn">▼1</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">ZSWAP</td><td class="addr"><a href="https://bscscan.com/token/0x2e44ab95549b8a12afdb970bde5a6a78365e4444" target="_blank">0x2e44…4444</a></td><td>3.555</td><td>3.405</td></tr>
+<tr class="flap"><td class="rank">44 <span class="dn">▼3</span></td><td class="rank">41 <span class="up">▲3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">中本聪</td><td class="addr"><a href="https://bscscan.com/token/0x3e8ecc2531a210822ad7a9f88dda908e0b397777" target="_blank">0x3e8e…7777</a></td><td>3.220</td><td>3.320</td></tr>
+<tr class="flap"><td class="rank">43 <span class="dn">▼1</span></td><td class="rank">42 <span class="up">▲1</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">世界杯</td><td class="addr"><a href="https://bscscan.com/token/0xb3085d6f8e261f1cd95c6c024cd69c0fd7167777" target="_blank">0xb308…7777</a></td><td>3.342</td><td>3.300</td></tr>
+<tr class="flap"><td class="rank">46 <span class="dn">▼3</span></td><td class="rank">43 <span class="up">▲3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">金狗人生🔥🔥🔥</td><td class="addr"><a href="https://bscscan.com/token/0xa3a0953c2f376c29051e4088b54c173680a37777" target="_blank">0xa3a0…7777</a></td><td>3.205</td><td>3.260</td></tr>
+<tr class="flap"><td class="rank">41 <span class="up">▲3</span></td><td class="rank">44 <span class="dn">▼3</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">BurnDog</td><td class="addr"><a href="https://bscscan.com/token/0x817ca1f5e16dbaa68544ef8525b33312cf057777" target="_blank">0x817c…7777</a></td><td>3.435</td><td>3.250</td></tr>
+<tr class="four"><td class="rank">42 <span class="up">▲3</span></td><td class="rank">45 <span class="dn">▼3</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">B4</td><td class="addr"><a href="https://bscscan.com/token/0x1d547f9d0890ee5abfb49d7d53ca19df85da4444" target="_blank">0x1d54…4444</a></td><td>3.345</td><td>3.235</td></tr>
+<tr class="four"><td class="rank">48 <span class="dn">▼2</span></td><td class="rank">46 <span class="up">▲2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">BORT</td><td class="addr"><a href="https://bscscan.com/token/0x2a846aaaf896ef393ccb76398c1d96ea97374444" target="_blank">0x2a84…4444</a></td><td>3.185</td><td>3.190</td></tr>
+<tr class="four"><td class="rank">45 <span class="up">▲2</span></td><td class="rank">47 <span class="dn">▼2</span></td><td><span class="badge four-badge">4meme</span></td><td class="sym">PP</td><td class="addr"><a href="https://bscscan.com/token/0xb29de8455acd47bb10755a133c54d0e595c6ffff" target="_blank">0xb29d…ffff</a></td><td>3.210</td><td>3.140</td></tr>
+<tr class="flap"><td class="rank">50 <span class="dn">▼2</span></td><td class="rank">48 <span class="up">▲2</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">PTCG</td><td class="addr"><a href="https://bscscan.com/token/0x262f39b6ed3af1f7a161c34fbbcaa66bfbc87777" target="_blank">0x262f…7777</a></td><td>3.172</td><td>3.135</td></tr>
+<tr class="flap"><td class="rank-out">-</td><td class="rank">49 <span class="new">new</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">潜龙</td><td class="addr"><a href="https://bscscan.com/token/0xcbe4c1da89d5a1f9ac51c5c3188f1ffdc8297777" target="_blank">0xcbe4…7777</a></td><td>-</td><td>3.125</td></tr>
+<tr class="flap"><td class="rank-out">-</td><td class="rank">50 <span class="new">new</span></td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">羊头</td><td class="addr"><a href="https://bscscan.com/token/0xbc118beaa1c84c4a404f96349e50285718467777" target="_blank">0xbc11…7777</a></td><td>-</td><td>3.125</td></tr>
+<tr class="four"><td class="rank">47 <span class="new">new</span></td><td class="rank-out">-</td><td><span class="badge four-badge">4meme</span></td><td class="sym">西施</td><td class="addr"><a href="https://bscscan.com/token/0x212f0915399c49e4a2e3a1bc17a3be522017ffff" target="_blank">0x212f…ffff</a></td><td>3.202</td><td>-</td></tr>
+<tr class="flap"><td class="rank">49 <span class="new">new</span></td><td class="rank-out">-</td><td><span class="badge flap-badge">FLAP</span></td><td class="sym">火蝴蝶</td><td class="addr"><a href="https://bscscan.com/token/0xb19ab935a82bd24d45bd792e3b2348334ed87777" target="_blank">0xb19a…7777</a></td><td>3.185</td><td>-</td></tr>
+
+</tbody>
+</table>
+</section>
+</body>
+</html>
