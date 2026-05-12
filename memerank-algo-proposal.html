@@ -7,383 +7,261 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; font-size: 13px; line-height: 1.6; }
 .wrap { max-width: 960px; margin: 0 auto; padding: 36px 24px; }
-
 h1 { font-size: 20px; font-weight: 700; color: #f8d56a; margin-bottom: 4px; }
 .meta { color: #4a5568; font-size: 12px; margin-bottom: 32px; }
-
 h2 { font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .06em; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #2d3548; }
-
-/* Context box */
 .context { background: #1a1f2e; border: 1px solid #2d3548; border-left: 3px solid #f8d56a; border-radius: 6px; padding: 14px 18px; margin-bottom: 28px; font-size: 13px; color: #94a3b8; line-height: 1.7; }
 .context strong { color: #e2e8f0; }
-
-/* Metric table */
 table { width: 100%; border-collapse: collapse; margin-bottom: 28px; }
 thead th { background: #161b27; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 9px 12px; border-bottom: 2px solid #2d3548; text-align: left; white-space: nowrap; }
 thead th.r { text-align: right; }
 thead th.c { text-align: center; }
 td { padding: 8px 12px; border-bottom: 1px solid #1a1f2e; vertical-align: middle; }
 tr:hover td { background: #181e2d; }
-
 td.r { text-align: right; font-family: monospace; font-size: 12px; }
 td.c { text-align: center; }
-
-/* Who's higher badges */
 .flap-high { color: #818cf8; font-weight: 600; }
 .four-high { color: #f8d56a; font-weight: 600; }
-.even      { color: #4a5568; }
-
-/* Score diff bar */
+.even { color: #4a5568; }
 .diff-bar-wrap { display: flex; align-items: center; gap: 8px; }
 .diff-bar { height: 8px; border-radius: 4px; min-width: 4px; }
 .diff-bar.flap { background: #818cf8; }
 .diff-bar.four { background: #f8d56a; }
 .diff-val { font-family: monospace; font-size: 11px; color: #64748b; white-space: nowrap; }
-
-/* Weight change */
-.w-cur  { font-family: monospace; color: #64748b; font-size: 12px; }
-.w-new  { font-family: monospace; font-size: 12px; }
-.w-up   { color: #48bb78; font-weight: 700; }
+.w-cur { font-family: monospace; color: #64748b; font-size: 12px; }
+.w-new { font-family: monospace; font-size: 12px; }
+.w-up { color: #48bb78; font-weight: 700; }
 .w-down { color: #fc8181; font-weight: 700; }
 .w-same { color: #4a5568; }
-.arrow  { color: #4a5568; font-size: 11px; margin: 0 4px; }
-
-/* Reason tag */
 .tag { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-.tag-up   { background: rgba(72,187,120,.15); color: #48bb78; border: 1px solid rgba(72,187,120,.3); }
+.tag-up { background: rgba(72,187,120,.15); color: #48bb78; border: 1px solid rgba(72,187,120,.3); }
 .tag-down { background: rgba(252,129,129,.12); color: #fc8181; border: 1px solid rgba(252,129,129,.3); }
 .tag-lock { background: rgba(100,116,139,.15); color: #64748b; border: 1px solid #2d3548; }
-
-/* Result section */
 .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
 .result-card { background: #1a1f2e; border: 1px solid #2d3548; border-radius: 8px; padding: 16px; }
 .result-card .label { font-size: 11px; color: #4a5568; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
 .result-card .value { font-size: 22px; font-weight: 700; }
-.result-card .sub   { font-size: 11px; color: #64748b; margin-top: 2px; }
+.result-card .sub { font-size: 11px; color: #64748b; margin-top: 2px; }
 .green { color: #48bb78; }
 .yellow { color: #f8d56a; }
-
-/* Dist table */
 .dist-table td { padding: 7px 12px; }
 .dist-table .algo-label { color: #94a3b8; font-weight: 600; }
-.dist-table .cur  { color: #64748b; }
-.dist-table .new  { color: #f8d56a; }
-.flap-n  { color: #818cf8; }
-.four-n  { color: #f8d56a; }
-
+.flap-n { color: #818cf8; }
+.four-n { color: #f8d56a; }
 .badge-flap { background: rgba(129,140,248,.15); color: #818cf8; border: 1px solid rgba(129,140,248,.3); padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
 .badge-four { background: rgba(248,213,106,.12); color: #f8d56a; border: 1px solid rgba(248,213,106,.25); padding: 1px 6px; border-radius: 3px; font-size: 10px; }
-
 .note { color: #4a5568; font-size: 11px; margin-top: 16px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <h1>MemeRush Rank 算法调整方案</h1>
-  <div class="meta">数据基准：2025-05-12 18:00 &nbsp;·&nbsp; BSC 链 &nbsp;·&nbsp; 150 个 Token &nbsp;·&nbsp; <span class="badge-flap">FLAP</span> 65 &nbsp; <span class="badge-four">Four.meme</span> 85</div>
+<h1>MemeRush Rank 算法调整方案</h1>
+<div class="meta">数据基准：2025-05-12 18:00 &nbsp;·&nbsp; BSC 链 &nbsp;·&nbsp; 150 个 Token &nbsp;·&nbsp; <span class="badge-flap">FLAP</span> 65 &nbsp; <span class="badge-four">Four.meme</span> 85</div>
 
-  <div class="context">
-    <strong>调整目标：</strong>在榜单中让 Four.meme token 排名整体上升、FLAP token 排名相对下降。<br>
-    <strong>约束条件：</strong>每项权重变动幅度 ≤ 80%，最小权重 1%，总和保持 100%。Price 24H 不调整。<br>
-    <strong>分析方法：</strong>对比 150 个 token 中 FLAP（65）和 Four.meme（85）在各指标的平均得分，识别系统性差异，针对性调权。
+<div class="context">
+  <strong>调整目标：</strong>在榜单中让 Four.meme token 排名整体上升、FLAP token 排名相对下降。<br>
+  <strong>调整基准：</strong>Update2（10/27/2025）配置。约束：每项权重变动幅度 ≤ 80%，最小权重 1%，总和 100%，Price 24H 不调整。<br>
+  <strong>现状说明：</strong>Update2 下 Top20 已呈 FLAP 7 / Four.meme 13（4meme 领先），但 Top10 仍 6/4，Top50 整体 FLAP 27 / 4meme 23，4meme 仍低于其占比（57%）。调整目标为进一步平衡 Top10，并缩小整体得分差距。
+</div>
+
+<h2>各指标均分对比：哪一方占优？</h2>
+<table>
+  <thead>
+    <tr>
+      <th>指标</th><th class="c">权重分类</th><th class="r">FLAP 均分</th><th class="r">Four.meme 均分</th><th>差距</th><th class="c">谁更高</th><th>建议操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Binance Holders</strong></td><td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
+      <td class="r">2.454</td><td class="r">2.976</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar four" style="width:52px"></div><span class="diff-val four-high">4meme +0.52</span></div></td>
+      <td class="c"><span class="four-high">Four.meme</span></td>
+      <td><span class="tag tag-up">↑ 提权重</span> Four.meme 在 BN 用户持有上明显领先，是最强杠杆</td>
+    </tr>
+    <tr>
+      <td>Binance Traders</td><td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
+      <td class="r">2.754</td><td class="r">2.747</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:4px"></div><span class="diff-val even">持平 0.01</span></div></td>
+      <td class="c"><span class="even">—</span></td>
+      <td><span class="tag tag-lock">不调整</span> 两协议几乎相同，调整无意义</td>
+    </tr>
+    <tr>
+      <td>Price 24H</td><td class="c"><span style="color:#64748b;font-size:11px;">价格指标</span></td>
+      <td class="r">2.615</td><td class="r">2.853</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar four" style="width:24px"></div><span class="diff-val four-high">4meme +0.24</span></div></td>
+      <td class="c"><span class="four-high">Four.meme</span></td>
+      <td><span class="tag tag-lock">本次不调整</span> Four.meme 略高，但本次锁定不改</td>
+    </tr>
+    <tr>
+      <td>Liquidity Onchain</td><td class="c"><span style="color:#64748b;font-size:11px;">链上指标</span></td>
+      <td class="r">2.792</td><td class="r">2.718</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:8px"></div><span class="diff-val flap-high">FLAP +0.07</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-lock">不调整</span> 差距很小，调整效果微弱</td>
+    </tr>
+    <tr>
+      <td>Binance Vol (7d)</td><td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
+      <td class="r">2.815</td><td class="r">2.700</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:12px"></div><span class="diff-val flap-high">FLAP +0.12</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-lock">不调整</span> 差距小，不过度干预</td>
+    </tr>
+    <tr>
+      <td>Binance Tx Count</td><td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
+      <td class="r">2.862</td><td class="r">2.665</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:20px"></div><span class="diff-val flap-high">FLAP +0.20</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-lock">不调整</span> FLAP 略高但权重已低，不过度干预</td>
+    </tr>
+    <tr>
+      <td>Price 7D</td><td class="c"><span style="color:#64748b;font-size:11px;">价格指标</span></td>
+      <td class="r">2.754</td><td class="r">2.747</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:4px"></div><span class="diff-val even">持平 0.01</span></div></td>
+      <td class="c"><span class="even">—</span></td>
+      <td><span class="tag tag-lock">不调整</span></td>
+    </tr>
+    <tr>
+      <td>FDV</td><td class="c"><span style="color:#64748b;font-size:11px;">市值指标</span></td>
+      <td class="r">2.969</td><td class="r">2.582</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:39px"></div><span class="diff-val flap-high">FLAP +0.39</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-lock">不调整</span> FLAP 市值整体偏大，但权重已高，本次不动</td>
+    </tr>
+    <tr>
+      <td>Total On-chain Holders</td><td class="c"><span style="color:#64748b;font-size:11px;">链上指标</span></td>
+      <td class="r">2.908</td><td class="r">2.629</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:28px"></div><span class="diff-val flap-high">FLAP +0.28</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-down">↓ 降权</span> FLAP 链上 holder 数量偏多，适当压低释放空间</td>
+    </tr>
+    <tr style="background:rgba(129,140,248,.04)">
+      <td><strong>Square Popularity</strong></td><td class="c"><span style="color:#64748b;font-size:11px;">社交指标</span></td>
+      <td class="r">3.200</td><td class="r">2.406</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:79px"></div><span class="diff-val flap-high">FLAP +0.79</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-down">↓ 降权</span> FLAP 广场热度系统性更高，降至最小值</td>
+    </tr>
+    <tr style="background:rgba(129,140,248,.06)">
+      <td><strong>Token Age</strong></td><td class="c"><span style="color:#64748b;font-size:11px;">时间指标</span></td>
+      <td class="r">3.554</td><td class="r">2.135</td>
+      <td><div class="diff-bar-wrap"><div class="diff-bar flap" style="width:142px"></div><span class="diff-val flap-high">FLAP +1.42 ⚠️</span></div></td>
+      <td class="c"><span class="flap-high">FLAP</span></td>
+      <td><span class="tag tag-down">↓ 降权</span> FLAP token 更年轻，算法给新 token 加分，导致系统性得高分，与 token 质量无关，降至最小</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>权重调整方案（基准：Update2 · 10/27/2025）</h2>
+<table>
+  <thead>
+    <tr>
+      <th>指标</th><th class="r">当前 (Update2)</th><th class="r">调整后</th><th class="r">变动幅度</th><th>调整逻辑</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Binance Holders</strong></td>
+      <td class="r"><span class="w-cur">7.5%</span></td>
+      <td class="r"><span class="w-new w-up">13.5%</span></td>
+      <td class="r"><span class="w-up">+6.0% (+80%)</span></td>
+      <td>Four.meme 唯一显著优势项，提权重直接拉升 4meme 排名，加至约束上限</td>
+    </tr>
+    <tr>
+      <td>Total On-chain Holders</td>
+      <td class="r"><span class="w-cur">5.0%</span></td>
+      <td class="r"><span class="w-new w-down">2.0%</span></td>
+      <td class="r"><span class="w-down">-3.0% (-60%)</span></td>
+      <td>FLAP 链上 holder 数量偏多，辅助调整</td>
+    </tr>
+    <tr>
+      <td>Square Popularity</td>
+      <td class="r"><span class="w-cur">2.5%</span></td>
+      <td class="r"><span class="w-new w-down">1.0%</span></td>
+      <td class="r"><span class="w-down">-1.5% (-60%)</span></td>
+      <td>FLAP 广场热度系统性偏高，降低此项减少非 quality 因素干扰</td>
+    </tr>
+    <tr>
+      <td>Token Age</td>
+      <td class="r"><span class="w-cur">2.5%</span></td>
+      <td class="r"><span class="w-new w-down">1.0%</span></td>
+      <td class="r"><span class="w-down">-1.5% (-60%)</span></td>
+      <td>FLAP token 更年轻，算法给新 token 加分，导致系统性得高分，与 token 质量无关，降至最小</td>
+    </tr>
+    <tr style="color:#4a5568">
+      <td colspan="5" style="padding:4px 12px;font-size:11px;">以下指标保持不变：FDV 30% / BN Vol 25% / BN Tx Count 5% / BN Traders 5% / Price 24H 5% / Price 7D 5% / Liquidity 7.5%</td>
+    </tr>
+    <tr style="background:#161b27">
+      <td><strong>总和</strong></td>
+      <td class="r"><span class="w-cur">100%</span></td>
+      <td class="r"><span class="w-new" style="color:#48bb78;font-weight:700;">100%</span></td>
+      <td class="r" style="color:#48bb78">✓</td>
+      <td style="color:#64748b">30+25+13.5+5+5+5+5+7.5+2+1+1=100% ✓ &nbsp; 所有变动均在 ±80% 范围内，最小值 1%</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>预期效果</h2>
+<div class="result-grid">
+  <div class="result-card">
+    <div class="label">FLAP vs 4meme 均分差距</div>
+    <div class="value green">缩小 40.7%</div>
+    <div class="sub">0.1792 → 0.1063（FLAP 领先幅度降低）</div>
   </div>
-
-  <h2>各指标均分对比：哪一方占优？</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>指标</th>
-        <th class="c">权重分类</th>
-        <th class="r">FLAP 均分</th>
-        <th class="r">Four.meme 均分</th>
-        <th>差距</th>
-        <th class="c">谁更高</th>
-        <th>建议操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- 4meme 优势 -->
-      <tr>
-        <td><strong>Binance Holders</strong></td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
-        <td class="r">2.454</td>
-        <td class="r">2.976</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar four" style="width:52px"></div>
-            <span class="diff-val four-high">4meme +0.52</span>
-          </div>
-        </td>
-        <td class="c"><span class="four-high">Four.meme</span></td>
-        <td><span class="tag tag-up">↑ 提权重</span> Four.meme 在 BN 用户持有上明显领先，是最强杠杆</td>
-      </tr>
-      <!-- 持平 -->
-      <tr>
-        <td>Binance Traders</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
-        <td class="r">2.754</td>
-        <td class="r">2.747</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:4px"></div>
-            <span class="diff-val even">持平 0.01</span>
-          </div>
-        </td>
-        <td class="c"><span class="even">—</span></td>
-        <td><span class="tag tag-lock">不调整</span> 两协议几乎相同，调整无意义</td>
-      </tr>
-      <tr>
-        <td>Price 24H</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">价格指标</span></td>
-        <td class="r">2.615</td>
-        <td class="r">2.853</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar four" style="width:24px"></div>
-            <span class="diff-val four-high">4meme +0.24</span>
-          </div>
-        </td>
-        <td class="c"><span class="four-high">Four.meme</span></td>
-        <td><span class="tag tag-lock">本次不调整</span> Four.meme 略高，但本次锁定不改</td>
-      </tr>
-      <!-- FLAP 优势 - 小差距 -->
-      <tr>
-        <td>Liquidity Onchain</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">链上指标</span></td>
-        <td class="r">2.792</td>
-        <td class="r">2.718</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:8px"></div>
-            <span class="diff-val flap-high">FLAP +0.07</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-lock">不调整</span> 差距很小，调整效果微弱</td>
-      </tr>
-      <tr>
-        <td>Binance Vol (7d)</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
-        <td class="r">2.815</td>
-        <td class="r">2.700</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:12px"></div>
-            <span class="diff-val flap-high">FLAP +0.12</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-down">↓ 微降</span> FLAP 略高，小幅降权释放空间给 BN Holders</td>
-      </tr>
-      <tr>
-        <td>Binance Tx Count</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">Binance 指标</span></td>
-        <td class="r">2.862</td>
-        <td class="r">2.665</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:20px"></div>
-            <span class="diff-val flap-high">FLAP +0.20</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-lock">不调整</span> FLAP 略高但权重已高，不过度干预</td>
-      </tr>
-      <tr>
-        <td>Price 7D</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">价格指标</span></td>
-        <td class="r">2.754</td>
-        <td class="r">2.747</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:4px"></div>
-            <span class="diff-val even">持平 0.01</span>
-          </div>
-        </td>
-        <td class="c"><span class="even">—</span></td>
-        <td><span class="tag tag-lock">不调整</span></td>
-      </tr>
-      <tr>
-        <td>FDV</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">市值指标</span></td>
-        <td class="r">2.969</td>
-        <td class="r">2.582</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:39px"></div>
-            <span class="diff-val flap-high">FLAP +0.39</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-down">↓ 微降</span> FLAP 市值整体偏大，小幅降权平衡</td>
-      </tr>
-      <tr>
-        <td>Total On-chain Holders</td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">链上指标</span></td>
-        <td class="r">2.908</td>
-        <td class="r">2.629</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:28px"></div>
-            <span class="diff-val flap-high">FLAP +0.28</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-down">↓ 降权</span> FLAP 链上 holder 更多，适当压低释放空间</td>
-      </tr>
-      <!-- FLAP 强势优势 -->
-      <tr style="background:rgba(129,140,248,.04)">
-        <td><strong>Square Popularity</strong></td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">社交指标</span></td>
-        <td class="r">3.200</td>
-        <td class="r">2.406</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:79px"></div>
-            <span class="diff-val flap-high">FLAP +0.79</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-down">↓ 降权</span> FLAP 广场热度系统性更高，降至最小值</td>
-      </tr>
-      <tr style="background:rgba(129,140,248,.06)">
-        <td><strong>Token Age</strong></td>
-        <td class="c"><span style="color:#64748b;font-size:11px;">时间指标</span></td>
-        <td class="r">3.554</td>
-        <td class="r">2.135</td>
-        <td>
-          <div class="diff-bar-wrap">
-            <div class="diff-bar flap" style="width:142px"></div>
-            <span class="diff-val flap-high">FLAP +1.42 ⚠️</span>
-          </div>
-        </td>
-        <td class="c"><span class="flap-high">FLAP</span></td>
-        <td><span class="tag tag-down">↓ 降权</span> 最大问题：FLAP token 发行时间更新（更年轻），算法对新 token 加分，导致 FLAP 系统性得分偏高</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>权重调整方案（推荐）</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>指标</th>
-        <th class="c">当前权重</th>
-        <th class="c">调整后</th>
-        <th class="c">变动幅度</th>
-        <th>调整逻辑</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Binance Holders</strong></td>
-        <td class="c w-cur">7.5%</td>
-        <td class="c"><span class="w-new w-up">12.5%</span></td>
-        <td class="c"><span class="w-up">+5.0% (+67%)</span></td>
-        <td>Four.meme 唯一显著优势项，提权重直接拉升 4meme 排名</td>
-      </tr>
-      <tr>
-        <td>Token Age</td>
-        <td class="c w-cur">2.5%</td>
-        <td class="c"><span class="w-new w-down">1.0%</span></td>
-        <td class="c"><span class="w-down">-1.5% (-60%)</span></td>
-        <td>FLAP token 更年轻，算法给新 token 加分，导致系统性得高分，与 token 质量无关，降至最小</td>
-      </tr>
-      <tr>
-        <td>Square Popularity</td>
-        <td class="c w-cur">2.5%</td>
-        <td class="c"><span class="w-new w-down">1.0%</span></td>
-        <td class="c"><span class="w-down">-1.5% (-60%)</span></td>
-        <td>FLAP token 广场热度系统性偏高，降低此项减少非 quality 因素干扰</td>
-      </tr>
-      <tr>
-        <td>Total On-chain Holders</td>
-        <td class="c w-cur">2.5%</td>
-        <td class="c"><span class="w-new w-down">1.0%</span></td>
-        <td class="c"><span class="w-down">-1.5% (-60%)</span></td>
-        <td>FLAP 链上 holder 数量偏多，辅助调整</td>
-      </tr>
-      <tr>
-        <td>FDV</td>
-        <td class="c w-cur">30.0%</td>
-        <td class="c"><span class="w-new w-down">29.5%</span></td>
-        <td class="c"><span class="w-down">-0.5% (-2%)</span></td>
-        <td>FLAP 市值整体偏大，微降释放权重空间</td>
-      </tr>
-      <tr style="color:#4a5568">
-        <td colspan="5" style="padding:4px 12px;font-size:11px;">以下指标保持不变：Binance Vol (7d) 25% / Binance Tx Count 7.5% / Binance Traders 7.5% / Price 24H 5% / Price 7D 5% / Liquidity 5%</td>
-      </tr>
-      <tr style="background:#161b27">
-        <td><strong>总和</strong></td>
-        <td class="c w-cur">100%</td>
-        <td class="c"><span class="w-new" style="color:#48bb78;font-weight:700;">100%</span></td>
-        <td class="c" style="color:#48bb78">✓</td>
-        <td style="color:#64748b">所有变动均在 ±80% 范围内，最小值 1%</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>预期效果</h2>
-  <div class="result-grid">
-    <div class="result-card">
-      <div class="label">FLAP vs 4meme 均分差距</div>
-      <div class="value green">缩小 36%</div>
-      <div class="sub">0.1755 → 0.1126（FLAP 领先幅度降低）</div>
-    </div>
-    <div class="result-card">
-      <div class="label">Top 10 分布</div>
-      <div class="value yellow">6/4 → 5/5</div>
-      <div class="sub"><span class="flap-n">FLAP 6</span> → 5 &nbsp;/&nbsp; <span class="four-n">4meme 4</span> → 5</div>
-    </div>
-    <div class="result-card">
-      <div class="label">Top 20 分布</div>
-      <div class="value yellow">9/11 → 8/12</div>
-      <div class="sub"><span class="flap-n">FLAP 9</span> → 8 &nbsp;/&nbsp; <span class="four-n">4meme 11</span> → 12</div>
-    </div>
-    <div class="result-card">
-      <div class="label">Top 30 分布</div>
-      <div class="value yellow">13/17 → 12/18</div>
-      <div class="sub"><span class="flap-n">FLAP 13</span> → 12 &nbsp;/&nbsp; <span class="four-n">4meme 17</span> → 18</div>
-    </div>
+  <div class="result-card">
+    <div class="label">Top 10 分布</div>
+    <div class="value yellow">6/4 → 5/5</div>
+    <div class="sub"><span class="flap-n">FLAP 6</span> → 5 &nbsp;/&nbsp; <span class="four-n">4meme 4</span> → 5</div>
   </div>
-
-  <table class="dist-table">
-    <thead>
-      <tr>
-        <th>算法</th>
-        <th class="c">Top 10</th>
-        <th class="c">Top 20</th>
-        <th class="c">Top 30</th>
-        <th class="c">Top 50</th>
-        <th class="r">FLAP/4meme 均分差距</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="algo-label cur">Update3（当前）</td>
-        <td class="c"><span class="flap-n">6</span> / <span class="four-n">4</span></td>
-        <td class="c"><span class="flap-n">9</span> / <span class="four-n">11</span></td>
-        <td class="c"><span class="flap-n">13</span> / <span class="four-n">17</span></td>
-        <td class="c"><span class="flap-n">26</span> / <span class="four-n">24</span></td>
-        <td class="r" style="color:#fc8181;">FLAP 领先 0.1755</td>
-      </tr>
-      <tr>
-        <td class="algo-label new" style="color:#48bb78;">Update4（建议）</td>
-        <td class="c"><span class="flap-n">5</span> / <span class="four-n" style="font-weight:700;">5</span></td>
-        <td class="c"><span class="flap-n">8</span> / <span class="four-n" style="font-weight:700;">12</span></td>
-        <td class="c"><span class="flap-n">12</span> / <span class="four-n" style="font-weight:700;">18</span></td>
-        <td class="c"><span class="flap-n">26</span> / <span class="four-n">24</span></td>
-        <td class="r" style="color:#f8d56a;">FLAP 领先 0.1126 <span style="color:#48bb78;">↓36%</span></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="note" style="margin-top:20px;padding-top:16px;border-top:1px solid #1a1f2e;">
-    * 均分差距缩小 = FLAP 与 Four.meme 加权得分的平均差值减少，代表两个协议的 token 在榜单竞争力更接近。<br>
-    * 打分机制：150 个 token 按每项指标排名，每 15 个一档（Top 10% = 5分，依次递减 0.5，共 10 档）。<br>
-    * 模拟基于 2025-05-12 18:00 数据，实际效果随市场数据变化。
+  <div class="result-card">
+    <div class="label">Top 20 分布</div>
+    <div class="value" style="color:#4a5568">7/13 不变</div>
+    <div class="sub"><span class="flap-n">FLAP 7</span> &nbsp;/&nbsp; <span class="four-n">4meme 13</span>（4meme 已领先）</div>
   </div>
+  <div class="result-card">
+    <div class="label">Top 30 分布</div>
+    <div class="value yellow">14/16 → 13/17</div>
+    <div class="sub"><span class="flap-n">FLAP 14</span> → 13 &nbsp;/&nbsp; <span class="four-n">4meme 16</span> → 17</div>
+  </div>
+</div>
+
+<table class="dist-table">
+  <thead>
+    <tr>
+      <th>算法</th>
+      <th class="c">Top 10</th>
+      <th class="c">Top 20</th>
+      <th class="c">Top 30</th>
+      <th class="c">Top 50</th>
+      <th class="r">FLAP/4meme 均分差距</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="algo-label" style="color:#64748b">Update2（当前 · 10/27/2025）</td>
+      <td class="c"><span class="flap-n">6</span> / <span class="four-n">4</span></td>
+      <td class="c"><span class="flap-n">7</span> / <span class="four-n">13</span></td>
+      <td class="c"><span class="flap-n">14</span> / <span class="four-n">16</span></td>
+      <td class="c"><span class="flap-n">27</span> / <span class="four-n">23</span></td>
+      <td class="r" style="color:#fc8181;">FLAP 领先 0.1792</td>
+    </tr>
+    <tr>
+      <td class="algo-label" style="color:#48bb78">调整方案（建议）</td>
+      <td class="c"><span class="flap-n">5</span> / <span class="four-n" style="font-weight:700;">5</span></td>
+      <td class="c"><span class="flap-n">7</span> / <span class="four-n">13</span></td>
+      <td class="c"><span class="flap-n">13</span> / <span class="four-n" style="font-weight:700;">17</span></td>
+      <td class="c"><span class="flap-n">27</span> / <span class="four-n">23</span></td>
+      <td class="r" style="color:#f8d56a;">FLAP 领先 0.1063 <span style="color:#48bb78;">↓40.7%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note" style="margin-top:20px;padding-top:16px;border-top:1px solid #1a1f2e;">
+  * 均分差距缩小 = FLAP 与 Four.meme 加权得分的平均差值减少，代表两个协议的 token 在榜单竞争力更接近。<br>
+  * 打分机制：150 个 token 按每项指标排名，每 15 个一档（Top 10% = 5分，依次递减 0.5，共 10 档）。<br>
+  * 模拟基于 2025-05-12 18:00 数据，实际效果随市场数据变化。
+</div>
 
 </div>
 </body>
