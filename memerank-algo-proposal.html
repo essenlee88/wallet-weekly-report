@@ -263,6 +263,85 @@ td.c { text-align: center; }
   * 模拟基于 2025-05-12 18:00 数据，实际效果随市场数据变化。
 </div>
 
+
+<h2>实际上线效果（2026-05-12 13:35）</h2>
+
+<div class="result-grid">
+  <div class="result-card">
+    <div class="label">均分差距缩小</div>
+    <div class="value green">64.5%</div>
+    <div class="sub">0.1630 → 0.0579（超出模拟预期）</div>
+  </div>
+  <div class="result-card">
+    <div class="label">Top 10 分布</div>
+    <div class="value" style="color:#4a5568">5/5 不变</div>
+    <div class="sub"><span class="flap-n">FLAP 5</span> / <span class="four-n">4meme 5</span>（已持平）</div>
+  </div>
+  <div class="result-card">
+    <div class="label">Top 20 分布</div>
+    <div class="value yellow">9/11 → 7/13</div>
+    <div class="sub"><span class="flap-n">FLAP 9→7</span> / <span class="four-n">4meme 11→13</span></div>
+  </div>
+  <div class="result-card">
+    <div class="label">Top 30 分布</div>
+    <div class="value yellow">15/15 → 14/16</div>
+    <div class="sub"><span class="flap-n">FLAP 15→14</span> / <span class="four-n">4meme 15→16</span></div>
+  </div>
+</div>
+
+<table class="dist-table">
+  <thead>
+    <tr><th>算法</th><th class="c">Top10</th><th class="c">Top20</th><th class="c">Top30</th><th class="c">Top50</th><th class="r">均分差距</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="algo-label" style="color:#64748b">旧算法（Update2）</td>
+      <td class="c"><span class="flap-n">5</span> / <span class="four-n">5</span></td>
+      <td class="c"><span class="flap-n">9</span> / <span class="four-n">11</span></td>
+      <td class="c"><span class="flap-n">15</span> / <span class="four-n">15</span></td>
+      <td class="c"><span class="flap-n">25</span> / <span class="four-n">25</span></td>
+      <td class="r" style="color:#fc8181;">FLAP 领先 0.1630</td>
+    </tr>
+    <tr>
+      <td class="algo-label" style="color:#48bb78">新算法（已上线）</td>
+      <td class="c"><span class="flap-n">5</span> / <span class="four-n">5</span></td>
+      <td class="c"><span class="flap-n">7</span> / <span class="four-n" style="font-weight:700;">13</span></td>
+      <td class="c"><span class="flap-n">14</span> / <span class="four-n" style="font-weight:700;">16</span></td>
+      <td class="c"><span class="flap-n">25</span> / <span class="four-n">25</span></td>
+      <td class="r" style="color:#f8d56a;">FLAP 领先 0.0579 <span style="color:#48bb78;">↓64.5%</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Top20 名次变化</h2>
+<table>
+  <thead>
+    <tr><th style="width:60px">名次</th><th>Symbol</th><th class="c">协议</th><th class="c">旧→新</th></tr>
+  </thead>
+  <tbody>
+    <tr><td class="r">1</td><td>VIRUS</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#4a5568">1→1</td></tr>
+    <tr><td class="r">2</td><td>屎壳郎</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#4a5568">2→2</td></tr>
+    <tr><td class="r">3</td><td>马币</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#48bb78">4→3 ↑</td></tr>
+    <tr><td class="r">4</td><td>Libra</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#fc8181">3→4 ↓</td></tr>
+    <tr style="background:rgba(248,213,106,.04)"><td class="r">5</td><td>共建</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#48bb78">7→5 ↑</td></tr>
+    <tr><td class="r">6</td><td>雪球人生</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#fc8181">5→6 ↓</td></tr>
+    <tr style="background:rgba(248,213,106,.04)"><td class="r">7</td><td>Hachiko</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#48bb78">9→7 ↑</td></tr>
+    <tr><td class="r">8</td><td>COCO</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#fc8181">6→8 ↓</td></tr>
+    <tr><td class="r">9</td><td>elizaOK</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#fc8181">8→9 ↓</td></tr>
+    <tr><td class="r">10</td><td>春</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#4a5568">10→10</td></tr>
+    <tr><td class="r">11</td><td>熊猫头</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#4a5568">11→11</td></tr>
+    <tr><td class="r">12</td><td>BANK</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#4a5568">12→12</td></tr>
+    <tr><td class="r">13</td><td>AIBT</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#4a5568">13→13</td></tr>
+    <tr><td class="r">14</td><td>Moolah</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#4a5568">14→14</td></tr>
+    <tr style="background:rgba(248,213,106,.04)"><td class="r">15</td><td>舍利子</td><td class="c"><span class="badge-flap">FLAP</span></td><td class="c" style="color:#48bb78">17→15 ↑</td></tr>
+    <tr><td class="r">16</td><td>Liberty</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#fc8181">15→16 ↓</td></tr>
+    <tr style="background:rgba(248,213,106,.04)"><td class="r">17</td><td>比特币</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#48bb78">18→17 ↑</td></tr>
+    <tr style="background:rgba(248,213,106,.08)"><td class="r">18</td><td>4Ball</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#48bb78;font-weight:700">25→18 ↑↑</td></tr>
+    <tr style="background:rgba(248,213,106,.08)"><td class="r">19</td><td>安小将</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#48bb78;font-weight:700">23→19 ↑↑</td></tr>
+    <tr><td class="r">20</td><td>冲鸭</td><td class="c"><span class="badge-four">Four.meme</span></td><td class="c" style="color:#4a5568">20→20</td></tr>
+  </tbody>
+</table>
+
 </div>
 </body>
 </html>
