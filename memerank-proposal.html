@@ -2,37 +2,36 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MemeRank 权重优化方案</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 24px; }
-  .container { max-width: 960px; margin: 0 auto; }
-  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-  .subtitle { color: #64748b; font-size: 14px; margin-bottom: 28px; }
-  .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 20px 24px; margin-bottom: 20px; }
-  h2 { font-size: 15px; font-weight: 600; color: #475569; margin: 0 0 14px; text-transform: uppercase; letter-spacing: .05em; }
-  table { width: 100%; border-collapse: collapse; }
-  th { background: #f1f5f9; text-align: left; padding: 8px 12px; font-size: 12px; color: #64748b; font-weight: 600; }
-  td { border-bottom: 1px solid #f1f5f9; }
-  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .stat-box { background: #f8fafc; border-radius: 8px; padding: 14px 16px; }
-  .stat-label { font-size: 12px; color: #64748b; margin-bottom: 6px; }
-  .stat-row { display: flex; justify-content: space-between; align-items: center; }
-  .stat-val { font-size: 22px; font-weight: 700; }
-  .stat-before { font-size: 12px; color: #9ca3af; }
-  .stat-change { font-size: 13px; font-weight: 600; }
-  .up { color: #22c55e; }
-  .key-change { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; font-size: 14px; }
-  .tag { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 4px; white-space: nowrap; margin-top: 1px; }
-  .tag-down { background: #fee2e2; color: #b91c1c; }
-  .tag-up { background: #dcfce7; color: #166534; }
-  .tag-adj { background: #e0f2fe; color: #0369a1; }
-  .note { font-size: 12px; color: #64748b; margin-top: 8px; }
-  .bn-badge { display: inline-block; background: #fef9c3; color: #854d0e; font-size: 12px; padding: 2px 8px; border-radius: 5px; font-weight: 600; margin-left: 6px; }
-  .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .rank-col-header { background: #f1f5f9; padding: 8px 12px; font-size: 12px; font-weight: 600; color: #475569; border-radius: 6px 6px 0 0; text-align: center; }
-  .rank-table { border-collapse: collapse; width: 100%; }
-  .rank-table th { background: #f8fafc; font-size: 11px; color: #9ca3af; padding: 5px 8px; font-weight: 500; }
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;margin:0;padding:24px}
+  .container{max-width:960px;margin:0 auto}
+  h1{font-size:22px;font-weight:700;margin-bottom:4px}
+  .subtitle{color:#64748b;font-size:14px;margin-bottom:28px}
+  .card{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.08);padding:20px 24px;margin-bottom:20px}
+  h2{font-size:15px;font-weight:600;color:#475569;margin:0 0 14px;text-transform:uppercase;letter-spacing:.05em}
+  table{width:100%;border-collapse:collapse}
+  th{background:#f1f5f9;text-align:left;padding:8px 12px;font-size:12px;color:#64748b;font-weight:600}
+  td{border-bottom:1px solid #f1f5f9}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .stat-box{background:#f8fafc;border-radius:8px;padding:14px 16px}
+  .stat-label{font-size:12px;color:#64748b;margin-bottom:6px}
+  .stat-row{display:flex;justify-content:space-between;align-items:center}
+  .stat-val{font-size:22px;font-weight:700}
+  .stat-before{font-size:12px;color:#9ca3af}
+  .stat-change{font-size:13px;font-weight:600}
+  .up{color:#22c55e}
+  .key-change{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;font-size:14px}
+  .tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px}
+  .tag-down{background:#fee2e2;color:#b91c1c}
+  .tag-up{background:#dcfce7;color:#166534}
+  .tag-adj{background:#e0f2fe;color:#0369a1}
+  .note{font-size:12px;color:#64748b;margin-top:8px}
+  .rank-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .rank-col-header{background:#f1f5f9;padding:8px 12px;font-size:12px;font-weight:600;color:#475569;border-radius:6px 6px 0 0;text-align:center}
+  .rank-table{border-collapse:collapse;width:100%}
+  .rank-table th{background:#f8fafc;font-size:11px;color:#9ca3af;padding:5px 8px;font-weight:500}
 </style>
 </head>
 <body>
@@ -44,21 +43,21 @@
     <h2>核心调整思路</h2>
     <div class="key-change">
       <span class="tag tag-down">降权</span>
-      <div><strong>Market Cap（30% → 15%）</strong>：MC 与 FLAP 项目高度相关，过高权重导致大市值 FLAP 长期占据榜首。降至 15% 保留基本代表性，同时为 BN 活跃指标让出空间。</div>
+      <div><strong>Market Cap（30% → 15%）</strong>：保留 15% 确保上榜 token 具备基本市值门槛，避免市值极低的项目进入排名。</div>
     </div>
     <div class="key-change">
       <span class="tag tag-up">提权</span>
-      <div><strong>BN 交易者（5% → 21%）+ BN 交易笔数（5% → 18%）</strong>：反映 Binance 生态真实活跃用户数量与频次，对 FLAP 项目有较强区分度。<span class="bn-badge">BN 总权重 66%</span></div>
+      <div><strong>BN 交易者（5% → 21%）+ BN 交易笔数（5% → 15%）</strong>：反映 Binance 生态真实活跃用户数量与频次，对 FLAP 项目有较强区分度。</div>
     </div>
     <div class="key-change">
       <span class="tag tag-up">提权</span>
-      <div><strong>Token 上线时间（2.5% → 5%）</strong>：创建时间越近得分越高，自然补偿新 token 在 BN 数据积累不足的劣势，无需额外惩罚机制。</div>
+      <div><strong>Price 24h（5% → 5%，维持）+ Token 上线时间（2.5% → 5%）</strong>：保留价格动能信号；创建时间越近得分越高，自然补偿新 token 在 BN 数据积累不足的劣势。</div>
     </div>
     <div class="key-change">
       <span class="tag tag-adj">调整</span>
       <div><strong>BN Holders（7.5% → 7%）</strong>：保留现有口径，鼓励项目方向 BN 用户空投，适度降低比重防止纯刷持有人。</div>
     </div>
-    <div class="note">* BN 信号总权重从初始 42% 提升至 66%；P24h / P7d / Holders / Liquidity / Impression 小幅下调为活跃指标让路。</div>
+    <div class="note">* P7d / Holders / Liquidity / Impression 小幅下调为活跃指标让路。</div>
   </div>
 
   <div class="card">
@@ -68,9 +67,9 @@
       <tr><td style="padding:6px 12px">Market Cap</td><td style="padding:6px 12px;text-align:right">30.0%</td><td style="padding:6px 12px;text-align:right">15.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼15.0pp</span></td></tr>
 <tr><td style="padding:6px 12px">BN Vol 7d</td><td style="padding:6px 12px;text-align:right">25.0%</td><td style="padding:6px 12px;text-align:right">20.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼5.0pp</span></td></tr>
 <tr><td style="padding:6px 12px">BN Holders</td><td style="padding:6px 12px;text-align:right">7.5%</td><td style="padding:6px 12px;text-align:right">7.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼0.5pp</span></td></tr>
-<tr><td style="padding:6px 12px">BN Tx 7d</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">18.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#22c55e">▲13.0pp</span></td></tr>
+<tr><td style="padding:6px 12px">BN Tx 7d</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">15.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#22c55e">▲10.0pp</span></td></tr>
 <tr><td style="padding:6px 12px">BN Traders 7d</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">21.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#22c55e">▲16.0pp</span></td></tr>
-<tr><td style="padding:6px 12px">Price 24h</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">2.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼3.0pp</span></td></tr>
+<tr><td style="padding:6px 12px">Price 24h</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#9ca3af">—</span></td></tr>
 <tr><td style="padding:6px 12px">Price 7d</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">2.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼3.0pp</span></td></tr>
 <tr><td style="padding:6px 12px">Liquidity</td><td style="padding:6px 12px;text-align:right">7.5%</td><td style="padding:6px 12px;text-align:right">5.5%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼2.0pp</span></td></tr>
 <tr><td style="padding:6px 12px">Holders</td><td style="padding:6px 12px;text-align:right">5.0%</td><td style="padding:6px 12px;text-align:right">2.0%</td><td style="padding:6px 12px;text-align:center"><span style="color:#ef4444">▼3.0pp</span></td></tr>
@@ -140,63 +139,63 @@
         </table>
       </div>
       <div>
-        <div class="rank-col-header">新方案排名（箭头 = 相对初始的变化 &gt;3位）</div>
+        <div class="rank-col-header">新方案排名（箭头 = 相对初始变化 &gt;3位）</div>
         <table class="rank-table">
           <tr><th>#</th><th>Token</th></tr>
           <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">1</td><td style="padding:5px 8px;font-size:13px;">VIRUS<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">2</td><td style="padding:5px 8px;font-size:13px;">屎壳郎<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">3</td><td style="padding:5px 8px;font-size:13px;">共建<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">4</td><td style="padding:5px 8px;font-size:13px;">Libra<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">5</td><td style="padding:5px 8px;font-size:13px;">elizaOK<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">6</td><td style="padding:5px 8px;font-size:13px;">冲鸭<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲19</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">7</td><td style="padding:5px 8px;font-size:13px;">熊猫头<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲5</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">8</td><td style="padding:5px 8px;font-size:13px;">安小将<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲14</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">9</td><td style="padding:5px 8px;font-size:13px;">BANK<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">3</td><td style="padding:5px 8px;font-size:13px;">elizaOK<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲5</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">4</td><td style="padding:5px 8px;font-size:13px;">共建<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">5</td><td style="padding:5px 8px;font-size:13px;">Libra<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">6</td><td style="padding:5px 8px;font-size:13px;">BANK<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲4</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">7</td><td style="padding:5px 8px;font-size:13px;">冲鸭<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲18</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">8</td><td style="padding:5px 8px;font-size:13px;">熊猫头<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲4</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">9</td><td style="padding:5px 8px;font-size:13px;">安小将<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲13</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">10</td><td style="padding:5px 8px;font-size:13px;">Hachiko<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">11</td><td style="padding:5px 8px;font-size:13px;">马币<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼7</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">11</td><td style="padding:5px 8px;font-size:13px;">春<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">12</td><td style="padding:5px 8px;font-size:13px;">马币<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼8</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">13</td><td style="padding:5px 8px;font-size:13px;">世界杯<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲29</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">14</td><td style="padding:5px 8px;font-size:13px;">jelly<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲26</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">15</td><td style="padding:5px 8px;font-size:13px;">COCO<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼8</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">13</td><td style="padding:5px 8px;font-size:13px;">COCO<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼6</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">14</td><td style="padding:5px 8px;font-size:13px;">龙头<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲9</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">15</td><td style="padding:5px 8px;font-size:13px;">雪球人生<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼10</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">16</td><td style="padding:5px 8px;font-size:13px;">舍利子<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">17</td><td style="padding:5px 8px;font-size:13px;">雪球人生<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼12</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">18</td><td style="padding:5px 8px;font-size:13px;">龙头<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲5</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">19</td><td style="padding:5px 8px;font-size:13px;">火马<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">20</td><td style="padding:5px 8px;font-size:13px;">我的刀盾<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲17</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">21</td><td style="padding:5px 8px;font-size:13px;">4Ball<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">22</td><td style="padding:5px 8px;font-size:13px;">Exchange the world<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲13</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">23</td><td style="padding:5px 8px;font-size:13px;">嘻游记<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲18</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">24</td><td style="padding:5px 8px;font-size:13px;">bibi<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲8</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">25</td><td style="padding:5px 8px;font-size:13px;">MEMEGUY<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲30</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">26</td><td style="padding:5px 8px;font-size:13px;">PTCG<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲23</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">27</td><td style="padding:5px 8px;font-size:13px;">ClipX<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲6</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">28</td><td style="padding:5px 8px;font-size:13px;">比特币<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼10</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">17</td><td style="padding:5px 8px;font-size:13px;">世界杯<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲25</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">18</td><td style="padding:5px 8px;font-size:13px;">4Ball<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">19</td><td style="padding:5px 8px;font-size:13px;">jelly<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲21</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">20</td><td style="padding:5px 8px;font-size:13px;">嘻游记<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲21</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">21</td><td style="padding:5px 8px;font-size:13px;">火马<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">22</td><td style="padding:5px 8px;font-size:13px;">我的刀盾<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲15</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">23</td><td style="padding:5px 8px;font-size:13px;">Exchange the world<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲12</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">24</td><td style="padding:5px 8px;font-size:13px;">PTCG<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲25</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">25</td><td style="padding:5px 8px;font-size:13px;">bibi<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲7</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">26</td><td style="padding:5px 8px;font-size:13px;">ClipX<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲7</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">27</td><td style="padding:5px 8px;font-size:13px;">比特币<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼9</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">28</td><td style="padding:5px 8px;font-size:13px;">MEMEGUY<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲27</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">29</td><td style="padding:5px 8px;font-size:13px;">XCHAT<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">30</td><td style="padding:5px 8px;font-size:13px;">AICZ<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼4</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">30</td><td style="padding:5px 8px;font-size:13px;">BAPE<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼10</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">31</td><td style="padding:5px 8px;font-size:13px;">苍生<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼4</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">32</td><td style="padding:5px 8px;font-size:13px;">我是历史<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼8</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">33</td><td style="padding:5px 8px;font-size:13px;">BAPE<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼13</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">34</td><td style="padding:5px 8px;font-size:13px;">羊头<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲12</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">32</td><td style="padding:5px 8px;font-size:13px;">羊头<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲14</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">33</td><td style="padding:5px 8px;font-size:13px;">AICZ<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼7</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">34</td><td style="padding:5px 8px;font-size:13px;">我是历史<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼10</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">35</td><td style="padding:5px 8px;font-size:13px;">B4<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲8</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">36</td><td style="padding:5px 8px;font-size:13px;">我是未来<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼6</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">37</td><td style="padding:5px 8px;font-size:13px;">Moolah<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼22</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">38</td><td style="padding:5px 8px;font-size:13px;">PP<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲7</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">39</td><td style="padding:5px 8px;font-size:13px;">元宇宙狗<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">40</td><td style="padding:5px 8px;font-size:13px;">MILADY<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲20</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">41</td><td style="padding:5px 8px;font-size:13px;">RHC<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼25</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">42</td><td style="padding:5px 8px;font-size:13px;">世界杯<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼8</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">43</td><td style="padding:5px 8px;font-size:13px;">托付一生<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲27</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">44</td><td style="padding:5px 8px;font-size:13px;">$RISE<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲24</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">37</td><td style="padding:5px 8px;font-size:13px;">PP<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲8</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">38</td><td style="padding:5px 8px;font-size:13px;">元宇宙狗<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">39</td><td style="padding:5px 8px;font-size:13px;">Moolah<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼24</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">40</td><td style="padding:5px 8px;font-size:13px;">世界杯<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼6</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">40</td><td style="padding:5px 8px;font-size:13px;">$RISE<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲28</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">42</td><td style="padding:5px 8px;font-size:13px;">RHC<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼26</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">43</td><td style="padding:5px 8px;font-size:13px;">BurnDog<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼4</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">44</td><td style="padding:5px 8px;font-size:13px;">MILADY<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲16</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">45</td><td style="padding:5px 8px;font-size:13px;">潜龙<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲11</span></td></tr>
-<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">46</td><td style="padding:5px 8px;font-size:13px;">BurnDog<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼7</span></td></tr>
-<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">47</td><td style="padding:5px 8px;font-size:13px;">BORT<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">46</td><td style="padding:5px 8px;font-size:13px;">BORT<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span></td></tr>
+<tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">47</td><td style="padding:5px 8px;font-size:13px;">托付一生<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲23</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">48</td><td style="padding:5px 8px;font-size:13px;">川普<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲18</span></td></tr>
 <tr style="background:#fff"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">49</td><td style="padding:5px 8px;font-size:13px;">ZSWAP<span style="background:#8b5cf6;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">4meme</span><span style="color:#ef4444;font-size:11px;margin-left:4px;">▼11</span></td></tr>
 <tr style="background:#fff7ed"><td style="text-align:center;color:#9ca3af;font-size:13px;padding:5px 8px;">50</td><td style="padding:5px 8px;font-size:13px;">ATM协议<span style="background:#f97316;color:#fff;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px;">FLAP</span><span style="color:#22c55e;font-size:11px;margin-left:4px;">▲7</span></td></tr>
         </table>
       </div>
     </div>
-    <p style="font-size:12px;color:#9ca3af;margin-top:12px;">橙色背景 = FLAP；紫色背景 = 4meme；▲▼ 表示排名变动超过 3 位</p>
+    <p style="font-size:12px;color:#9ca3af;margin-top:12px;">橙色背景 = FLAP；紫色 = 4meme；▲▼ 表示排名变动超过 3 位</p>
   </div>
 
   <div class="card">
@@ -219,8 +218,8 @@
       <div class="stat-box">
         <div class="stat-label">Top 30 非 FLAP 数量</div>
         <div class="stat-row">
-          <div><div class="stat-val up">18</div><div class="stat-before">初始：16</div></div>
-          <div class="stat-change up">+2</div>
+          <div><div class="stat-val up">17</div><div class="stat-before">初始：16</div></div>
+          <div class="stat-change up">+1</div>
         </div>
       </div>
     </div>
