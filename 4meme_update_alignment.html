@@ -175,11 +175,11 @@
     <div class="card">
       <div class="fe-row">
         <div class="fe-label">Protocol 筛选</div>
-        <div class="fe-desc">筛选面板「协议」区域新增 <strong style="color:#f1f5f9">OpenFour</strong> 协议选项（现有 Four.meme / Flap 两项旁）。App + Web 两端均需支持。</div>
+        <div class="fe-desc"><span class="decision-tag">已决策</span>筛选面板「协议」区域新增 <strong style="color:#f1f5f9">OpenFour</strong> 独立选项（现有 Four.meme / Flap 两项旁），OpenFour 品牌色与原版 4meme 视觉区分。App + Web 两端均需支持。</div>
       </div>
       <div class="fe-row">
         <div class="fe-label">卡片 icon</div>
-        <div class="fe-desc">MemeRush token 卡片上以专属协议 icon 区分 OpenFour token。<span style="color:#f59e0b">三种 Preset 是否各有不同 icon——待与 4meme 对齐前端 UI 样式。</span></div>
+        <div class="fe-desc"><span class="decision-tag">已决策</span>OpenFour 使用独立品牌色方案，与原版 4meme 视觉区分。<span style="color:#f59e0b">三种 Preset 是否各有不同 icon——待与 4meme 确认官方 UI 样式后定方案。</span></div>
       </div>
       <div class="fe-row">
         <div class="fe-label">Preset 单独筛选</div>
@@ -240,7 +240,7 @@
         <div class="rm-dot" style="background:#475569"></div>
         <div>
           <div class="rm-title">影响评估（MemeRush 视角）</div>
-          <div class="rm-desc">若 dev 合约无 bonding curve，当前 MemeRush 内盘推送链路、价格曲线展示、内盘阶段买卖逻辑需重新评估兼容性。<strong style="color:#f59e0b">建议持续跟踪 4meme 技术文档更新，提前介入评估。</strong></div>
+          <div class="rm-desc"><span class="decision-tag">已决策</span>出现 dev 自定义合约时，<strong style="color:#f1f5f9">不做新的前端区分</strong>——仅在合约通过审计（Salus + Binance Security）后，确保数据侧和交易侧正常接入即可。MemeRush 前端无需额外 UI 改造。</div>
         </div>
       </div>
     </div>
@@ -282,7 +282,7 @@
         <p><strong>当前阶段（三种固定 Preset）：</strong>Dev 无法修改已部署合约，安全边界清晰。风险来自 4meme 协议层（模板升级权），不来自个别项目方。</p>
         <p><strong>未来阶段（dev 自定义合约）：</strong>攻击面显著扩大——税率隐藏、蜜罐、貔貅机制均可能通过自定义合约或 Hook 层注入。</p>
         <p><strong>4meme 审计方案（已确认）：</strong>自定义合约提交后经双层审计——外部 Salus + 内部 Binance Security，通过后才能上线。</p>
-        <p><span class="pending-tag">待处理</span>在 4meme 开放自定义合约（预计上线后 1–2 周），需：① MemeRush 评估是否在双层审计基础上叠加自己的检测层；② 提交 SDL，明确平台侧风险边界。</p>
+        <p><span class="pending-tag">待处理</span>在 4meme 开放自定义合约（预计上线后 1–2 周），需：① 提交 SDL，明确平台侧风险边界；② 验证数据侧和交易侧能兼容自定义合约结构。前端无需额外 UI 改动。</p>
       </div>
     </div>
 
