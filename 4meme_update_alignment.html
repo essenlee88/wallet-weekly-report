@@ -196,7 +196,7 @@
       <div class="fe-row">
         <div class="fe-label">链上识别字段</div>
         <div class="fe-desc">数据侧通过 <code>TokenCreated.encodedTags</code> 解析 Preset 类型，新增标识字段下发前端。无需额外 RPC，创建时 57 字节快照离线可判。</div>
-      </div>
+      </div><div class="fe-row"><div class="fe-label" style="color:#a78bfa">自定义合约标签<br/><small style="font-weight:400;color:#475569">未来阶段</small></div><div class="fe-desc"><span class="pending-tag">未来阶段</span>dev 自定义合约上线时，需展示<strong style="color:#f1f5f9">专用说明标签</strong>；标签内容可配置，展示该合约特点说明（合约通过审计后由 4meme 提供内容），不做独立品牌色区分。</div></div>
     </div>
   </div>
 
@@ -240,7 +240,7 @@
         <div class="rm-dot" style="background:#475569"></div>
         <div>
           <div class="rm-title">影响评估（MemeRush 视角）</div>
-          <div class="rm-desc"><span class="decision-tag">已决策</span>出现 dev 自定义合约时，<strong style="color:#f1f5f9">不做新的前端区分</strong>——仅在合约通过审计（Salus + Binance Security）后，确保数据侧和交易侧正常接入即可。MemeRush 前端无需额外 UI 改造。</div>
+          <div class="rm-desc">出现 dev 自定义合约时，需展示<strong style="color:#f1f5f9">专用说明标签</strong>（标签内容可配置，展示该合约特点说明），不做独立品牌色区分；合约通过审计（Salus + Binance Security）后确保数据侧和交易侧正常接入。</div>
         </div>
       </div>
     </div>
@@ -282,7 +282,7 @@
         <p><strong>当前阶段（三种固定 Preset）：</strong>Dev 无法修改已部署合约，安全边界清晰。风险来自 4meme 协议层（模板升级权），不来自个别项目方。</p>
         <p><strong>未来阶段（dev 自定义合约）：</strong>攻击面显著扩大——税率隐藏、蜜罐、貔貅机制均可能通过自定义合约或 Hook 层注入。</p>
         <p><strong>4meme 审计方案（已确认）：</strong>自定义合约提交后经双层审计——外部 Salus + 内部 Binance Security，通过后才能上线。</p>
-        <p><span class="pending-tag">待处理</span>在 4meme 开放自定义合约（预计上线后 1–2 周），需：① 提交 SDL，明确平台侧风险边界；② 验证数据侧和交易侧能兼容自定义合约结构。前端无需额外 UI 改动。</p>
+        <p><span class="pending-tag">待处理</span>在 4meme 开放自定义合约（预计上线后 1–2 周），需：① 提交 SDL，明确平台侧风险边界；② 与 4meme 确认自定义标签的数据字段和内容格式；③ 验证数据侧和交易侧能兼容自定义合约结构。</p>
       </div>
     </div>
 
