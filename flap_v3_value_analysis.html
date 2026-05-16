@@ -146,10 +146,6 @@
       <ol style="margin:0 0 0 18px;color:#64748b">
         <li style="margin-bottom:6px"><strong style="color:#94a3b8">钱集中放在有用的地方</strong> — 把 LP 拆成两堆：一堆只放报价币（BNB/USDT）放在当前价格左侧，一堆只放项目 token 放在右侧。同样的钱，集中在真实交易区间，滑点更小。（V2 静态 LP 是全区间平铺，这是 V3 唯一核心升级。）</li>
       </ol>
-      <div style="background:#1c1917;border:1px solid #44403c;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:12px;color:#78716c">
-        <strong style="color:#a8a29e">手续费再投入不是 V3 的优势：</strong>V2 手续费本来就自动留在池子里叠加（机制内置）。V4 CL 架构把手续费单独记账（Uniswap V3/V4 通用特性），导致手续费不再自动回池，需要主动收割。FLAP 用 Hook + permissionless keeper 补回了这个行为——是在 V4 架构下维持与 V2 的平价，不是新增优势。<br />
-        <strong style="color:#a8a29e">锁仓也不是 V3 新增：</strong>FLAP V2 也有 GoPlus / UNCX 锁仓，协议层通用机制。
-      </div>
     </div>
 
     <p><strong>已确认：</strong></p>
