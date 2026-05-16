@@ -106,24 +106,10 @@
   <div class="section">
     <div class="section-label">OpenFour 框架说明</div>
     <div class="card">
-      <h3>模块化代币发射引擎</h3>
-      <p>合约名称：<code>OpenFourCore</code>，地址入口：<code>OpenFourRegistry</code>（BSC Testnet: 0xD122…Ad3）。每个 token 创建时产生一组模块实例，绑定到代币的 RuntimeConfig，不可事后修改。</p>
-      <table style="margin-top:12px">
-        <tr>
-          <th>模块</th><th>职责</th><th>对应 Tag（slot）</th>
-        </tr>
-        <tr><td><strong>TokenModule</strong></td><td>初始化 ERC20，铸造供应量</td><td><code>module.token.*</code>（slot 1）</td></tr>
-        <tr><td><strong>Vault</strong></td><td>保管募集资金，记录进度</td><td><code>module.vault.standard</code>（slot 2）</td></tr>
-        <tr><td><strong>CurveModule</strong></td><td>AMM 定价（bonding curve 报价）</td><td><code>module.curve.bonding</code>（slot 3）</td></tr>
-        <tr><td><strong>TradeModule</strong></td><td>交易规则 + 税费配置</td><td><code>module.trade.simple</code>（slot 4）</td></tr>
-        <tr><td><strong>MigrateModule</strong></td><td>毕业迁移到 DEX（PCS V2 / Likwid）</td><td><code>module.migrate.*</code>（slot 5）</td></tr>
-        <tr><td><strong>CustomData</strong>（可选）</td><td>扩展状态，afterHook / onMigrate 回调</td><td><code>module.data.standard</code>（slot 6）</td></tr>
-      </table>
-      <p style="margin-top:12px"><strong>链上识别（推荐方式）：</strong>监听 <code>TokenCreated</code> 事件的 <code>encodedTags</code> 字段（57 字节定长快照），按槽位比对 tagId 即可离线判断 Preset 类型，无需额外 RPC。</p>
-      <div style="background:#0c1117;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:11px;color:#475569">
-        常用 Tag 常量：<code>token.standard</code> / <code>token.tax</code> / <code>token.creator_rewards</code><br />
-        迁移判断：<code>module.migrate.pcs_v2</code>（PancakeSwap V2）/ <code>module.migrate.bonding_likwid</code>（Likwid V2）
-      </div>
+      <h3>把合约做成可拼装的积木</h3>
+      <p>旧版 4meme 所有 token 同一套规则。OpenFour 把合约拆成了几个功能部件（代币本体、资金保管、定价方式、交易规则、毕业去向），每个 token 创建时把这些部件组合好，<strong>之后不可修改</strong>。</p>
+      <p>不同的组合方式就是不同的「Preset（玩法类型）」。4meme 目前提供三种固定 Preset（见下方），dev 只能选其一，不能自定义合约行为。</p>
+      <p><strong>识别方式：</strong>每个 token 创建时链上会附上一个「印章」，可以直接判断是哪种 Preset，不需要额外查询链上。</p>
     </div>
   </div>
 
@@ -134,7 +120,6 @@
 
       <div class="tmpl">
         <div class="t-name">创作者激励</div>
-        <div class="t-tag">token.creator_rewards</div>
         <div class="t-row"><span class="t-key">内盘</span><span class="t-val">bonding curve，无税</span></div>
         <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val amber">按市值阶梯收税</span></div>
         <div class="t-row"><span class="t-key">税收归属</span><span class="t-val">创作者</span></div>
@@ -145,7 +130,6 @@
 
       <div class="tmpl">
         <div class="t-name">Likwid 毕业</div>
-        <div class="t-tag">module.migrate.bonding_likwid</div>
         <div class="t-row"><span class="t-key">内盘</span><span class="t-val">bonding curve，同标准</span></div>
         <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val">待确认</span></div>
         <div class="t-row"><span class="t-key">毕业后</span><span class="t-val red">Likwid DEX（新）</span></div>
@@ -156,7 +140,6 @@
 
       <div class="tmpl">
         <div class="t-name">金库</div>
-        <div class="t-tag">token.tax</div>
         <div class="t-row"><span class="t-key">内盘</span><span class="t-val green">无税</span></div>
         <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val amber">进链上金库</span></div>
         <div class="t-row"><span class="t-key">分配方式</span><span class="t-val">多种（待文档）</span></div>
@@ -195,7 +178,7 @@
       </div>
       <div class="fe-row">
         <div class="fe-label">链上识别字段</div>
-        <div class="fe-desc">数据侧通过 <code>TokenCreated.encodedTags</code> 解析 Preset 类型，新增标识字段下发前端。无需额外 RPC，创建时 57 字节快照离线可判。</div>
+        <div class="fe-desc">数据侧通过 token 创建时附带的识别标记解析 Preset 类型，新增标识字段下发前端，无需额外链上查询。</div>
       </div><div class="fe-row"><div class="fe-label" style="color:#a78bfa">自定义合约标签<br/><small style="font-weight:400;color:#475569">未来阶段</small></div><div class="fe-desc"><span class="pending-tag">待评估</span>dev 自定义合约上线时，需展示<strong style="color:#f1f5f9">专用说明标签</strong>；标签内容可配置，展示该合约特点说明（合约通过审计后由 4meme 提供内容），不做独立品牌色区分。</div></div>
     </div>
   </div>
