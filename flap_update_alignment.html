@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>FLAP 更新对齐 — TOKEN_V3_PERMIT</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; padding: 40px 24px; line-height: 1.7; font-size: 14px; }
+    .container { max-width: 780px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 700; color: #f8fafc; }
+    .sub { font-size: 12px; color: #475569; margin-top: 5px; margin-bottom: 32px; }
+    .section { margin-bottom: 24px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: #38bdf8; margin-bottom: 10px; }
+    .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 20px 24px; }
+    h3 { font-size: 14px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+    p, li { font-size: 13px; color: #64748b; }
+    p { margin-bottom: 7px; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { margin: 6px 0 8px 18px; }
+    li { margin-bottom: 4px; }
+    strong { color: #94a3b8; }
+    code { background: #1e293b; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: monospace; color: #7dd3fc; }
+
+    /* Status row */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .status-item { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 14px 16px; }
+    .status-item.done { border-color: #14532d; }
+    .status-item.todo { border-color: #1e3a5f; }
+    .status-item.blocked { border-color: #78350f; }
+    .s-label { font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+    .s-done { color: #4ade80; }
+    .s-todo { color: #38bdf8; }
+    .s-blocked { color: #f59e0b; }
+    .s-text { font-size: 12px; color: #475569; }
+    .s-text li { margin-bottom: 3px; }
+
+    /* Flow */
+    .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+    .fbox { background: #1e293b; border-radius: 6px; padding: 6px 12px; font-size: 12px; color: #94a3b8; }
+    .fbox.hl { background: #1e3a5f; color: #38bdf8; border: 1px solid #1d4ed8; }
+    .farrow { color: #334155; }
+
+    /* Decision */
+    .decision { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #1e293b; }
+    .decision:last-child { border-bottom: none; padding-bottom: 0; }
+    .d-num { font-size: 18px; font-weight: 700; color: #1e3a5f; flex-shrink: 0; width: 28px; text-align: center; }
+    .d-title { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 3px; }
+    .d-desc { font-size: 12px; color: #475569; }
+
+    /* Security risk */
+    .risk-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+    .risk-row:last-child { margin-bottom: 0; }
+    .risk-badge { flex-shrink: 0; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+    .rb-high { background: #450a0a; color: #f87171; }
+    .rb-mid  { background: #431407; color: #fb923c; }
+    .rb-low  { background: #052e16; color: #4ade80; }
+    .risk-body .rt { font-size: 13px; font-weight: 600; color: #f1f5f9; }
+    .risk-body .rd { font-size: 12px; color: #475569; margin-top: 2px; }
+
+    /* Action items */
+    .action { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+    .action:last-child { border-bottom: none; padding-bottom: 0; }
+    .a-owner { font-size: 11px; font-weight: 700; color: #7c3aed; background: #1e1b4b; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
+    .a-text { font-size: 13px; color: #94a3b8; }
+    .a-note { font-size: 11px; color: #475569; margin-top: 2px; }
+
+    .tbd-box { background: #1c1917; border: 1px solid #44403c; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #78716c; margin-top: 12px; }
+    footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #1e293b; font-size: 12px; color: #334155; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>FLAP 更新对齐</h1>
+  <div class="sub">TOKEN_V3_PERMIT · 零税 token 新版本 · 2026-05-15</div>
+
+  <!-- 核心变化 -->
+  <div class="section">
+    <div class="section-label">核心变化</div>
+    <div class="card">
+      <h3>零税 token 毕业后升级为 PCS Infinity，获得集中流动性 + Hook 管理能力</h3>
+      <p>原有零税路径（TOKEN_V2_PERMIT）毕业后落入 PancakeSwap V2 静态 LP。新版本毕业后进入 PCS Infinity Vault 的 CL 架构，并由 Default Flap Hook 在 swap / addLiquidity 等生命周期节点主动介入，提供更好的深度管理。</p>
+      <div class="flow">
+        <div class="fbox">内盘 bonding curve</div>
+        <div class="farrow">→</div>
+        <div class="fbox">毕业触发</div>
+        <div class="farrow">→</div>
+        <div class="fbox hl">PCS Infinity Vault（CL）</div>
+        <div class="farrow">+</div>
+        <div class="fbox hl">Default Flap Hook</div>
+      </div>
+      <p style="margin-top:8px"><strong>识别字段：</strong><code>tokenVersion = 7</code>（TOKEN_V3_PERMIT）。注意：部分集成 FLAP create 的第三方协议仍可发旧版本（tokenVersion=2），不能仅凭"无税"判断为新版本。</p>
+    </div>
+  </div>
+
+  <!-- 现状 -->
+  <div class="section">
+    <div class="section-label">MemeRush 现状</div>
+    <div class="status-grid">
+      <div class="status-item done">
+        <div class="s-label s-done">✓ 已支持</div>
+        <ul class="s-text">
+          <li>新 token 推送 &amp; 主链路解析</li>
+          <li>高速链路覆盖</li>
+          <li>毕业事件（LaunchedToDEX）解析</li>
+          <li>内盘 + 外盘交易</li>
+        </ul>
+      </div>
+      <div class="status-item todo">
+        <div class="s-label s-todo">→ 待开发（一期）</div>
+        <ul class="s-text">
+          <li>FE 列表卡片专属 icon 展示（详情页标题区 / 合约特性区块均不做）</li>
+        </ul>
+      </div>
+      <div class="status-item blocked" style="grid-column:1/-1">
+        <div class="s-label s-blocked">⚠ 前置依赖</div>
+        <ul class="s-text">
+          <li>设计师提供 FLAP 零税 icon SVG 无损版本（当前仅有 jpg 草稿）</li>
+          <li>SDL 安全评估通过（涉及 Hook 架构，见下方安全评估）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 安全评估 -->
+  <div class="section">
+    <div class="section-label">安全评估 — PCS Infinity Hook 架构</div>
+    <div class="card">
+      <div class="risk-row">
+        <div><span class="risk-badge rb-high">高</span></div>
+        <div class="risk-body">
+          <div class="rt">Default Hook 单点故障 &amp; 升级风险</div>
+          <div class="rd">所有零税 token 共享同一个 Default Flap Hook（0xF1A9...c1c1）。Hook 可修改手续费、限制操作、产生 hookDelta（交易中抽取费用，同 tx 内结算）。若 FLAP 团队恶意升级或 Hook 合约存在漏洞，将波及所有已毕业零税 token 的交易。<br />当前 Hook 是否可升级、升级权限归属，尚未在公开文档中说明——需向 FLAP 确认。</div>
+        </div>
+      </div>
+      <div class="risk-row" style="margin-top:10px">
+        <div><span class="risk-badge rb-mid">中</span></div>
+        <div class="risk-body">
+          <div class="rt">Hook 参数被协议方随意修改</div>
+          <div class="rd">FLAP 理论上可通过升级 Hook 开启高额手续费或限制卖出，损害用户公平性。</div>
+        </div>
+      </div>
+      <div class="risk-row" style="margin-top:10px">
+        <div><span class="risk-badge rb-low">低</span></div>
+        <div class="risk-body">
+          <div class="rt">项目方（dev）做恶空间</div>
+          <div class="rd">当前 Default Hook 由 FLAP 协议统一管理，<strong>项目方无法替换或自定义 Hook</strong>，对已毕业 token 的合约行为无直接控制权。做恶空间来自 FLAP 协议层，不来自个别项目方。</div>
+        </div>
+      </div>
+      <div class="tbd-box" style="margin-top:14px">
+        <strong style="color:#f59e0b">SDL 提交要点：</strong> Hook 合约地址 0xF1A9...c1c1 的可升级性 + 权限归属；hookDelta 抽费机制；用户交易路径中是否存在不可预期的资金扣留风险。
+      </div>
+    </div>
+  </div>
+
+  <!-- Default Hook dev 自定义空间 -->
+  <div class="section">
+    <div class="section-label">Default Hook — Dev 自定义空间</div>
+    <div class="card">
+      <p>PCS Infinity Hook 架构本身支持：动态手续费、限制 LP 操作、限制 swap 方向/金额、hookDelta 抽费。但 FLAP Default Hook 实际开放给项目方的自定义空间，目前文档未说明。</p>
+      <p>待向 FLAP/Cedric 确认：</p>
+      <ul>
+        <li>Default Hook 是否对项目方暴露任何可配置参数（如费率上限、流动性区间偏好）？</li>
+        <li>项目方是否可通过白名单机制替换为自定义 Hook？</li>
+        <li>Default Hook 合约是否可升级（proxy 模式）？升级权在谁手里？</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Action items -->
+  <div class="section">
+    <div class="section-label">Action Items</div>
+    <div class="card">
+      <div class="action">
+        <span class="a-owner">UI/设计</span>
+        <div>
+          <div class="a-text">提供 FLAP 零税 icon SVG 无损版本</div>
+          <div class="a-note">当前已有 jpg 草稿（四翼 + hook 渐变图形），需转为 SVG 并上传 CDN</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">PM</span>
+        <div>
+          <div class="a-text">提交 SDL 安全评估，附 Hook 架构要点</div>
+          <div class="a-note">要点见上方安全评估；FE 开发前需拿到 SDL 结论</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">PM</span>
+        <div>
+          <div class="a-text">向 FLAP/Cedric 确认 Default Hook 项目方自定义空间</div>
+          <div class="a-note">3 个确认问题见"Dev 自定义空间"章节</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">FE</span>
+        <div>
+          <div class="a-text">icon 开发（仅列表卡片；详情页 icon / 合约特性区块 / 风险提示均不做）</div>
+          <div class="a-note">依赖：SVG 素材到位 + SDL 通过后启动</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>FLAP TOKEN_V3_PERMIT 对齐文档 · 2026-05-15</footer>
+</div>
+</body>
+</html>
