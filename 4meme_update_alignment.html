@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>4meme OpenFour 更新对齐</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e2e8f0; padding: 40px 24px; line-height: 1.7; font-size: 14px; }
+    .container { max-width: 780px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 700; color: #f8fafc; }
+    .sub { font-size: 12px; color: #475569; margin-top: 5px; margin-bottom: 32px; }
+    .section { margin-bottom: 24px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: #38bdf8; margin-bottom: 10px; }
+    .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 20px 24px; }
+    h3 { font-size: 14px; font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+    p, li { font-size: 13px; color: #64748b; }
+    p { margin-bottom: 7px; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { margin: 6px 0 8px 18px; }
+    li { margin-bottom: 4px; }
+    strong { color: #94a3b8; }
+    code { background: #1e293b; padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: monospace; color: #7dd3fc; }
+
+    /* Template cards */
+    .template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tmpl { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 14px 16px; }
+    .t-name { font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .t-tag { font-size: 10px; color: #334155; font-family: monospace; margin-bottom: 8px; }
+    .t-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+    .t-key { color: #334155; }
+    .t-val { color: #64748b; font-weight: 500; text-align: right; }
+    .t-val.green { color: #4ade80; }
+    .t-val.amber { color: #f59e0b; }
+    .t-val.red { color: #f87171; }
+    .t-divider { border-top: 1px solid #1e293b; margin: 8px 0; }
+    .t-note { font-size: 11px; color: #334155; }
+
+    /* Module table */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    th { background: #0c1117; color: #475569; font-weight: 600; padding: 6px 10px; text-align: left; border: 1px solid #1e293b; }
+    td { padding: 7px 10px; border: 1px solid #1e293b; color: #64748b; vertical-align: top; }
+    td strong { color: #94a3b8; }
+
+    /* Concern items */
+    .concern { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 18px 22px; margin-bottom: 12px; }
+    .concern:last-child { margin-bottom: 0; }
+    .c-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .c-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .cn-amber { background: #431407; color: #fb923c; }
+    .cn-blue  { background: #172554; color: #60a5fa; }
+    .cn-red   { background: #450a0a; color: #f87171; }
+    .c-title { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+    .c-body p { font-size: 13px; color: #64748b; margin-bottom: 6px; }
+    .c-body p:last-child { margin-bottom: 0; }
+    .decision-tag { display: inline-block; background: #052e16; color: #4ade80; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+    .pending-tag  { display: inline-block; background: #1c1917; color: #78716c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+    .confirm-tag  { display: inline-block; background: #1a1e2e; color: #38bdf8; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+
+    /* FE compat rows */
+    .fe-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+    .fe-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .fe-label { font-size: 12px; font-weight: 700; color: #f1f5f9; min-width: 110px; flex-shrink: 0; }
+    .fe-desc { font-size: 12px; color: #64748b; }
+
+    /* Roadmap */
+    .roadmap-item { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid #1e293b; align-items: flex-start; }
+    .roadmap-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .rm-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+    .rm-title { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 3px; }
+    .rm-desc { font-size: 12px; color: #475569; }
+
+    /* Action items */
+    .action { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+    .action:last-child { border-bottom: none; padding-bottom: 0; }
+    .a-owner { font-size: 11px; font-weight: 700; color: #7c3aed; background: #1e1b4b; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; }
+    .a-text { font-size: 13px; color: #94a3b8; }
+    .a-note { font-size: 11px; color: #475569; margin-top: 2px; }
+
+    .source-tag { font-size: 11px; color: #334155; background: #1e293b; padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+
+    footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #1e293b; font-size: 12px; color: #334155; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>4meme 更新对齐 — OpenFour</h1>
+  <div class="sub">OpenFour 模块化发射引擎 · 三种 Preset · 来源：技术文档（third-party-integration-0514.md）+ 与 Adam（4meme）群聊确认 · 2026-05-16</div>
+
+  <!-- 小白说明 -->
+  <div class="section">
+    <div class="section-label">一句话能懂版</div>
+    <div class="card" style="background:#0c1520;border-color:#1e3a5f">
+      <p style="color:#94a3b8;margin-bottom:8px"><strong style="color:#f1f5f9">旧 4meme：</strong>一套合约走天下。发 token 规则固定：内盘 bonding curve，毕业全去 PancakeSwap，没有税，没有差异。</p>
+      <p style="color:#94a3b8;margin-bottom:8px"><strong style="color:#f1f5f9">OpenFour 做了什么：</strong></p>
+      <ol style="margin:0 0 8px 18px;color:#64748b">
+        <li style="margin-bottom:6px"><strong style="color:#94a3b8">把"合约"变成可拼装的模块</strong> — 每个 token 由 6 个模块组合而成（token 本体、金库、定价曲线、交易规则、迁移目标、扩展数据）。不同组合 = 不同 Preset（类型）。</li>
+        <li style="margin-bottom:6px"><strong style="color:#94a3b8">三种玩法（Preset）</strong> — 创作者激励（外盘税归创作者）、Likwid 毕业（去新 DEX）、金库（外盘税进链上金库）。</li>
+        <li style="margin-bottom:6px"><strong style="color:#94a3b8">Dev 不能改合约</strong> — 选了 Preset 就锁死，项目方无法在发行后修改规则，安全边界清晰。</li>
+        <li style="margin-bottom:6px"><strong style="color:#94a3b8">识别方式变了</strong> — 旧版靠合约地址特征，新版靠 <code>encodedTags</code>（创建事件里的 57 字节快照），可离线判断 token 类型，不需要额外链上查询。</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- OpenFour 框架 -->
+  <div class="section">
+    <div class="section-label">OpenFour 框架说明</div>
+    <div class="card">
+      <h3>模块化代币发射引擎</h3>
+      <p>合约名称：<code>OpenFourCore</code>，地址入口：<code>OpenFourRegistry</code>（BSC Testnet: 0xD122…Ad3）。每个 token 创建时产生一组模块实例，绑定到代币的 RuntimeConfig，不可事后修改。</p>
+      <table style="margin-top:12px">
+        <tr>
+          <th>模块</th><th>职责</th><th>对应 Tag（slot）</th>
+        </tr>
+        <tr><td><strong>TokenModule</strong></td><td>初始化 ERC20，铸造供应量</td><td><code>module.token.*</code>（slot 1）</td></tr>
+        <tr><td><strong>Vault</strong></td><td>保管募集资金，记录进度</td><td><code>module.vault.standard</code>（slot 2）</td></tr>
+        <tr><td><strong>CurveModule</strong></td><td>AMM 定价（bonding curve 报价）</td><td><code>module.curve.bonding</code>（slot 3）</td></tr>
+        <tr><td><strong>TradeModule</strong></td><td>交易规则 + 税费配置</td><td><code>module.trade.simple</code>（slot 4）</td></tr>
+        <tr><td><strong>MigrateModule</strong></td><td>毕业迁移到 DEX（PCS V2 / Likwid）</td><td><code>module.migrate.*</code>（slot 5）</td></tr>
+        <tr><td><strong>CustomData</strong>（可选）</td><td>扩展状态，afterHook / onMigrate 回调</td><td><code>module.data.standard</code>（slot 6）</td></tr>
+      </table>
+      <p style="margin-top:12px"><strong>链上识别（推荐方式）：</strong>监听 <code>TokenCreated</code> 事件的 <code>encodedTags</code> 字段（57 字节定长快照），按槽位比对 tagId 即可离线判断 Preset 类型，无需额外 RPC。</p>
+      <div style="background:#0c1117;border-radius:6px;padding:10px 14px;margin-top:8px;font-size:11px;color:#475569">
+        常用 Tag 常量：<code>token.standard</code> / <code>token.tax</code> / <code>token.creator_rewards</code><br />
+        迁移判断：<code>module.migrate.pcs_v2</code>（PancakeSwap V2）/ <code>module.migrate.bonding_likwid</code>（Likwid V2）
+      </div>
+    </div>
+  </div>
+
+  <!-- 三种 Preset -->
+  <div class="section">
+    <div class="section-label">三种 Preset（已确认）</div>
+    <div class="template-grid">
+
+      <div class="tmpl">
+        <div class="t-name">创作者激励</div>
+        <div class="t-tag">token.creator_rewards</div>
+        <div class="t-row"><span class="t-key">内盘</span><span class="t-val">bonding curve，无税</span></div>
+        <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val amber">按市值阶梯收税</span></div>
+        <div class="t-row"><span class="t-key">税收归属</span><span class="t-val">创作者</span></div>
+        <div class="t-row"><span class="t-key">毕业后</span><span class="t-val green">PancakeSwap V2</span></div>
+        <div class="t-divider"></div>
+        <div class="t-note">税率档位具体数值待 4meme 技术文档</div>
+      </div>
+
+      <div class="tmpl">
+        <div class="t-name">Likwid 毕业</div>
+        <div class="t-tag">module.migrate.bonding_likwid</div>
+        <div class="t-row"><span class="t-key">内盘</span><span class="t-val">bonding curve，同标准</span></div>
+        <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val">待确认</span></div>
+        <div class="t-row"><span class="t-key">毕业后</span><span class="t-val red">Likwid DEX（新）</span></div>
+        <div class="t-row"><span class="t-key">Likwid 性质</span><span class="t-val amber">4meme 战略合作方</span></div>
+        <div class="t-divider"></div>
+        <div class="t-note">⚠ Likwid 集成参数 + 合约地址待提供</div>
+      </div>
+
+      <div class="tmpl">
+        <div class="t-name">金库</div>
+        <div class="t-tag">token.tax</div>
+        <div class="t-row"><span class="t-key">内盘</span><span class="t-val green">无税</span></div>
+        <div class="t-row"><span class="t-key">外盘税率</span><span class="t-val amber">进链上金库</span></div>
+        <div class="t-row"><span class="t-key">分配方式</span><span class="t-val">多种（待文档）</span></div>
+        <div class="t-row"><span class="t-key">毕业后</span><span class="t-val green">PancakeSwap V2</span></div>
+        <div class="t-divider"></div>
+        <div class="t-note">金库控制权 &amp; 分配参数待确认</div>
+      </div>
+
+    </div>
+    <p style="margin-top:10px;font-size:12px;color:#334155">共同特点：项目 dev 无法修改已部署合约，遵守 OpenFour 框架约束（毕业前后均受限）。<br />Icon：Adam 确认会有专属 icon，待群里发出；是否对三种 Preset 做 UI 样式区分待与 4meme 确认。</p>
+  </div>
+
+  <!-- 前端兼容方案 -->
+  <div class="section">
+    <div class="section-label">MemeRush 前端兼容方案（已决策）</div>
+    <div class="card">
+      <div class="fe-row">
+        <div class="fe-label">Protocol 筛选</div>
+        <div class="fe-desc">筛选面板「协议」区域新增 <strong style="color:#f1f5f9">OpenFour</strong> 协议选项（现有 Four.meme / Flap 两项旁）。App + Web 两端均需支持。</div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">卡片 icon</div>
+        <div class="fe-desc">MemeRush token 卡片上以专属协议 icon 区分 OpenFour token。<span style="color:#f59e0b">三种 Preset 是否各有不同 icon——待与 4meme 对齐前端 UI 样式。</span></div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">Preset 单独筛选</div>
+        <div class="fe-desc"><span class="decision-tag">已决策</span>不对三种 Preset 新增单独筛选项。理由：避免流量感知被拆分，icon 只做标识不引导过滤。</div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">跳转链接</div>
+        <div class="fe-desc">Token 详情页期望提供 OpenFour 官方链接。<span style="color:#f59e0b">待 4meme 提供入口 URL。</span></div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">配对代币范围</div>
+        <div class="fe-desc"><span style="color:#f59e0b">待确认</span> — OpenFour Preset 支持的 quoteAsset 是否在现有筛选范围内（BNB / USD1 / USDT / ASTER / CAKE / U / FORM / 其他）。</div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">链上识别字段</div>
+        <div class="fe-desc">数据侧通过 <code>TokenCreated.encodedTags</code> 解析 Preset 类型，新增标识字段下发前端。无需额外 RPC，创建时 57 字节快照离线可判。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dev 评估状态 -->
+  <div class="section">
+    <div class="section-label">Dev 评估中</div>
+    <div class="card" style="background:#0c1520;border-color:#1e3a5f">
+      <p style="color:#94a3b8;margin-bottom:10px">Dev 正在评估 OpenFour 协议接入工作量，以下事项待结论：</p>
+      <div class="fe-row">
+        <div class="fe-label">合约接入工作量</div>
+        <div class="fe-desc">OpenFour 合约结构（Core / Registry / FeeRouter / Tools）与旧 4meme 不同，交易路由、事件监听、地址解析均需重新适配。具体改动范围 Dev 评估中。</div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">数据侧工作量</div>
+        <div class="fe-desc">新版 <code>TokenCreated</code> 事件含 <code>encodedTags</code>（57 字节），<code>TradeExecuted</code> / <code>MigrateExecuted</code> 事件结构与旧版不同。是否需要数据侧新增解析逻辑，Dev 评估中。</div>
+      </div>
+      <div class="fe-row">
+        <div class="fe-label">create API</div>
+        <div class="fe-desc">OpenFour 创建 token 所需的 four.meme 签名 API <strong style="color:#f59e0b">暂未提供</strong>（技术文档明确说明）。开放后才能支持在 MemeRush 侧发币。当前阶段不影响数据展示和交易接入评估。</div>
+      </div>
+      <div class="fe-row" style="border-bottom:none">
+        <div class="fe-label">Likwid 路由</div>
+        <div class="fe-desc">Likwid DEX 路由支持需在安全评估通过后再排期，当前为 Blocked 状态。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 未来规划 -->
+  <div class="section">
+    <div class="section-label">未来规划（Adam 透露）</div>
+    <div class="card">
+      <div class="roadmap-item">
+        <div class="rm-dot" style="background:#a78bfa"></div>
+        <div>
+          <div class="rm-title">Dev 自定义合约 <span class="source-tag">Adam 透露</span></div>
+          <div class="rm-desc">此次三种 Preset 是铺路。未来将支持 dev 自己上传合约，检测通过后发 token。合约形态更自由，<strong style="color:#94a3b8">bonding curve 内盘阶段可能不再是标配</strong>，内盘 / 外盘的概念边界可能模糊。</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="rm-dot" style="background:#475569"></div>
+        <div>
+          <div class="rm-title">影响评估（MemeRush 视角）</div>
+          <div class="rm-desc">若 dev 合约无 bonding curve，当前 MemeRush 内盘推送链路、价格曲线展示、内盘阶段买卖逻辑需重新评估兼容性。<strong style="color:#f59e0b">建议持续跟踪 4meme 技术文档更新，提前介入评估。</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 三个 concern -->
+  <div class="section">
+    <div class="section-label">三个 Concern &amp; 决策</div>
+
+    <div class="concern">
+      <div class="c-header">
+        <div class="c-num cn-amber">1</div>
+        <div class="c-title">Likwid DEX 风险评估</div>
+      </div>
+      <div class="c-body">
+        <p>Likwid 是 4meme 的新战略合作 DEX。Likwid 毕业 Preset 的 token 毕业后流动性流向这里，而非 PancakeSwap V2。未知 DEX 存在合约漏洞、流动性操控、异常路由等风险。</p>
+        <p><span class="pending-tag">待处理</span>获取 Likwid Router 合约地址（<code>module.migrate.bonding_likwid</code> tag 对应合约）后，安全侧评估 DEX 合约风险，确认路由逻辑是否存在不可预期资金扣留，再决定是否接入交易路由。</p>
+      </div>
+    </div>
+
+    <div class="concern">
+      <div class="c-header">
+        <div class="c-num cn-blue">2</div>
+        <div class="c-title">Icon 展示方案 &amp; 筛选策略</div>
+      </div>
+      <div class="c-body">
+        <p>OpenFour 三种 Preset 需要在 MemeRush 前端做视觉标识，同时平衡"流量不被拆分"的社区感知。</p>
+        <p><span class="decision-tag">已决策</span><strong>加新样式 icon，不新增 Preset 筛选项。</strong>OpenFour 整体作为一个协议进筛选，Preset 内部差异仅通过 icon 标识。</p>
+        <p><span class="confirm-tag">待与 4meme 确认</span>4meme 官方前端是否对三种 Preset 有 UI 样式区分？有的话 icon 需对应适配。</p>
+      </div>
+    </div>
+
+    <div class="concern">
+      <div class="c-header">
+        <div class="c-num cn-red">3</div>
+        <div class="c-title">自定义合约安全评估要点</div>
+      </div>
+      <div class="c-body">
+        <p><strong>当前阶段（三种固定 Preset）：</strong>Dev 无法修改已部署合约，安全边界清晰。风险来自 4meme 协议层（模板升级权），不来自个别项目方。</p>
+        <p><strong>未来阶段（dev 自定义合约）：</strong>攻击面显著扩大——税率隐藏、蜜罐、貔貅机制均可能通过自定义合约或 Hook 层注入。</p>
+        <p><span class="pending-tag">待处理</span>在 4meme 开放 dev 自定义合约功能<strong>前</strong>，需：① 了解 4meme 合约审计 / 检测方案；② MemeRush 评估是否叠加自己的安全检测层；③ 提交 SDL，明确平台侧风险边界。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Action items -->
+  <div class="section">
+    <div class="section-label">Action Items</div>
+    <div class="card">
+      <div class="action">
+        <span class="a-owner">4meme/Adam</span>
+        <div>
+          <div class="a-text">在群里发三种 Preset 专属 icon 素材</div>
+          <div class="a-note">已确认会发，待跟进</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">4meme/Adam</span>
+        <div>
+          <div class="a-text">提供技术文档（税率档位、金库参数、Likwid 集成参数、quoteAsset 范围）</div>
+          <div class="a-note">Likwid Router 合约地址是安全评估前置；create API 暂未提供，开放后补充</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">4meme/Adam</span>
+        <div>
+          <div class="a-text">确认三种 Preset 在 4meme 前端是否有 UI 样式区分</div>
+          <div class="a-note">影响 MemeRush icon 设计方案</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">安全</span>
+        <div>
+          <div class="a-text">Likwid DEX 合约风险评估</div>
+          <div class="a-note">拿到 Likwid Router 合约地址后启动；评估结论决定 Likwid Preset 是否可接入 MemeRush 交易路由</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">PM</span>
+        <div>
+          <div class="a-text">提交 SDL：当前三种固定 Preset + 未来 dev 自定义合约两个场景</div>
+          <div class="a-note">dev 自定义合约功能上线前必须完成 SDL</div>
+        </div>
+      </div>
+      <div class="action">
+        <span class="a-owner">PM</span>
+        <div>
+          <div class="a-text">跟踪 4meme dev 自定义合约功能进展</div>
+          <div class="a-note">影响 MemeRush bonding curve 兼容性评估排期</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>4meme OpenFour 更新对齐 · 2026-05-16 · 信息来源：third-party-integration-0514.md + 与 Adam（4meme）群聊</footer>
+</div>
+</body>
+</html>
