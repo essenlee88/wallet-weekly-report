@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+<meta charset="UTF-8"><title>Meme Rank 权重对比 5/21</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,'PingFang SC','Helvetica Neue',sans-serif;background:#0c0c14;color:#d1d5db;padding:24px;min-width:1280px}
+  .header{display:flex;align-items:baseline;gap:16px;margin-bottom:18px}
+  .header h1{font-size:16px;font-weight:600;color:#f3f4f6}
+  .header .meta{font-size:12px;color:#6b7280}
+  .summary{background:#11111c;border-radius:14px;padding:18px 20px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:0}
+  .sum-block{padding:0 20px;border-right:1px solid #1c1c2a}
+  .sum-block:first-child{padding-left:0}
+  .sum-block:last-child{border-right:none}
+  .sum-block h3{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .stat-row{display:flex;gap:28px;margin-bottom:6px}
+  .stat-item .val{font-size:24px;font-weight:700;color:#f3f4f6;line-height:1.1}
+  .stat-item .sub{font-size:11px;color:#6b7280;margin-top:3px}
+  .avg-line{font-size:11px;color:#4b5563;margin-top:8px}
+  .sum-block table{width:100%;border-collapse:collapse;font-size:12px}
+  .sum-block td{padding:5px 6px;vertical-align:middle}
+  .sum-block td.dim{color:#6b7280;width:48px;font-size:11px}
+  .dist-wrap{display:flex;flex-direction:column;gap:3px}
+  .dist-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;width:180px}
+  .dist-flap{background:#7c3aed}.dist-4meme{background:#0ea5e9}
+  .dist-labels{display:flex;gap:8px;font-size:11px}
+  .pflap-txt{color:#c4b5fd}.p4meme-txt{color:#7dd3fc}
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .panel{background:#11111c;border-radius:14px;overflow:hidden}
+  .panel-head{padding:13px 16px 10px;border-bottom:1px solid #1c1c2a;display:flex;align-items:center;gap:10px}
+  .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .dot-b{background:#3b82f6}.dot-g{background:#22c55e}
+  .panel-title{font-size:13.5px;font-weight:600;color:#e5e7eb}
+  .panel-sub{font-size:11px;color:#4b5563;margin-left:auto}
+  .scroll{overflow-y:auto;max-height:calc(100vh - 230px)}
+  .scroll::-webkit-scrollbar{width:3px}
+  .scroll::-webkit-scrollbar-thumb{background:#222230;border-radius:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead{position:sticky;top:0;z-index:1}
+  th{background:#0f0f1a;color:#6b7280;font-weight:500;font-size:11px;padding:8px 10px;text-align:left;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+  th.num{text-align:right}
+  td{padding:6px 10px;border-bottom:1px solid #13131e;vertical-align:middle;white-space:nowrap}
+  td.num{text-align:right}
+  td.tok{color:#f3f4f6;font-size:13.5px;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+  td.dim{color:#9ca3af;font-size:12px}
+  tr:hover td{background:#14141f}
+  .proto{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.3px}
+  .pflap{background:#2e1065;color:#c4b5fd}.p4meme{background:#0c2a3a;color:#7dd3fc}
+  .pct{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+  .up{color:#4ade80;font-weight:700;font-size:12px}
+  .dn{color:#f87171;font-weight:700;font-size:12px}
+  .flat{color:#4b5563;font-size:12px}
+
+  .appendix{margin-top:24px;background:#11111c;border-radius:14px;padding:20px 24px}
+  .app-title{font-size:13px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
+  .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .app-card{background:#0f0f1a;border-radius:10px;padding:14px 16px}
+  .app-card-head{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#9ca3af;margin-bottom:10px}
+  .wjson{display:block;font-size:11px;color:#6b7280;line-height:1.7;word-break:break-all;font-family:monospace}
+  .wsum{font-size:11px;color:#4b5563;margin-top:8px}
+  .app-table{width:100%;border-collapse:collapse;font-size:13px}
+  .app-table thead th{background:#0a0a12;color:#6b7280;font-weight:500;font-size:11px;padding:8px 10px;text-align:left;text-transform:uppercase;letter-spacing:.4px}
+  .app-table thead th.num{text-align:right}
+  .app-table td{padding:7px 10px;border-bottom:1px solid #13131e;vertical-align:middle}
+  .app-table td.num{text-align:right}
+  .app-table td.fname{color:#e5e7eb;font-size:13px}
+  .app-table td.ov{color:#9ca3af}
+  .app-table td.nv{color:#f3f4f6;font-weight:600}
+  .app-table tfoot td{border-top:1px solid #2a2a3a;border-bottom:none;padding-top:10px}
+  .app-table tr:hover td{background:#14141f}
+  .wbar{height:6px;border-radius:3px;min-width:2px}
+  .old-w{background:#374151}.new-w{background:#1d4ed8}
+
+</style></head><body>
+<div class="header">
+  <h1>Meme Rank 权重方案对比</h1>
+  <span class="meta">2026-05-21 · uniqueTraderBn7d 0.09→0.10 · createTime 0.03→0.02</span>
+</div>
+<div class="summary">
+  <div class="sum-block">
+      <h3><span class="proto pflap" style="font-size:11px">FLAP</span>
+        <span style="color:#4b5563;font-weight:400;margin-left:6px">· 73 tokens</span></h3>
+      <div class="stat-row">
+        <div class="stat-item"><div class="val">8.8</div><div class="sub">平均名次移动</div></div>
+        <div class="stat-item"><div class="val" style="color:#f87171">-0.074</div><div class="sub">平均评分变化</div></div>
+      </div>
+      <div class="avg-line">均分 2.753 → 2.680</div>
+    </div>
+  <div class="sum-block">
+      <h3><span class="proto p4meme" style="font-size:11px">4meme</span>
+        <span style="color:#4b5563;font-weight:400;margin-left:6px">· 77 tokens</span></h3>
+      <div class="stat-row">
+        <div class="stat-item"><div class="val">10.1</div><div class="sub">平均名次移动</div></div>
+        <div class="stat-item"><div class="val" style="color:#7dd3fc">+0.060</div><div class="sub">平均评分变化</div></div>
+      </div>
+      <div class="avg-line">均分 2.719 → 2.779</div>
+    </div>
+  <div class="sum-block">
+    <h3>协议分布变化（旧排名 vs 新排名）</h3>
+    <table>
+      <tr><th class="dim"></th>
+        <th style="font-size:11px;color:#6b7280;font-weight:400;padding:4px 6px">原始排名</th>
+        <th style="font-size:11px;color:#6b7280;font-weight:400;padding:4px 6px">调整后排名</th></tr>
+      <tr><td class="dim">Top 5</td>
+  <td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:80%"></div><div class="dist-4meme" style="width:20%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 4</span><span class="p4meme-txt">4meme 1</span></div>
+    </div></td><td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:40%"></div><div class="dist-4meme" style="width:60%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 2</span><span class="p4meme-txt">4meme 3</span></div>
+    </div></td></tr><tr><td class="dim">Top 10</td>
+  <td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:50%"></div><div class="dist-4meme" style="width:50%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 5</span><span class="p4meme-txt">4meme 5</span></div>
+    </div></td><td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:60%"></div><div class="dist-4meme" style="width:40%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 6</span><span class="p4meme-txt">4meme 4</span></div>
+    </div></td></tr><tr><td class="dim">Top 20</td>
+  <td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:60%"></div><div class="dist-4meme" style="width:40%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 12</span><span class="p4meme-txt">4meme 8</span></div>
+    </div></td><td><div class="dist-wrap">
+      <div class="dist-bar"><div class="dist-flap" style="width:55%"></div><div class="dist-4meme" style="width:45%"></div></div>
+      <div class="dist-labels"><span class="pflap-txt">FLAP 11</span><span class="p4meme-txt">4meme 9</span></div>
+    </div></td></tr>
+    </table>
+  </div>
+</div>
+<div class="panels">
+  <div class="panel">
+    <div class="panel-head">
+      <span class="dot dot-b"></span><span class="panel-title">原始排名（前 80）</span>
+      <span class="panel-sub">marketCap 0.30 · volume 0.25 · 无渗透率</span>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th class="num">#</th><th>协议</th><th>Token</th><th class="num">市值</th><th class="num">原分</th></tr></thead>
+      <tbody><tr>
+  <td class="num dim">1</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>屎壳郎</strong></td>
+  <td class="num dim">$42.5M</td>
+  <td class="num">4.762</td></tr><tr>
+  <td class="num dim">2</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>VIRUS</strong></td>
+  <td class="num dim">$15.2M</td>
+  <td class="num">4.637</td></tr><tr>
+  <td class="num dim">3</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>吉祥马</strong></td>
+  <td class="num dim">$31.0M</td>
+  <td class="num">4.425</td></tr><tr>
+  <td class="num dim">4</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>雪球人生</strong></td>
+  <td class="num dim">$9.3M</td>
+  <td class="num">4.375</td></tr><tr>
+  <td class="num dim">5</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>熊猫头</strong></td>
+  <td class="num dim">$3.7M</td>
+  <td class="num">4.362</td></tr><tr>
+  <td class="num dim">6</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>共建</strong></td>
+  <td class="num dim">$2.4M</td>
+  <td class="num">4.3</td></tr><tr>
+  <td class="num dim">7</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>背手负鼠</strong></td>
+  <td class="num dim">$849K</td>
+  <td class="num">4.25</td></tr><tr>
+  <td class="num dim">8</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Libra</strong></td>
+  <td class="num dim">$20.5M</td>
+  <td class="num">4.25</td></tr><tr>
+  <td class="num dim">9</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>马币</strong></td>
+  <td class="num dim">$4.8M</td>
+  <td class="num">4.213</td></tr><tr>
+  <td class="num dim">10</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>COCO</strong></td>
+  <td class="num dim">$236.0M</td>
+  <td class="num">4.175</td></tr><tr>
+  <td class="num dim">11</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>4Ball</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td class="num">4.013</td></tr><tr>
+  <td class="num dim">12</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>BANK</strong></td>
+  <td class="num dim">$866K</td>
+  <td class="num">4.0</td></tr><tr>
+  <td class="num dim">13</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>CANCER</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td class="num">3.988</td></tr><tr>
+  <td class="num dim">14</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>火马</strong></td>
+  <td class="num dim">$1.9M</td>
+  <td class="num">3.912</td></tr><tr>
+  <td class="num dim">15</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Hachiko</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td class="num">3.9</td></tr><tr>
+  <td class="num dim">16</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>我是历史</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td class="num">3.85</td></tr><tr>
+  <td class="num dim">17</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Liberty</strong></td>
+  <td class="num dim">$12.7M</td>
+  <td class="num">3.85</td></tr><tr>
+  <td class="num dim">18</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>142857</strong></td>
+  <td class="num dim">$7.6M</td>
+  <td class="num">3.85</td></tr><tr>
+  <td class="num dim">19</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$517K</td>
+  <td class="num">3.8</td></tr><tr>
+  <td class="num dim">20</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>舍利子</strong></td>
+  <td class="num dim">$6.3M</td>
+  <td class="num">3.788</td></tr><tr>
+  <td class="num dim">21</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>小蝌蚪</strong></td>
+  <td class="num dim">$2.1M</td>
+  <td class="num">3.712</td></tr><tr>
+  <td class="num dim">22</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>FENGSHUI</strong></td>
+  <td class="num dim">$6.8M</td>
+  <td class="num">3.687</td></tr><tr>
+  <td class="num dim">23</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>BORT</strong></td>
+  <td class="num dim">$472K</td>
+  <td class="num">3.675</td></tr><tr>
+  <td class="num dim">24</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ClipX</strong></td>
+  <td class="num dim">$522K</td>
+  <td class="num">3.663</td></tr><tr>
+  <td class="num dim">25</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ZSWAP</strong></td>
+  <td class="num dim">$2.7M</td>
+  <td class="num">3.662</td></tr><tr>
+  <td class="num dim">26</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>元宇宙狗</strong></td>
+  <td class="num dim">$1.2M</td>
+  <td class="num">3.612</td></tr><tr>
+  <td class="num dim">27</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>我的刀盾</strong></td>
+  <td class="num dim">$591K</td>
+  <td class="num">3.562</td></tr><tr>
+  <td class="num dim">28</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>一夜爆富</strong></td>
+  <td class="num dim">$4.6M</td>
+  <td class="num">3.562</td></tr><tr>
+  <td class="num dim">29</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Moolah</strong></td>
+  <td class="num dim">$15.6M</td>
+  <td class="num">3.55</td></tr><tr>
+  <td class="num dim">30</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>中本聪</strong></td>
+  <td class="num dim">$4.3M</td>
+  <td class="num">3.538</td></tr><tr>
+  <td class="num dim">31</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>bibi</strong></td>
+  <td class="num dim">$820K</td>
+  <td class="num">3.525</td></tr><tr>
+  <td class="num dim">32</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>冲鸭</strong></td>
+  <td class="num dim">$351K</td>
+  <td class="num">3.462</td></tr><tr>
+  <td class="num dim">33</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>BAPE</strong></td>
+  <td class="num dim">$1.4M</td>
+  <td class="num">3.425</td></tr><tr>
+  <td class="num dim">34</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>CMC</strong></td>
+  <td class="num dim">$206K</td>
+  <td class="num">3.413</td></tr><tr>
+  <td class="num dim">35</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Exchange the world</strong></td>
+  <td class="num dim">$421K</td>
+  <td class="num">3.413</td></tr><tr>
+  <td class="num dim">36</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>蝴蝶金锁</strong></td>
+  <td class="num dim">$312K</td>
+  <td class="num">3.412</td></tr><tr>
+  <td class="num dim">37</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>安小将</strong></td>
+  <td class="num dim">$380K</td>
+  <td class="num">3.4</td></tr><tr>
+  <td class="num dim">38</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>金狗人生🔥🔥🔥</strong></td>
+  <td class="num dim">$407K</td>
+  <td class="num">3.4</td></tr><tr>
+  <td class="num dim">39</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Web3</strong></td>
+  <td class="num dim">$202K</td>
+  <td class="num">3.375</td></tr><tr>
+  <td class="num dim">40</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>羊头</strong></td>
+  <td class="num dim">$487K</td>
+  <td class="num">3.337</td></tr><tr>
+  <td class="num dim">41</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>龙头</strong></td>
+  <td class="num dim">$653K</td>
+  <td class="num">3.313</td></tr><tr>
+  <td class="num dim">42</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>春</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td class="num">3.3</td></tr><tr>
+  <td class="num dim">43</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>苍生</strong></td>
+  <td class="num dim">$1.9M</td>
+  <td class="num">3.262</td></tr><tr>
+  <td class="num dim">44</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>XCHAT</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td class="num">3.262</td></tr><tr>
+  <td class="num dim">45</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>jelly</strong></td>
+  <td class="num dim">$362K</td>
+  <td class="num">3.213</td></tr><tr>
+  <td class="num dim">46</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>1</strong></td>
+  <td class="num dim">$1.6M</td>
+  <td class="num">3.213</td></tr><tr>
+  <td class="num dim">47</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$348K</td>
+  <td class="num">3.188</td></tr><tr>
+  <td class="num dim">48</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>elizaOK</strong></td>
+  <td class="num dim">$436K</td>
+  <td class="num">3.187</td></tr><tr>
+  <td class="num dim">49</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>小丑</strong></td>
+  <td class="num dim">$329K</td>
+  <td class="num">3.175</td></tr><tr>
+  <td class="num dim">50</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>神马</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td class="num">3.138</td></tr><tr>
+  <td class="num dim">51</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>14</strong></td>
+  <td class="num dim">$160K</td>
+  <td class="num">3.075</td></tr><tr>
+  <td class="num dim">52</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>安</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td class="num">3.075</td></tr><tr>
+  <td class="num dim">53</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ELEU</strong></td>
+  <td class="num dim">$6.8M</td>
+  <td class="num">3.05</td></tr><tr>
+  <td class="num dim">54</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>B4</strong></td>
+  <td class="num dim">$719K</td>
+  <td class="num">3.037</td></tr><tr>
+  <td class="num dim">55</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>DRAGON</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td class="num">3.0</td></tr><tr>
+  <td class="num dim">56</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$684K</td>
+  <td class="num">2.988</td></tr><tr>
+  <td class="num dim">57</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>我是未来</strong></td>
+  <td class="num dim">$404K</td>
+  <td class="num">2.962</td></tr><tr>
+  <td class="num dim">58</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>潜龙</strong></td>
+  <td class="num dim">$422K</td>
+  <td class="num">2.937</td></tr><tr>
+  <td class="num dim">59</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>推特之星</strong></td>
+  <td class="num dim">$3.3M</td>
+  <td class="num">2.937</td></tr><tr>
+  <td class="num dim">60</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>巾帼英雄</strong></td>
+  <td class="num dim">$772K</td>
+  <td class="num">2.925</td></tr><tr>
+  <td class="num dim">61</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>宝马</strong></td>
+  <td class="num dim">$3.1M</td>
+  <td class="num">2.925</td></tr><tr>
+  <td class="num dim">62</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Binancians</strong></td>
+  <td class="num dim">$166K</td>
+  <td class="num">2.913</td></tr><tr>
+  <td class="num dim">63</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>PP</strong></td>
+  <td class="num dim">$482K</td>
+  <td class="num">2.912</td></tr><tr>
+  <td class="num dim">64</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>雷神</strong></td>
+  <td class="num dim">$1.2M</td>
+  <td class="num">2.912</td></tr><tr>
+  <td class="num dim">65</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>草根文化</strong></td>
+  <td class="num dim">$243K</td>
+  <td class="num">2.875</td></tr><tr>
+  <td class="num dim">66</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>1</strong></td>
+  <td class="num dim">$160K</td>
+  <td class="num">2.862</td></tr><tr>
+  <td class="num dim">67</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$159K</td>
+  <td class="num">2.85</td></tr><tr>
+  <td class="num dim">68</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>五爷</strong></td>
+  <td class="num dim">$1.5M</td>
+  <td class="num">2.813</td></tr><tr>
+  <td class="num dim">69</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>预测马</strong></td>
+  <td class="num dim">$1.0M</td>
+  <td class="num">2.812</td></tr><tr>
+  <td class="num dim">70</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>GDSV全球币</strong></td>
+  <td class="num dim">$949K</td>
+  <td class="num">2.788</td></tr><tr>
+  <td class="num dim">71</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>嘻游记</strong></td>
+  <td class="num dim">$494K</td>
+  <td class="num">2.775</td></tr><tr>
+  <td class="num dim">72</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>热血战马</strong></td>
+  <td class="num dim">$841K</td>
+  <td class="num">2.763</td></tr><tr>
+  <td class="num dim">73</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>VAULT</strong></td>
+  <td class="num dim">$165K</td>
+  <td class="num">2.762</td></tr><tr>
+  <td class="num dim">74</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>蝴蝶效应</strong></td>
+  <td class="num dim">$203K</td>
+  <td class="num">2.737</td></tr><tr>
+  <td class="num dim">75</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>$Alpha</strong></td>
+  <td class="num dim">$4.3M</td>
+  <td class="num">2.725</td></tr><tr>
+  <td class="num dim">76</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>FDiamond </strong></td>
+  <td class="num dim">$120K</td>
+  <td class="num">2.687</td></tr><tr>
+  <td class="num dim">77</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>LISTA DOG</strong></td>
+  <td class="num dim">$454K</td>
+  <td class="num">2.663</td></tr><tr>
+  <td class="num dim">78</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>币安人</strong></td>
+  <td class="num dim">$114K</td>
+  <td class="num">2.662</td></tr><tr>
+  <td class="num dim">79</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>病毒人生</strong></td>
+  <td class="num dim">$187K</td>
+  <td class="num">2.65</td></tr><tr>
+  <td class="num dim">80</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>笑傲江湖</strong></td>
+  <td class="num dim">$756K</td>
+  <td class="num">2.65</td></tr></tbody>
+    </table></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <span class="dot dot-g"></span><span class="panel-title">调整后排名（前 80）</span>
+      <span class="panel-sub">marketCap 0.25 · volume 0.21 · 渗透率 0.10 · <span style='color:#fde68a'>uniqueTrader↑0.10</span> · <span style='color:#fca5a5'>createTime↓0.02</span></span>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th class="num">#</th><th>协议</th><th>Token</th><th class="num">市值</th><th>渗透率</th><th class="num">原分</th><th class="num">新分</th><th class="num">变化</th><th class="num">原#</th></tr></thead>
+      <tbody><tr>
+  <td class="num dim">1</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>屎壳郎</strong></td>
+  <td class="num dim">$42.5M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">11%</span></td>
+  <td class="num dim">4.762</td>
+  <td class="num">4.65</td>
+  <td class="num"><span class="flat">—</span></td>
+  <td class="num dim" style="font-size:11px">#1</td></tr><tr>
+  <td class="num dim">2</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>VIRUS</strong></td>
+  <td class="num dim">$15.2M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">20%</span></td>
+  <td class="num dim">4.637</td>
+  <td class="num">4.605</td>
+  <td class="num"><span class="flat">—</span></td>
+  <td class="num dim" style="font-size:11px">#2</td></tr><tr>
+  <td class="num dim">3</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>共建</strong></td>
+  <td class="num dim">$2.4M</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">25%</span></td>
+  <td class="num dim">4.3</td>
+  <td class="num">4.4</td>
+  <td class="num"><span class="up">▲3</span></td>
+  <td class="num dim" style="font-size:11px">#6</td></tr><tr>
+  <td class="num dim">4</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>熊猫头</strong></td>
+  <td class="num dim">$3.7M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">14%</span></td>
+  <td class="num dim">4.362</td>
+  <td class="num">4.39</td>
+  <td class="num"><span class="up">▲1</span></td>
+  <td class="num dim" style="font-size:11px">#5</td></tr><tr>
+  <td class="num dim">5</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>背手负鼠</strong></td>
+  <td class="num dim">$849K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">14%</span></td>
+  <td class="num dim">4.25</td>
+  <td class="num">4.34</td>
+  <td class="num"><span class="up">▲2</span></td>
+  <td class="num dim" style="font-size:11px">#7</td></tr><tr>
+  <td class="num dim">6</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>雪球人生</strong></td>
+  <td class="num dim">$9.3M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">7%</span></td>
+  <td class="num dim">4.375</td>
+  <td class="num">4.12</td>
+  <td class="num"><span class="dn">▼2</span></td>
+  <td class="num dim" style="font-size:11px">#4</td></tr><tr>
+  <td class="num dim">7</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>吉祥马</strong></td>
+  <td class="num dim">$31.0M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">3%</span></td>
+  <td class="num dim">4.425</td>
+  <td class="num">4.12</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#3</td></tr><tr>
+  <td class="num dim">8</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$517K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">22%</span></td>
+  <td class="num dim">3.8</td>
+  <td class="num">4.025</td>
+  <td class="num"><span class="up">▲11</span></td>
+  <td class="num dim" style="font-size:11px">#19</td></tr><tr>
+  <td class="num dim">9</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>马币</strong></td>
+  <td class="num dim">$4.8M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">10%</span></td>
+  <td class="num dim">4.213</td>
+  <td class="num">4.01</td>
+  <td class="num"><span class="flat">—</span></td>
+  <td class="num dim" style="font-size:11px">#9</td></tr><tr>
+  <td class="num dim">10</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>4Ball</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">14%</span></td>
+  <td class="num dim">4.013</td>
+  <td class="num">4.005</td>
+  <td class="num"><span class="up">▲1</span></td>
+  <td class="num dim" style="font-size:11px">#11</td></tr><tr>
+  <td class="num dim">11</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Hachiko</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">17%</span></td>
+  <td class="num dim">3.9</td>
+  <td class="num">3.965</td>
+  <td class="num"><span class="up">▲4</span></td>
+  <td class="num dim" style="font-size:11px">#15</td></tr><tr>
+  <td class="num dim">12</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Libra</strong></td>
+  <td class="num dim">$20.5M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">3%</span></td>
+  <td class="num dim">4.25</td>
+  <td class="num">3.94</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#8</td></tr><tr>
+  <td class="num dim">13</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>COCO</strong></td>
+  <td class="num dim">$236.0M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">4.175</td>
+  <td class="num">3.93</td>
+  <td class="num"><span class="dn">▼3</span></td>
+  <td class="num dim" style="font-size:11px">#10</td></tr><tr>
+  <td class="num dim">14</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>舍利子</strong></td>
+  <td class="num dim">$6.3M</td>
+  <td><span class="pct" style="background:#713f12;color:#fde68a">55%</span></td>
+  <td class="num dim">3.788</td>
+  <td class="num">3.915</td>
+  <td class="num"><span class="up">▲6</span></td>
+  <td class="num dim" style="font-size:11px">#20</td></tr><tr>
+  <td class="num dim">15</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>BANK</strong></td>
+  <td class="num dim">$866K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">9%</span></td>
+  <td class="num dim">4.0</td>
+  <td class="num">3.905</td>
+  <td class="num"><span class="dn">▼3</span></td>
+  <td class="num dim" style="font-size:11px">#12</td></tr><tr>
+  <td class="num dim">16</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>我是历史</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">21%</span></td>
+  <td class="num dim">3.85</td>
+  <td class="num">3.89</td>
+  <td class="num"><span class="flat">—</span></td>
+  <td class="num dim" style="font-size:11px">#16</td></tr><tr>
+  <td class="num dim">17</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>CANCER</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">7%</span></td>
+  <td class="num dim">3.988</td>
+  <td class="num">3.855</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#13</td></tr><tr>
+  <td class="num dim">18</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>BORT</strong></td>
+  <td class="num dim">$472K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">19%</span></td>
+  <td class="num dim">3.675</td>
+  <td class="num">3.815</td>
+  <td class="num"><span class="up">▲5</span></td>
+  <td class="num dim" style="font-size:11px">#23</td></tr><tr>
+  <td class="num dim">19</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Liberty</strong></td>
+  <td class="num dim">$12.7M</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">33%</span></td>
+  <td class="num dim">3.85</td>
+  <td class="num">3.795</td>
+  <td class="num"><span class="dn">▼2</span></td>
+  <td class="num dim" style="font-size:11px">#17</td></tr><tr>
+  <td class="num dim">20</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>火马</strong></td>
+  <td class="num dim">$1.9M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">3.912</td>
+  <td class="num">3.735</td>
+  <td class="num"><span class="dn">▼6</span></td>
+  <td class="num dim" style="font-size:11px">#14</td></tr><tr>
+  <td class="num dim">21</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>我的刀盾</strong></td>
+  <td class="num dim">$591K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">21%</span></td>
+  <td class="num dim">3.562</td>
+  <td class="num">3.73</td>
+  <td class="num"><span class="up">▲6</span></td>
+  <td class="num dim" style="font-size:11px">#27</td></tr><tr>
+  <td class="num dim">22</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ClipX</strong></td>
+  <td class="num dim">$522K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">12%</span></td>
+  <td class="num dim">3.663</td>
+  <td class="num">3.72</td>
+  <td class="num"><span class="up">▲2</span></td>
+  <td class="num dim" style="font-size:11px">#24</td></tr><tr>
+  <td class="num dim">23</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>安小将</strong></td>
+  <td class="num dim">$380K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">23%</span></td>
+  <td class="num dim">3.4</td>
+  <td class="num">3.66</td>
+  <td class="num"><span class="up">▲14</span></td>
+  <td class="num dim" style="font-size:11px">#37</td></tr><tr>
+  <td class="num dim">24</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>冲鸭</strong></td>
+  <td class="num dim">$351K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">19%</span></td>
+  <td class="num dim">3.462</td>
+  <td class="num">3.655</td>
+  <td class="num"><span class="up">▲8</span></td>
+  <td class="num dim" style="font-size:11px">#32</td></tr><tr>
+  <td class="num dim">25</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Web3</strong></td>
+  <td class="num dim">$202K</td>
+  <td><span class="pct" style="background:#713f12;color:#fde68a">44%</span></td>
+  <td class="num dim">3.375</td>
+  <td class="num">3.65</td>
+  <td class="num"><span class="up">▲14</span></td>
+  <td class="num dim" style="font-size:11px">#39</td></tr><tr>
+  <td class="num dim">26</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>142857</strong></td>
+  <td class="num dim">$7.6M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">8%</span></td>
+  <td class="num dim">3.85</td>
+  <td class="num">3.58</td>
+  <td class="num"><span class="dn">▼8</span></td>
+  <td class="num dim" style="font-size:11px">#18</td></tr><tr>
+  <td class="num dim">27</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>CMC</strong></td>
+  <td class="num dim">$206K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">10%</span></td>
+  <td class="num dim">3.413</td>
+  <td class="num">3.58</td>
+  <td class="num"><span class="up">▲7</span></td>
+  <td class="num dim" style="font-size:11px">#34</td></tr><tr>
+  <td class="num dim">28</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Exchange the world</strong></td>
+  <td class="num dim">$421K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">23%</span></td>
+  <td class="num dim">3.413</td>
+  <td class="num">3.57</td>
+  <td class="num"><span class="up">▲7</span></td>
+  <td class="num dim" style="font-size:11px">#35</td></tr><tr>
+  <td class="num dim">29</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>元宇宙狗</strong></td>
+  <td class="num dim">$1.2M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">13%</span></td>
+  <td class="num dim">3.612</td>
+  <td class="num">3.55</td>
+  <td class="num"><span class="dn">▼3</span></td>
+  <td class="num dim" style="font-size:11px">#26</td></tr><tr>
+  <td class="num dim">30</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>bibi</strong></td>
+  <td class="num dim">$820K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">13%</span></td>
+  <td class="num dim">3.525</td>
+  <td class="num">3.55</td>
+  <td class="num"><span class="up">▲1</span></td>
+  <td class="num dim" style="font-size:11px">#31</td></tr><tr>
+  <td class="num dim">31</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>小蝌蚪</strong></td>
+  <td class="num dim">$2.1M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">3.712</td>
+  <td class="num">3.51</td>
+  <td class="num"><span class="dn">▼10</span></td>
+  <td class="num dim" style="font-size:11px">#21</td></tr><tr>
+  <td class="num dim">32</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>elizaOK</strong></td>
+  <td class="num dim">$436K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">25%</span></td>
+  <td class="num dim">3.187</td>
+  <td class="num">3.475</td>
+  <td class="num"><span class="up">▲16</span></td>
+  <td class="num dim" style="font-size:11px">#48</td></tr><tr>
+  <td class="num dim">33</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>jelly</strong></td>
+  <td class="num dim">$362K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">18%</span></td>
+  <td class="num dim">3.213</td>
+  <td class="num">3.43</td>
+  <td class="num"><span class="up">▲12</span></td>
+  <td class="num dim" style="font-size:11px">#45</td></tr><tr>
+  <td class="num dim">34</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>FENGSHUI</strong></td>
+  <td class="num dim">$6.8M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">1%</span></td>
+  <td class="num dim">3.687</td>
+  <td class="num">3.405</td>
+  <td class="num"><span class="dn">▼12</span></td>
+  <td class="num dim" style="font-size:11px">#22</td></tr><tr>
+  <td class="num dim">35</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>龙头</strong></td>
+  <td class="num dim">$653K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">14%</span></td>
+  <td class="num dim">3.313</td>
+  <td class="num">3.405</td>
+  <td class="num"><span class="up">▲6</span></td>
+  <td class="num dim" style="font-size:11px">#41</td></tr><tr>
+  <td class="num dim">36</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>BAPE</strong></td>
+  <td class="num dim">$1.4M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">10%</span></td>
+  <td class="num dim">3.425</td>
+  <td class="num">3.4</td>
+  <td class="num"><span class="dn">▼3</span></td>
+  <td class="num dim" style="font-size:11px">#33</td></tr><tr>
+  <td class="num dim">37</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>中本聪</strong></td>
+  <td class="num dim">$4.3M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">3.538</td>
+  <td class="num">3.36</td>
+  <td class="num"><span class="dn">▼7</span></td>
+  <td class="num dim" style="font-size:11px">#30</td></tr><tr>
+  <td class="num dim">38</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>14</strong></td>
+  <td class="num dim">$160K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">15%</span></td>
+  <td class="num dim">3.075</td>
+  <td class="num">3.36</td>
+  <td class="num"><span class="up">▲13</span></td>
+  <td class="num dim" style="font-size:11px">#51</td></tr><tr>
+  <td class="num dim">39</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>羊头</strong></td>
+  <td class="num dim">$487K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">8%</span></td>
+  <td class="num dim">3.337</td>
+  <td class="num">3.345</td>
+  <td class="num"><span class="up">▲1</span></td>
+  <td class="num dim" style="font-size:11px">#40</td></tr><tr>
+  <td class="num dim">40</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ZSWAP</strong></td>
+  <td class="num dim">$2.7M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">0%</span></td>
+  <td class="num dim">3.662</td>
+  <td class="num">3.31</td>
+  <td class="num"><span class="dn">▼15</span></td>
+  <td class="num dim" style="font-size:11px">#25</td></tr><tr>
+  <td class="num dim">41</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>蝴蝶金锁</strong></td>
+  <td class="num dim">$312K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">3.412</td>
+  <td class="num">3.285</td>
+  <td class="num"><span class="dn">▼5</span></td>
+  <td class="num dim" style="font-size:11px">#36</td></tr><tr>
+  <td class="num dim">42</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>苍生</strong></td>
+  <td class="num dim">$1.9M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">15%</span></td>
+  <td class="num dim">3.262</td>
+  <td class="num">3.285</td>
+  <td class="num"><span class="up">▲1</span></td>
+  <td class="num dim" style="font-size:11px">#43</td></tr><tr>
+  <td class="num dim">43</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>B4</strong></td>
+  <td class="num dim">$719K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">19%</span></td>
+  <td class="num dim">3.037</td>
+  <td class="num">3.25</td>
+  <td class="num"><span class="up">▲11</span></td>
+  <td class="num dim" style="font-size:11px">#54</td></tr><tr>
+  <td class="num dim">44</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>金狗人生🔥🔥🔥</strong></td>
+  <td class="num dim">$407K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">3.4</td>
+  <td class="num">3.225</td>
+  <td class="num"><span class="dn">▼6</span></td>
+  <td class="num dim" style="font-size:11px">#38</td></tr><tr>
+  <td class="num dim">45</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>潜龙</strong></td>
+  <td class="num dim">$422K</td>
+  <td><span class="pct" style="background:#7c2d12;color:#fdba74">32%</span></td>
+  <td class="num dim">2.937</td>
+  <td class="num">3.205</td>
+  <td class="num"><span class="up">▲13</span></td>
+  <td class="num dim" style="font-size:11px">#58</td></tr><tr>
+  <td class="num dim">46</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>春</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">10%</span></td>
+  <td class="num dim">3.3</td>
+  <td class="num">3.165</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#42</td></tr><tr>
+  <td class="num dim">47</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Binancians</strong></td>
+  <td class="num dim">$166K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">16%</span></td>
+  <td class="num dim">2.913</td>
+  <td class="num">3.135</td>
+  <td class="num"><span class="up">▲15</span></td>
+  <td class="num dim" style="font-size:11px">#62</td></tr><tr>
+  <td class="num dim">48</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>XCHAT</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">3.262</td>
+  <td class="num">3.12</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#44</td></tr><tr>
+  <td class="num dim">49</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>小丑</strong></td>
+  <td class="num dim">$329K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">3%</span></td>
+  <td class="num dim">3.175</td>
+  <td class="num">3.11</td>
+  <td class="num"><span class="flat">—</span></td>
+  <td class="num dim" style="font-size:11px">#49</td></tr><tr>
+  <td class="num dim">50</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>一夜爆富</strong></td>
+  <td class="num dim">$4.6M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">2%</span></td>
+  <td class="num dim">3.562</td>
+  <td class="num">3.1</td>
+  <td class="num"><span class="dn">▼22</span></td>
+  <td class="num dim" style="font-size:11px">#28</td></tr><tr>
+  <td class="num dim">51</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$348K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">3.188</td>
+  <td class="num">3.1</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#47</td></tr><tr>
+  <td class="num dim">52</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>1</strong></td>
+  <td class="num dim">$160K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">8%</span></td>
+  <td class="num dim">2.862</td>
+  <td class="num">3.09</td>
+  <td class="num"><span class="up">▲14</span></td>
+  <td class="num dim" style="font-size:11px">#66</td></tr><tr>
+  <td class="num dim">53</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>Moolah</strong></td>
+  <td class="num dim">$15.6M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">0%</span></td>
+  <td class="num dim">3.55</td>
+  <td class="num">3.035</td>
+  <td class="num"><span class="dn">▼24</span></td>
+  <td class="num dim" style="font-size:11px">#29</td></tr><tr>
+  <td class="num dim">54</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>1</strong></td>
+  <td class="num dim">$1.6M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">3%</span></td>
+  <td class="num dim">3.213</td>
+  <td class="num">3.02</td>
+  <td class="num"><span class="dn">▼8</span></td>
+  <td class="num dim" style="font-size:11px">#46</td></tr><tr>
+  <td class="num dim">55</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>草根文化</strong></td>
+  <td class="num dim">$243K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">19%</span></td>
+  <td class="num dim">2.875</td>
+  <td class="num">2.975</td>
+  <td class="num"><span class="up">▲10</span></td>
+  <td class="num dim" style="font-size:11px">#65</td></tr><tr>
+  <td class="num dim">56</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>币安人</strong></td>
+  <td class="num dim">$114K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">16%</span></td>
+  <td class="num dim">2.662</td>
+  <td class="num">2.97</td>
+  <td class="num"><span class="up">▲22</span></td>
+  <td class="num dim" style="font-size:11px">#78</td></tr><tr>
+  <td class="num dim">57</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>VAULT</strong></td>
+  <td class="num dim">$165K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">13%</span></td>
+  <td class="num dim">2.762</td>
+  <td class="num">2.945</td>
+  <td class="num"><span class="up">▲16</span></td>
+  <td class="num dim" style="font-size:11px">#73</td></tr><tr>
+  <td class="num dim">58</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>病毒人生</strong></td>
+  <td class="num dim">$187K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">19%</span></td>
+  <td class="num dim">2.65</td>
+  <td class="num">2.94</td>
+  <td class="num"><span class="up">▲21</span></td>
+  <td class="num dim" style="font-size:11px">#79</td></tr><tr>
+  <td class="num dim">59</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$159K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">2.85</td>
+  <td class="num">2.92</td>
+  <td class="num"><span class="up">▲8</span></td>
+  <td class="num dim" style="font-size:11px">#67</td></tr><tr>
+  <td class="num dim">60</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>PP</strong></td>
+  <td class="num dim">$482K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">7%</span></td>
+  <td class="num dim">2.912</td>
+  <td class="num">2.9</td>
+  <td class="num"><span class="up">▲3</span></td>
+  <td class="num dim" style="font-size:11px">#63</td></tr><tr>
+  <td class="num dim">61</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>我是未来</strong></td>
+  <td class="num dim">$404K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">2.962</td>
+  <td class="num">2.895</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#57</td></tr><tr>
+  <td class="num dim">62</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>FDiamond </strong></td>
+  <td class="num dim">$120K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">8%</span></td>
+  <td class="num dim">2.687</td>
+  <td class="num">2.89</td>
+  <td class="num"><span class="up">▲14</span></td>
+  <td class="num dim" style="font-size:11px">#76</td></tr><tr>
+  <td class="num dim">63</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>DRAGON</strong></td>
+  <td class="num dim">$1.8M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">14%</span></td>
+  <td class="num dim">3.0</td>
+  <td class="num">2.885</td>
+  <td class="num"><span class="dn">▼8</span></td>
+  <td class="num dim" style="font-size:11px">#55</td></tr><tr>
+  <td class="num dim">64</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>世界杯</strong></td>
+  <td class="num dim">$684K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">6%</span></td>
+  <td class="num dim">2.988</td>
+  <td class="num">2.845</td>
+  <td class="num"><span class="dn">▼8</span></td>
+  <td class="num dim" style="font-size:11px">#56</td></tr><tr>
+  <td class="num dim">65</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>BTC</strong></td>
+  <td class="num dim">$449K</td>
+  <td><span class="pct" style="background:#713f12;color:#fde68a">40%</span></td>
+  <td class="num dim">2.525</td>
+  <td class="num">2.82</td>
+  <td class="num"><span class="up">▲20</span></td>
+  <td class="num dim" style="font-size:11px">#85</td></tr><tr>
+  <td class="num dim">66</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>STRAIN</strong></td>
+  <td class="num dim">$102K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">16%</span></td>
+  <td class="num dim">2.475</td>
+  <td class="num">2.77</td>
+  <td class="num"><span class="up">▲23</span></td>
+  <td class="num dim" style="font-size:11px">#89</td></tr><tr>
+  <td class="num dim">67</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>安</strong></td>
+  <td class="num dim">$1.3M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">2%</span></td>
+  <td class="num dim">3.075</td>
+  <td class="num">2.77</td>
+  <td class="num"><span class="dn">▼15</span></td>
+  <td class="num dim" style="font-size:11px">#52</td></tr><tr>
+  <td class="num dim">68</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>巾帼英雄</strong></td>
+  <td class="num dim">$772K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">2%</span></td>
+  <td class="num dim">2.925</td>
+  <td class="num">2.73</td>
+  <td class="num"><span class="dn">▼8</span></td>
+  <td class="num dim" style="font-size:11px">#60</td></tr><tr>
+  <td class="num dim">69</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>神马</strong></td>
+  <td class="num dim">$1.1M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">0%</span></td>
+  <td class="num dim">3.138</td>
+  <td class="num">2.725</td>
+  <td class="num"><span class="dn">▼19</span></td>
+  <td class="num dim" style="font-size:11px">#50</td></tr><tr>
+  <td class="num dim">70</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>BANK</strong></td>
+  <td class="num dim">$140K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">7%</span></td>
+  <td class="num dim">2.525</td>
+  <td class="num">2.72</td>
+  <td class="num"><span class="up">▲16</span></td>
+  <td class="num dim" style="font-size:11px">#86</td></tr><tr>
+  <td class="num dim">71</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>MILADY</strong></td>
+  <td class="num dim">$115K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">18%</span></td>
+  <td class="num dim">2.375</td>
+  <td class="num">2.715</td>
+  <td class="num"><span class="up">▲25</span></td>
+  <td class="num dim" style="font-size:11px">#96</td></tr><tr>
+  <td class="num dim">72</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>ELEU</strong></td>
+  <td class="num dim">$6.8M</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">0%</span></td>
+  <td class="num dim">3.05</td>
+  <td class="num">2.68</td>
+  <td class="num"><span class="dn">▼19</span></td>
+  <td class="num dim" style="font-size:11px">#53</td></tr><tr>
+  <td class="num dim">73</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>小火種</strong></td>
+  <td class="num dim">$143K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">8%</span></td>
+  <td class="num dim">2.475</td>
+  <td class="num">2.675</td>
+  <td class="num"><span class="up">▲17</span></td>
+  <td class="num dim" style="font-size:11px">#90</td></tr><tr>
+  <td class="num dim">74</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>GDSV全球币</strong></td>
+  <td class="num dim">$949K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">9%</span></td>
+  <td class="num dim">2.788</td>
+  <td class="num">2.66</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#70</td></tr><tr>
+  <td class="num dim">75</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>嘻游记</strong></td>
+  <td class="num dim">$494K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">3%</span></td>
+  <td class="num dim">2.775</td>
+  <td class="num">2.64</td>
+  <td class="num"><span class="dn">▼4</span></td>
+  <td class="num dim" style="font-size:11px">#71</td></tr><tr>
+  <td class="num dim">76</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>蝴蝶效应</strong></td>
+  <td class="num dim">$203K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">4%</span></td>
+  <td class="num dim">2.737</td>
+  <td class="num">2.62</td>
+  <td class="num"><span class="dn">▼2</span></td>
+  <td class="num dim" style="font-size:11px">#74</td></tr><tr>
+  <td class="num dim">77</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>大力神杯</strong></td>
+  <td class="num dim">$311K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">2.575</td>
+  <td class="num">2.615</td>
+  <td class="num"><span class="up">▲5</span></td>
+  <td class="num dim" style="font-size:11px">#82</td></tr><tr>
+  <td class="num dim">78</td><td><span class="proto p4meme">4meme</span></td>
+  <td class="tok"><strong>爱你老己</strong></td>
+  <td class="num dim">$205K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">20%</span></td>
+  <td class="num dim">2.35</td>
+  <td class="num">2.595</td>
+  <td class="num"><span class="up">▲20</span></td>
+  <td class="num dim" style="font-size:11px">#98</td></tr><tr>
+  <td class="num dim">79</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>VENOM</strong></td>
+  <td class="num dim">$125K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">10%</span></td>
+  <td class="num dim">2.325</td>
+  <td class="num">2.565</td>
+  <td class="num"><span class="up">▲22</span></td>
+  <td class="num dim" style="font-size:11px">#101</td></tr><tr>
+  <td class="num dim">80</td><td><span class="proto pflap">FLAP</span></td>
+  <td class="tok"><strong>FIFA世界杯</strong></td>
+  <td class="num dim">$219K</td>
+  <td><span class="pct" style="background:#450a0a;color:#fca5a5">5%</span></td>
+  <td class="num dim">2.5</td>
+  <td class="num">2.56</td>
+  <td class="num"><span class="up">▲7</span></td>
+  <td class="num dim" style="font-size:11px">#87</td></tr></tbody>
+    </table></div>
+  </div>
+</div>
+
+<div class="appendix">
+  <div class="app-title">附录 · 权重参数对比</div>
+  <div class="app-grid">
+    <div class="app-card">
+      <div class="app-card-head"><span class="dot dot-b" style="width:7px;height:7px;border-radius:50%;background:#3b82f6;display:inline-block"></span> 旧方案</div>
+      <code class="wjson">{"marketCap": 0.3, "volumeBn7d": 0.25, "bnUniqueHolders": 0.075, "liquidity": 0.075, "countBn7d": 0.05, "uniqueTraderBn7d": 0.05, "priceChange24h": 0.05, "priceChange7d": 0.05, "holders": 0.05, "createTime": 0.025, "impression": 0.025}</code>
+      <div class="wsum">合计: 1.000 &nbsp;·&nbsp; 12 个字段 &nbsp;·&nbsp; 无渗透率</div>
+    </div>
+    <div class="app-card">
+      <div class="app-card-head"><span class="dot dot-g" style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block"></span> 新方案</div>
+      <code class="wjson">{"marketCap": 0.25, "volumeBn7d": 0.21, "uniqueTraderBn7d": 0.1, "penetrationRate": 0.1, "bnUniqueHolders": 0.06, "countBn7d": 0.06, "priceChange24h": 0.05, "priceChange7d": 0.05, "liquidity": 0.05, "holders": 0.03, "createTime": 0.02, "impression": 0.02}</code>
+      <div class="wsum">合计: 1.000 &nbsp;·&nbsp; 12 个字段 &nbsp;·&nbsp; 含渗透率 0.10</div>
+    </div>
+  </div>
+
+  <table class="app-table">
+    <thead><tr>
+      <th>字段</th>
+      <th class="num">旧权重</th><th style="width:140px"></th>
+      <th class="num">新权重</th><th style="width:140px"></th>
+      <th class="num">差异</th>
+    </tr></thead>
+    <tbody><tr>
+      <td class="fname">marketCap</td>
+      <td class="num ov">0.3</td>
+      <td><div class="wbar old-w" style="width:199px"></div></td>
+      <td class="num nv">0.25</td>
+      <td><div class="wbar new-w" style="width:166px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.050</span></td>
+    </tr><tr>
+      <td class="fname">volumeBn7d</td>
+      <td class="num ov">0.25</td>
+      <td><div class="wbar old-w" style="width:166px"></div></td>
+      <td class="num nv">0.21</td>
+      <td><div class="wbar new-w" style="width:139px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.040</span></td>
+    </tr><tr>
+      <td class="fname">uniqueTraderBn7d</td>
+      <td class="num ov">0.05</td>
+      <td><div class="wbar old-w" style="width:33px"></div></td>
+      <td class="num nv">0.1</td>
+      <td><div class="wbar new-w" style="width:66px"></div></td>
+      <td class="num"><span style="color:#4ade80;font-weight:700">▲ 0.050</span></td>
+    </tr><tr>
+      <td class="fname">penetrationRate</td>
+      <td class="num ov"><span style="color:#555">—</span></td>
+      <td><div class="wbar old-w" style="width:0px"></div></td>
+      <td class="num nv">0.1</td>
+      <td><div class="wbar new-w" style="width:66px"></div></td>
+      <td class="num"><span style="color:#4ade80;font-weight:700">+0.1</span></td>
+    </tr><tr>
+      <td class="fname">bnUniqueHolders</td>
+      <td class="num ov">0.075</td>
+      <td><div class="wbar old-w" style="width:49px"></div></td>
+      <td class="num nv">0.06</td>
+      <td><div class="wbar new-w" style="width:39px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.015</span></td>
+    </tr><tr>
+      <td class="fname">liquidity</td>
+      <td class="num ov">0.075</td>
+      <td><div class="wbar old-w" style="width:49px"></div></td>
+      <td class="num nv">0.05</td>
+      <td><div class="wbar new-w" style="width:33px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.025</span></td>
+    </tr><tr>
+      <td class="fname">countBn7d</td>
+      <td class="num ov">0.05</td>
+      <td><div class="wbar old-w" style="width:33px"></div></td>
+      <td class="num nv">0.06</td>
+      <td><div class="wbar new-w" style="width:39px"></div></td>
+      <td class="num"><span style="color:#4ade80;font-weight:700">▲ 0.010</span></td>
+    </tr><tr>
+      <td class="fname">priceChange24h</td>
+      <td class="num ov">0.05</td>
+      <td><div class="wbar old-w" style="width:33px"></div></td>
+      <td class="num nv">0.05</td>
+      <td><div class="wbar new-w" style="width:33px"></div></td>
+      <td class="num"><span style="color:#4b5563">—</span></td>
+    </tr><tr>
+      <td class="fname">priceChange7d</td>
+      <td class="num ov">0.05</td>
+      <td><div class="wbar old-w" style="width:33px"></div></td>
+      <td class="num nv">0.05</td>
+      <td><div class="wbar new-w" style="width:33px"></div></td>
+      <td class="num"><span style="color:#4b5563">—</span></td>
+    </tr><tr>
+      <td class="fname">holders</td>
+      <td class="num ov">0.05</td>
+      <td><div class="wbar old-w" style="width:33px"></div></td>
+      <td class="num nv">0.03</td>
+      <td><div class="wbar new-w" style="width:19px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.020</span></td>
+    </tr><tr>
+      <td class="fname">createTime</td>
+      <td class="num ov">0.025</td>
+      <td><div class="wbar old-w" style="width:16px"></div></td>
+      <td class="num nv">0.02</td>
+      <td><div class="wbar new-w" style="width:13px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.005</span></td>
+    </tr><tr>
+      <td class="fname">impression</td>
+      <td class="num ov">0.025</td>
+      <td><div class="wbar old-w" style="width:16px"></div></td>
+      <td class="num nv">0.02</td>
+      <td><div class="wbar new-w" style="width:13px"></div></td>
+      <td class="num"><span style="color:#f87171;font-weight:700">▼ 0.005</span></td>
+    </tr></tbody>
+    <tfoot><tr>
+      <td><strong>合计</strong></td>
+      <td class="num ov"><strong>1.000</strong></td><td></td>
+      <td class="num nv"><strong>1.000</strong></td><td></td>
+      <td></td>
+    </tr></tfoot>
+  </table>
+</div>
+</body></html>
