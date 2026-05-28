@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemeForge Demo · MemeRush</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans SC',system-ui,-apple-system,'PingFang SC',sans-serif; background:#0b0e11; color:#e8e8e8; font-size:14px; }
+
+/* ---- Phase Bar ---- */
+.phase-bar { position:sticky; top:0; z-index:100; background:#0f1114; border-bottom:1px solid #2b2f38; display:flex; align-items:center; height:48px; padding:0 20px; gap:0; }
+.brand { font-weight:700; font-size:15px; color:#F0B90B; margin-right:28px; white-space:nowrap; }
+.phase-tab { height:48px; padding:0 20px; line-height:48px; font-size:13px; color:#848E9C; cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; white-space:nowrap; }
+.phase-tab:hover { color:#e8e8e8; }
+.phase-tab.active { color:#fff; border-bottom-color:#F0B90B; }
+.phase-sep { color:#2b2f38; padding:0 6px; line-height:48px; font-size:12px; }
+
+.view { display:none; }
+.view.active { display:block; }
+
+/* ---- Shared ---- */
+.positive { color:#0ECB81; }
+.negative { color:#F6465D; }
+.chain-bsc { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:600; background:rgba(240,185,11,.14); color:#F0B90B; }
+.chain-sol { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:600; background:rgba(153,69,255,.14); color:#9945FF; }
+.chain-base { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:600; background:rgba(0,82,255,.14); color:#5082FF; }
+
+
+/* ========================================= */
+/* MemeRush List View (Phase 1 redesign)     */
+/* ========================================= */
+.mr-page { background:#0b0e11; }
+
+.mr-header {
+  display:flex; align-items:center; gap:10px;
+  padding:0 16px; height:44px;
+  border-bottom:1px solid #1a1d24;
+  background:#0d0f14;
+}
+.mr-title { font-size:15px; font-weight:700; }
+.mr-htabs { display:flex; gap:0; margin-left:20px; }
+.mr-htab { height:44px; line-height:44px; padding:0 14px; font-size:13px; color:#848E9C; cursor:pointer; border-bottom:2px solid transparent; }
+.mr-htab.on { color:#e8e8e8; border-bottom-color:#F0B90B; }
+.mr-hicons { display:flex; gap:6px; margin-left:auto; align-items:center; }
+.mr-icon { width:28px; height:28px; border-radius:5px; border:1px solid #2b2f38; background:#131720; display:flex; align-items:center; justify-content:center; font-size:13px; cursor:pointer; color:#848E9C; }
+.mr-icon:hover { color:#e8e8e8; }
+
+.mr-cols {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  height:calc(100vh - 92px);
+  overflow:hidden;
+}
+.mr-col { border-right:1px solid #1a1d24; overflow-y:auto; display:flex; flex-direction:column; }
+.mr-col:last-child { border-right:none; }
+.mr-col::-webkit-scrollbar { width:4px; }
+.mr-col::-webkit-scrollbar-thumb { background:#2b2f38; border-radius:2px; }
+
+/* Column header */
+.col-hdr { position:sticky; top:0; z-index:10; background:#0d0f14; border-bottom:1px solid #1a1d24; padding:8px 10px; }
+.col-hdr-r1 { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+.col-nm { font-size:13px; font-weight:600; }
+.col-count { font-size:11px; color:#848E9C; }
+.col-search { flex:1; background:#0b0e11; border:1px solid #1e2228; border-radius:4px; padding:4px 8px; font-size:12px; color:#e8e8e8; outline:none; font-family:inherit; }
+.col-search::placeholder { color:#3a4050; }
+.col-hdr-r2 { display:flex; align-items:center; gap:4px; }
+.cpill { padding:2px 8px; border-radius:3px; font-size:11px; font-weight:600; color:#848E9C; background:#131720; border:none; cursor:pointer; font-family:inherit; }
+.cpill:hover { color:#e8e8e8; }
+.cpill.on { background:rgba(240,185,11,.12); color:#F0B90B; }
+.col-filter-icon { margin-left:auto; font-size:12px; color:#848E9C; padding:3px 6px; border-radius:3px; background:#131720; border:1px solid #1e2228; cursor:pointer; }
+
+/* Token card */
+.tc { padding:9px 10px; border-bottom:1px solid #131720; cursor:pointer; transition:background .1s; position:relative; }
+.tc:hover { background:#111520; }
+.tc.product-tc { border-left:2px solid rgba(240,185,11,.45); padding-left:8px; }
+.tc-body { display:flex; gap:9px; }
+
+/* Avatar */
+.tc-av { width:40px; height:40px; border-radius:6px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:17px; position:relative; }
+.tc-av .cdot { position:absolute; bottom:-3px; left:-3px; width:14px; height:14px; border-radius:50%; border:2px solid #0b0e11; display:flex; align-items:center; justify-content:center; font-size:7px; font-weight:800; }
+.cdot-bsc { background:#F0B90B; color:#000; }
+.cdot-sol { background:#9945FF; color:#fff; }
+.cdot-base { background:#0052FF; color:#fff; }
+
+/* Card main content */
+.tc-main { flex:1; min-width:0; }
+.tc-r1 { display:flex; align-items:flex-start; gap:6px; margin-bottom:2px; }
+.tc-name { font-size:13px; font-weight:600; line-height:1.3; }
+
+/* THE PRODUCT BADGE */
+.badge-pm { 
+  display:inline-flex; align-items:center; gap:2px;
+  background:#F0B90B; color:#000;
+  padding:1px 5px; border-radius:3px;
+  font-size:10px; font-weight:800;
+  white-space:nowrap; flex-shrink:0;
+  line-height:1.5;
+}
+.badge-pm .pm-star { font-size:9px; }
+
+.tc-vmc { text-align:right; font-size:10px; color:#848E9C; line-height:1.7; flex-shrink:0; }
+.tc-vmc span { color:#c8c8c8; }
+.tc-vmc .bar { height:2px; background:#1e2228; border-radius:1px; margin-top:2px; overflow:hidden; }
+.tc-vmc .bar-fill { height:100%; border-radius:1px; background:#0ECB81; }
+
+.tc-desc { font-size:11px; color:#5a6474; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.product-tc .tc-desc { white-space:normal; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-clamp:2; color:#7a8898; line-height:1.5; }
+.tc-website { display:inline-flex; align-items:center; gap:3px; font-size:10px; color:#4a8aaf; margin-bottom:4px; text-decoration:none; }
+.tc-website:hover { color:#F0B90B; text-decoration:underline; }
+
+/* ── Inline X Post ── */
+.tc-xpost { background:#141720; border:1px solid #1e2430; border-radius:8px; padding:10px; margin-top:8px; }
+.tc-xp-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+.tc-xp-av { width:18px; height:18px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:10px; margin-right:5px; flex-shrink:0; vertical-align:middle; }
+.tc-xp-handle { font-size:11px; color:#848E9C; vertical-align:middle; }
+.tc-xp-x { color:#3a4555; font-size:11px; cursor:default; }
+.tc-xp-text { font-size:12px; color:#c0c8d4; line-height:1.45; margin-bottom:8px; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
+.tc-xp-img { width:100%; height:90px; border-radius:6px; margin-bottom:8px; }
+.tc-xp-foot { display:flex; gap:12px; font-size:11px; color:#4a5565; }
+.tc-meta { display:flex; align-items:center; gap:6px; font-size:10px; color:#3a4555; margin-bottom:5px; }
+.tc-addr { font-size:10px; color:#3a4555; font-variant-numeric:tabular-nums; margin-bottom:5px; }
+
+/* Tag row */
+.tc-tags { display:flex; align-items:center; gap:3px; flex-wrap:wrap; }
+.tt { padding:2px 5px; border-radius:3px; font-size:10px; font-weight:600; }
+.tt-g { background:rgba(14,203,129,.1); color:#0ECB81; }
+.tt-r { background:rgba(246,70,93,.1); color:#F6465D; }
+.tt-gr { background:#131720; color:#4a5565; border:1px solid #1e2228; }
+.tt-y { background:rgba(240,185,11,.1); color:#F0B90B; }
+.buy-btn { margin-left:auto; background:#F0B90B; border:none; border-radius:5px; width:30px; height:22px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; flex-shrink:0; transition:opacity .12s; }
+.buy-btn:hover { opacity:.85; }
+
+/* No product label */
+.badge-plain { display:inline-flex; align-items:center; gap:2px; background:transparent; color:#4a5565; border:1px solid #1e2228; padding:1px 5px; border-radius:3px; font-size:10px; }
+
+@media(max-width:900px){ .mr-cols { grid-template-columns:1fr 1fr; } }
+@media(max-width:600px){ .mr-cols { grid-template-columns:1fr; height:auto; } .mr-col { height:auto; overflow-y:visible; } }
+
+/* ========================================= */
+/* PHASE 1: Token Detail                     */
+/* ========================================= */
+.detail-wrap { max-width:920px; margin:0 auto; padding:20px 20px; }
+
+.detail-topbar { display:flex; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid #1e2026; margin-bottom:16px; }
+.back-btn { color:#848E9C; font-size:13px; cursor:pointer; padding:4px 8px; border-radius:5px; border:1px solid #2b2f38; background:#1a1d21; }
+.back-btn:hover { color:#e8e8e8; }
+.breadcrumb { color:#848E9C; font-size:13px; }
+.breadcrumb span { color:#e8e8e8; }
+
+.detail-header { display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
+.token-avatar-lg { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#F0B90B,#f97316); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.detail-title h1 { font-size:20px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.detail-title .sub { color:#848E9C; font-size:13px; margin-top:4px; }
+.detail-price { margin-left:auto; text-align:right; }
+.detail-price .price { font-size:24px; font-weight:700; font-variant-numeric:tabular-nums; }
+.detail-price .change { font-size:14px; font-weight:600; margin-top:2px; }
+
+/* Product Badge - Phase 1 hero treatment */
+.product-badge-hero {
+  background:linear-gradient(135deg,rgba(240,185,11,.1),rgba(249,115,22,.06));
+  border:1px solid rgba(240,185,11,.3); border-radius:10px;
+  padding:14px 18px; margin:16px 0;
+  display:flex; align-items:center; gap:14px;
+}
+.pbh-icon { font-size:26px; }
+.pbh-text h4 { font-size:14px; font-weight:700; color:#F0B90B; margin-bottom:3px; }
+.pbh-text p { font-size:13px; color:#848E9C; }
+.pbh-pill { margin-left:auto; background:#F0B90B; color:#000; padding:5px 14px; border-radius:6px; font-size:12px; font-weight:700; white-space:nowrap; }
+
+/* OP Activity Banner */
+.op-banner { background:rgba(6,214,160,.07); border:1px solid rgba(6,214,160,.2); border-radius:8px; padding:11px 16px; margin-bottom:20px; display:flex; align-items:center; gap:10px; font-size:13px; }
+.op-label { background:#0ECB81; color:#000; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; white-space:nowrap; }
+.op-banner p { color:#848E9C; }
+.op-banner p strong { color:#0ECB81; }
+
+/* Chart area */
+.chart-wrap { background:#1a1d21; border:1px solid #2b2f38; border-radius:10px; overflow:hidden; margin-bottom:16px; }
+.chart-timeframes { display:flex; gap:2px; padding:10px 14px 0; }
+.tf { padding:4px 10px; border-radius:4px; font-size:12px; color:#848E9C; cursor:pointer; background:none; border:none; font-family:inherit; }
+.tf.active { background:#2b2f38; color:#e8e8e8; }
+.chart-svg-wrap { padding:8px 14px 14px; }
+
+/* Info grid */
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.info-card { background:#1a1d21; border:1px solid #2b2f38; border-radius:8px; padding:16px; }
+.info-card h5 { font-size:11px; color:#848E9C; text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px; font-weight:500; }
+.info-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; font-size:13px; }
+.info-row:last-child { margin-bottom:0; }
+.info-row .lbl { color:#848E9C; }
+.info-row .val { font-weight:500; font-variant-numeric:tabular-nums; }
+.info-row .val a { color:#F0B90B; text-decoration:none; }
+.info-row .val a:hover { text-decoration:underline; }
+
+/* ========================================= */
+/* PHASE 2a: Create / Apply                  */
+/* ========================================= */
+.create-wrap { max-width:620px; margin:0 auto; padding:32px 20px; }
+
+.create-steps { display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:28px; }
+.cs-dot { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+.cs-dot.done { background:#F0B90B; color:#000; }
+.cs-dot.cur { background:#e8e8e8; color:#000; }
+.cs-dot.next { background:#1a1d21; border:1px solid #2b2f38; color:#848E9C; }
+.cs-line { width:48px; height:2px; background:#2b2f38; }
+.cs-line.done { background:#F0B90B; }
+.cs-labels { display:flex; justify-content:center; gap:0; margin-top:8px; }
+.cs-lbl { width:86px; text-align:center; font-size:11px; color:#848E9C; }
+.cs-lbl.cur { color:#e8e8e8; }
+
+.create-title { font-size:22px; font-weight:700; text-align:center; margin-bottom:6px; }
+.create-sub { color:#848E9C; font-size:14px; text-align:center; margin-bottom:32px; }
+
+.form-group { margin-bottom:18px; }
+.form-group label { display:block; font-size:13px; font-weight:500; color:#c8c8c8; margin-bottom:7px; }
+.form-group label .req { color:#F0B90B; }
+.form-group label .hint { color:#848E9C; font-size:12px; font-weight:400; margin-left:5px; }
+.input-row { position:relative; }
+.prefix { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#848E9C; font-size:13px; pointer-events:none; }
+.form-input, .form-ta {
+  width:100%; background:#1a1d21; border:1px solid #2b2f38; border-radius:8px;
+  padding:11px 14px; color:#e8e8e8; font-size:14px; font-family:inherit;
+  outline:none; transition:border-color .15s;
+}
+.form-input.pl { padding-left:36px; }
+.form-input:focus, .form-ta:focus { border-color:rgba(240,185,11,.5); }
+.form-input::placeholder, .form-ta::placeholder { color:#3a4050; }
+.form-ta { resize:vertical; min-height:80px; line-height:1.6; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+.submit-btn { width:100%; background:#F0B90B; color:#000; border:none; padding:13px; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; margin-top:8px; transition:opacity .15s; }
+.submit-btn:hover { opacity:.9; }
+
+.ai-preview { background:#1a1d21; border:1px solid #2b2f38; border-radius:10px; padding:16px; margin-top:24px; }
+.ai-preview-title { font-size:11px; color:#848E9C; text-transform:uppercase; letter-spacing:.07em; margin-bottom:12px; }
+.ai-crit { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.ai-crit:last-child { margin-bottom:0; }
+.ai-crit .crit-icon { font-size:15px; }
+.ai-crit .crit-name { flex:1; font-size:13px; color:#c8c8c8; }
+.ai-crit .crit-bar { width:100px; height:3px; background:#2b2f38; border-radius:2px; overflow:hidden; }
+.ai-crit .crit-bar-fill { height:100%; border-radius:2px; background:#F0B90B; }
+.ai-crit .crit-bar-fill.g { background:#0ECB81; }
+.ai-crit .crit-score { font-size:12px; color:#848E9C; width:32px; text-align:right; }
+
+.form-note { text-align:center; margin-top:14px; font-size:12px; color:#848E9C; line-height:1.6; }
+
+/* ========================================= */
+/* PHASE 2b: Token List + AI Popup           */
+/* ========================================= */
+.list-wrap { max-width:1100px; margin:0 auto; padding:16px 20px; }
+
+.filter-bar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.f-btn { padding:7px 14px; border-radius:6px; border:1px solid #2b2f38; background:#1a1d21; color:#848E9C; font-size:13px; cursor:pointer; transition:all .15s; }
+.f-btn.active { background:rgba(240,185,11,.1); border-color:rgba(240,185,11,.3); color:#F0B90B; font-weight:600; }
+.f-toggle { display:flex; align-items:center; gap:8px; margin-left:auto; font-size:13px; color:#848E9C; cursor:pointer; }
+.tog-track { width:36px; height:20px; border-radius:10px; background:#2b2f38; position:relative; transition:background .2s; flex-shrink:0; }
+.tog-track.on { background:#F0B90B; }
+.tog-thumb { width:16px; height:16px; border-radius:50%; background:#fff; position:absolute; top:2px; left:2px; transition:transform .2s; }
+.tog-track.on .tog-thumb { transform:translateX(16px); }
+
+.token-tbl { width:100%; border-collapse:separate; border-spacing:0; }
+.token-tbl th { padding:9px 12px; text-align:left; font-size:12px; color:#848E9C; font-weight:500; border-bottom:1px solid #2b2f38; }
+.token-tbl th.r { text-align:right; }
+.token-tbl td { padding:11px 12px; border-bottom:1px solid #1e2026; vertical-align:middle; }
+.token-tbl td.r { text-align:right; }
+.token-tbl tr:hover td { background:#14161e; cursor:pointer; }
+.rank { color:#848E9C; font-size:13px; }
+
+.tcell { display:flex; align-items:center; gap:10px; }
+.tavatar { width:36px; height:36px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.tname { font-weight:600; font-size:14px; line-height:1; }
+.tbadges { display:flex; gap:4px; margin-top:4px; align-items:center; flex-wrap:wrap; }
+
+/* Product badge (clickable for popup) */
+.badge-prod {
+  display:inline-flex; align-items:center; gap:3px;
+  background:rgba(240,185,11,.1); border:1px solid rgba(240,185,11,.28);
+  color:#F0B90B; padding:2px 8px; border-radius:4px;
+  font-size:11px; font-weight:600; cursor:pointer;
+  transition:background .15s; position:relative;
+}
+.badge-prod:hover { background:rgba(240,185,11,.2); }
+.badge-prod .dot { width:5px; height:5px; border-radius:50%; background:#F0B90B; }
+
+/* AI score circle */
+.ai-circle { width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+.ai-h { background:rgba(240,185,11,.12); color:#F0B90B; border:1.5px solid rgba(240,185,11,.35); }
+.ai-m { background:rgba(132,142,156,.1); color:#848E9C; border:1.5px solid #2b2f38; }
+
+.pval { font-variant-numeric:tabular-nums; font-size:13px; }
+
+/* ========================================= */
+/* AI POPUP                                  */
+/* ========================================= */
+.ai-popup {
+  position:fixed; z-index:300;
+  background:#1e2026; border:1px solid #2f3340;
+  border-radius:14px; width:310px;
+  box-shadow:0 24px 64px rgba(0,0,0,.75);
+  display:none;
+  animation:popIn .18s cubic-bezier(.2,.8,.3,1);
+  overflow:hidden;
+}
+.ai-popup.show { display:block; }
+@keyframes popIn {
+  from { opacity:0; transform:translateY(8px) scale(.96); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.pop-header { padding:14px 14px 12px; }
+.pop-tok-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.pop-avatar { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.pop-tok-name { font-weight:700; font-size:15px; }
+.pop-tok-desc { font-size:12px; color:#848E9C; margin-top:2px; line-height:1.4; }
+.pop-close { margin-left:auto; background:none; border:none; color:#848E9C; font-size:16px; cursor:pointer; padding:3px 7px; border-radius:5px; }
+.pop-close:hover { background:#2b2f38; color:#e8e8e8; }
+
+.pop-score-row { display:flex; align-items:center; gap:14px; padding:0 4px 4px; }
+
+/* SVG ring */
+.score-svg { width:68px; height:68px; flex-shrink:0; }
+.ring-bg { fill:none; stroke:#2b2f38; stroke-width:5; }
+.ring-val { fill:none; stroke:#F0B90B; stroke-width:5; stroke-linecap:round; transform-origin:center; transform:rotate(-90deg); }
+.ring-label { font-variant-numeric:tabular-nums; }
+
+.pop-verdict { flex:1; }
+.pop-verdict .verd { font-size:13px; font-weight:700; color:#0ECB81; margin-bottom:4px; }
+.pop-verdict .verd-sub { font-size:12px; color:#848E9C; line-height:1.55; }
+
+.pop-divider { height:1px; background:#2b2f38; margin:0 14px; }
+
+.pop-breakdown { padding:12px 14px; }
+.pop-bd-title { font-size:11px; color:#848E9C; text-transform:uppercase; letter-spacing:.07em; margin-bottom:10px; }
+.bd-item { display:flex; align-items:center; gap:8px; margin-bottom:9px; }
+.bd-item:last-child { margin-bottom:0; }
+.bd-icon { font-size:13px; }
+.bd-name { flex:1; font-size:12px; color:#c8c8c8; line-height:1.4; }
+.bd-bar { width:60px; height:3px; background:#2b2f38; border-radius:2px; overflow:hidden; flex-shrink:0; }
+.bd-bar-fill { height:100%; border-radius:2px; }
+.bfg { background:#0ECB81; }
+.bfy { background:#F0B90B; }
+.bfr { background:#F6465D; }
+.bd-score { font-size:12px; font-weight:700; width:28px; text-align:right; color:#e8e8e8; }
+
+.pop-detail { padding:10px 14px 14px; border-top:1px solid #2b2f38; font-size:12px; color:#848E9C; line-height:1.65; }
+.pop-detail strong { color:#e8e8e8; }
+
+.pop-links { padding:10px 14px 14px; display:flex; gap:8px; border-top:1px solid #2b2f38; }
+.pop-link { flex:1; padding:8px 6px; background:#2b2f38; border:none; border-radius:7px; color:#c8c8c8; font-size:12px; cursor:pointer; text-align:center; font-family:inherit; transition:background .15s; }
+.pop-link:hover { background:#363c48; }
+.pop-link .pl-ic { font-size:14px; display:block; margin-bottom:2px; }
+
+/* ========================================= */
+/* Responsive                                */
+/* ========================================= */
+@media(max-width:700px){
+  .info-grid { grid-template-columns:1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .token-tbl th.hide, .token-tbl td.hide { display:none; }
+}
+
+/* ===== Phase 2a: Apply Modal ===== */
+.mf-apply-btn { background:#F0B90B; color:#000; border:none; padding:5px 14px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; margin-left:12px; transition:opacity .15s; white-space:nowrap; }
+.mf-apply-btn:hover { opacity:.85; }
+.mf-overlay { position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:200; display:none; backdrop-filter:blur(5px); }
+.mf-overlay.show { display:block; }
+.mf-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-54%); z-index:201; background:#1a1d21; border:1px solid #2b2f38; border-radius:14px; width:500px; max-width:94vw; max-height:86vh; overflow-y:auto; display:none; box-shadow:0 24px 80px rgba(0,0,0,.8); }
+.mf-modal.show { display:block; animation:popIn .2s cubic-bezier(.2,.8,.3,1); }
+.mf-modal-hdr { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid #2b2f38; position:sticky; top:0; background:#1a1d21; z-index:1; border-radius:14px 14px 0 0; }
+.mf-modal-title { font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.mf-modal-close { background:none; border:none; color:#848E9C; font-size:18px; cursor:pointer; padding:2px 8px; border-radius:6px; }
+.mf-modal-close:hover { background:#2b2f38; color:#e8e8e8; }
+.mf-modal-body { padding:20px; }
+.mf-step-row { display:flex; align-items:center; gap:0; margin-bottom:20px; justify-content:center; }
+.mf-step { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.mf-step-dot { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+.mf-dot-cur { background:#F0B90B; color:#000; }
+.mf-dot-nxt { background:#1e2228; border:1px solid #2b2f38; color:#848E9C; }
+.mf-step-line { width:40px; height:1px; background:#2b2f38; margin-top:10px; }
+.mf-step-lbl { font-size:10px; color:#848E9C; white-space:nowrap; }
+.mf-step-lbl.cur { color:#e8e8e8; }
+.mf-field { margin-bottom:14px; }
+.mf-label { font-size:12px; font-weight:500; color:#c8c8c8; margin-bottom:6px; display:block; }
+.mf-label .req { color:#F0B90B; }
+.mf-wrap { position:relative; }
+.mf-pfx { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#848E9C; font-size:12px; pointer-events:none; }
+.mf-input, .mf-ta { width:100%; background:#0f1115; border:1px solid #2b2f38; border-radius:7px; padding:10px 13px; color:#e8e8e8; font-size:13px; font-family:inherit; outline:none; transition:border-color .15s; }
+.mf-input.pl { padding-left:32px; }
+.mf-input:focus, .mf-ta:focus { border-color:rgba(240,185,11,.45); }
+.mf-input::placeholder, .mf-ta::placeholder { color:#2a3040; }
+.mf-ta { resize:vertical; min-height:68px; line-height:1.6; }
+.mf-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.mf-submit { width:100%; background:#F0B90B; color:#000; border:none; padding:12px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; margin-top:6px; transition:opacity .15s; }
+.mf-submit:hover { opacity:.88; }
+.mf-note { font-size:11px; color:#3a4555; text-align:center; margin-top:10px; line-height:1.6; }
+
+/* ===== Phase 2b: AI Score Badge ===== */
+.badge-pm-ai { display:inline-flex; align-items:center; gap:3px; background:rgba(240,185,11,.1); border:1px solid rgba(240,185,11,.28); color:#F0B90B; padding:1px 5px; border-radius:3px; font-size:10px; font-weight:700; cursor:pointer; transition:background .15s; white-space:nowrap; flex-shrink:0; line-height:1.5; }
+.badge-pm-ai:hover { background:rgba(240,185,11,.2); }
+.ais-chip { background:#F0B90B; color:#000; border-radius:2px; padding:0 3px; font-size:9px; font-weight:800; }
+.ais-chip.low { background:#2b2f38; color:#848E9C; }
+
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── 4meme Preset & Create Token Modal ──────────────────────── */
+.mf-preset-tabs { display:flex; gap:6px; margin-top:6px; }
+.mf-preset-tab { background:#2b2f38; color:#848E9C; border:1px solid #383c46; border-radius:6px; padding:5px 14px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; }
+.mf-preset-tab:hover { color:#e8e8e8; border-color:#5a5f6e; }
+.mf-preset-tab.active { background:rgba(240,185,11,.15); color:#F0B90B; border-color:#F0B90B; }
+.mf-preset-desc { margin-top:7px; font-size:11px; color:#848E9C; }
+.mf-section-lbl { font-size:11px; font-weight:700; color:#F0B90B; letter-spacing:.06em; text-transform:uppercase; margin:16px 0 10px; display:flex; align-items:center; gap:6px; }
+.mf-section-lbl::before,.mf-section-lbl::after { content:''; flex:1; height:1px; background:rgba(240,185,11,.2); }
+.mf-section-lbl.gray { color:#848E9C; }
+.mf-section-lbl.gray::before,.mf-section-lbl.gray::after { background:#2b2f38; }
+.mf-upload-zone { border:1.5px dashed #2b2f38; border-radius:8px; padding:14px; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; transition:border-color .15s; }
+.mf-upload-zone:hover { border-color:#F0B90B; }
+.mf-upload-ic { font-size:20px; }
+.mf-upload-hint { font-size:11px; color:#848E9C; }
+.mf-sfx { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:11px; color:#848E9C; pointer-events:none; }
+.mf-wrap { position:relative; }
+.mf-wrap .mf-sfx { color:#848E9C; }
+.mf-divider { display:flex; align-items:center; gap:10px; margin:18px 0 14px; font-size:11px; color:#848E9C; font-weight:600; letter-spacing:.04em; }
+.mf-divider::before,.mf-divider::after { content:''; flex:1; height:1px; background:#2b2f38; }
+
+</style>
+</head>
+<body>
+
+<!-- Phase Bar -->
+<div class="phase-bar">
+  <div class="brand">⚡ MemeForge</div>
+  <div class="phase-tab active" onclick="switchView('p1')">Phase 1 · MVP</div>
+  <div class="phase-sep">|</div>
+  <div class="phase-tab" onclick="switchView('p2a')">Phase 2 · Create 入口</div>
+  <div class="phase-tab" onclick="switchView('p2b')">Phase 2 · AI 真实性评分</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- VIEW 1: Token Detail Page (Phase 1 MVP)                     -->
+<!-- ============================================================ -->
+<div id="v-p1" class="view active">
+<div class="mr-page">
+
+  <!-- MemeRush header bar -->
+  <div class="mr-header">
+    <span class="mr-title">Meme Rush</span>
+    <div class="mr-htabs">
+      <div class="mr-htab on">跟踪</div>
+      <div class="mr-htab">Watchlist</div>
+      <div class="mr-htab">持仓</div>
+    </div>
+    <div class="mr-hicons">
+      <div class="mr-icon">⊞</div>
+      <div class="mr-icon">🔔</div>
+      <div class="mr-icon">⚙</div>
+    </div>
+  </div>
+
+  <!-- Three-column list -->
+  <div class="mr-cols">
+
+    <!-- COL 1: 新币 -->
+    <div class="mr-col">
+      <div class="col-hdr">
+        <div class="col-hdr-r1">
+          <span class="col-nm">新币</span>
+          <span class="col-count">1,284</span>
+          <input class="col-search" placeholder="搜索 Token">
+        </div>
+        <div class="col-hdr-r2">
+          <button class="cpill on">P1</button>
+          <button class="cpill">P2</button>
+          <button class="cpill">P3</button>
+          <span class="col-filter-icon">🎛</span>
+        </div>
+      </div>
+
+      <!-- SCI-BOT ✦ Product -->
+      <div class="tc product-tc" onclick="">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#2a2010,#3d3018)">
+            🤖
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">SCI-BOT</span>
+              <span class="badge-pm"><span class="pm-star">✦</span> Product</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$140K</span></div>
+                <div>MC <span>$4.1M</span></div>
+                <div>TX <span>892</span></div>
+                <div class="bar"><div class="bar-fill" style="width:72%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">AI 代码分析工具，实时监控 BSC 链上交易异常，自动触发风控告警并推送 Telegram。</div>
+            <a class="tc-website" href="#">🌐 scibot.io</a>
+            <div class="tc-meta"><span>3m</span><span>🔍</span><span>👥 89</span></div>
+            <div class="tc-addr">0x4f2a...e9c3</div>
+            <div class="tc-xpost">
+              <div class="tc-xp-hdr">
+                <div><div class="tc-xp-av" style="background:linear-gradient(135deg,#2a2010,#3d3018)">🤖</div><span class="tc-xp-handle">@scibotofficial</span></div>
+                <div class="tc-xp-x">✕</div>
+              </div>
+              <div class="tc-xp-text">🚨 Alert fired: 0x4f2a triggered +$2.1M swap on PancakeSwap. SCI-BOT detected this 4 seconds before any other tool. BSC never sleeps 🔍 $SCIBOT</div>
+              <img class="tc-xp-img" src="memeforge_xpost_scibot.png" alt="">
+              <div class="tc-xp-foot"><span>❤️ 341</span><span>📊 12.4K</span></div>
+            </div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-g">▲2,638%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEPE2 (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#0a2010,#0f3018)">
+            🐸
+            <div class="cdot cdot-sol">S</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">PEPE2</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$2.1M</span></div>
+                <div>MC <span>$85K</span></div>
+                <div>TX <span>1,204</span></div>
+                <div class="bar"><div class="bar-fill" style="width:95%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">Green frog meme · 没有实际功能</div>
+            <div class="tc-meta"><span>12m</span><span>🔍</span><span>👥 234</span></div>
+            <div class="tc-addr">0xa3b1...f229</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲3</span>
+              <span class="tt tt-g">▲89%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4lpha AI ✦ Product -->
+      <div class="tc product-tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#1a0d30,#2d1850)">
+            🔮
+            <div class="cdot cdot-sol">S</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">4lpha AI</span>
+              <span class="badge-pm"><span class="pm-star">✦</span> Product</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$48K</span></div>
+                <div>MC <span>$2.2M</span></div>
+                <div>TX <span>203</span></div>
+                <div class="bar"><div class="bar-fill" style="width:45%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">聚合 SOL 链上链下 Alpha 信号，KOL 动态 + 大单预警实时推送，抓早期机会。</div>
+            <a class="tc-website" href="#">🌐 4lphaai.xyz</a>
+            <div class="tc-meta"><span>28m</span><span>🔍</span><span>👥 61</span></div>
+            <div class="tc-addr">0xc9e4...8a11</div>
+            <div class="tc-xpost">
+              <div class="tc-xp-hdr">
+                <div><div class="tc-xp-av" style="background:linear-gradient(135deg,#1a0d30,#2d1850)">🔮</div><span class="tc-xp-handle">@4lphaai_xyz</span></div>
+                <div class="tc-xp-x">✕</div>
+              </div>
+              <div class="tc-xp-text">Top signal this week: $WIF accumulated by 3 whale wallets before 400% pump. 4lpha caught the pattern 6h early. We are not normal traders 🟣</div>
+              <div class="tc-xp-foot"><span>❤️ 892</span><span>📊 44.1K</span></div>
+            </div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲2</span>
+              <span class="tt tt-g">▲430%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WOJAK (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#1c1c20,#28282e)">
+            😢
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">WOJAK</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$890K</span></div>
+                <div>MC <span>$12K</span></div>
+                <div>TX <span>534</span></div>
+                <div class="bar"><div class="bar-fill" style="width:55%;background:#F6465D"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">meme coin · 无产品</div>
+            <div class="tc-meta"><span>45m</span><span>🔍</span><span>👥 178</span></div>
+            <div class="tc-addr">0x77f2...1c04</div>
+            <div class="tc-tags">
+              <span class="tt tt-r">▼2</span>
+              <span class="tt tt-r">▼12%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOGE3 (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#2a2000,#3d3000)">
+            🐕
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">DOGE3</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$1.2M</span></div>
+                <div>MC <span>$28K</span></div>
+                <div>TX <span>892</span></div>
+                <div class="bar"><div class="bar-fill" style="width:80%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">doge fork · 社区驱动</div>
+            <div class="tc-meta"><span>1h</span><span>🔍</span><span>👥 312</span></div>
+            <div class="tc-addr">0x5d11...a802</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲5</span>
+              <span class="tt tt-g">▲45%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COL 2: 即将发行 -->
+    <div class="mr-col">
+      <div class="col-hdr">
+        <div class="col-hdr-r1">
+          <span class="col-nm">即将发行</span>
+          <span class="col-count">389</span>
+          <input class="col-search" placeholder="搜索 Token">
+        </div>
+        <div class="col-hdr-r2">
+          <button class="cpill on">P1</button>
+          <button class="cpill">P2</button>
+          <button class="cpill">P3</button>
+          <span class="col-filter-icon">🎛</span>
+        </div>
+      </div>
+
+      <!-- CodeRush ✦ Product -->
+      <div class="tc product-tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#001240,#002070)">
+            ⌨️
+            <div class="cdot cdot-base">Ba</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">CodeRush</span>
+              <span class="badge-pm"><span class="pm-star">✦</span> Product</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$31K</span></div>
+                <div>MC <span>$1.8M</span></div>
+                <div>TX <span>142</span></div>
+                <div class="bar"><div class="bar-fill" style="width:38%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">基于 LLM 的代码生成助手，支持 Solidity 合约审计与自动补全，部署在 Base 链。</div>
+            <a class="tc-website" href="#">🌐 coderush.build</a>
+            <div class="tc-meta"><span>2h</span><span>🔍</span><span>👥 44</span></div>
+            <div class="tc-addr">0x8e22...b330</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-g">▲189%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOON (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#1a0a30,#2d1850)">
+            🌕
+            <div class="cdot cdot-sol">S</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">MOON</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$340K</span></div>
+                <div>MC <span>$7K</span></div>
+                <div>TX <span>445</span></div>
+                <div class="bar"><div class="bar-fill" style="width:48%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">moon meme · to the moon 🚀</div>
+            <div class="tc-meta"><span>3h</span><span>🔍</span><span>👥 87</span></div>
+            <div class="tc-addr">0xf031...cc92</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲2</span>
+              <span class="tt tt-g">▲12%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PettiChat ✦ Product -->
+      <div class="tc product-tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#300020,#500038)">
+            💬
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">PettiChat</span>
+              <span class="badge-pm"><span class="pm-star">✦</span> Product</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$56K</span></div>
+                <div>MC <span>$1.4M</span></div>
+                <div>TX <span>187</span></div>
+                <div class="bar"><div class="bar-fill" style="width:42%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">链上 AI 聊天助手，支持 BSC 钱包登录，多轮对话历史上链存储，数据自主可控。</div>
+            <a class="tc-website" href="#">🌐 pettichat.ai</a>
+            <div class="tc-meta"><span>4h</span><span>🔍</span><span>👥 52</span></div>
+            <div class="tc-addr">0xd44a...7e18</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-g">▲320%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPUD (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#1a1208,#2d2010)">
+            🥔
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">SPUD</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$3K</span></div>
+                <div>MC <span>$26K</span></div>
+                <div>TX <span>96</span></div>
+                <div class="bar"><div class="bar-fill" style="width:20%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">potato meme · 低流动性</div>
+            <div class="tc-meta"><span>4d</span><span>🔍</span><span>👥 19</span></div>
+            <div class="tc-addr">0x1122...ee05</div>
+            <div class="tc-tags">
+              <span class="tt tt-r">▼1</span>
+              <span class="tt tt-r">▼8%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COL 3: 已迁移 -->
+    <div class="mr-col">
+      <div class="col-hdr">
+        <div class="col-hdr-r1">
+          <span class="col-nm">已迁移</span>
+          <span class="col-count">5,891</span>
+          <input class="col-search" placeholder="搜索 Token">
+        </div>
+        <div class="col-hdr-r2">
+          <button class="cpill on">P1</button>
+          <button class="cpill">P2</button>
+          <button class="cpill">P3</button>
+          <span class="col-filter-icon">🎛</span>
+        </div>
+      </div>
+
+      <!-- VITALIK (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#10102a,#1a1a40)">
+            👴
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">VITALIK</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$18K</span></div>
+                <div>MC <span>$7.9M</span></div>
+                <div>TX <span>118</span></div>
+                <div class="bar"><div class="bar-fill" style="width:30%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">Tribute meme · community</div>
+            <div class="tc-meta"><span>5h</span><span>🔍</span><span>👥 1,204</span></div>
+            <div class="tc-addr">0xab34...6601</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-g">▲8%</span>
+              <span class="tt tt-gr">⬛ 2%</span>
+              <span class="tt tt-gr">⬛ 1%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORLDCUP26 (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#0a1a0a,#0f280f)">
+            ⚽
+            <div class="cdot cdot-bsc">B</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">WORLDCUP26</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$612</span></div>
+                <div>MC <span>$67K</span></div>
+                <div>TX <span>24</span></div>
+                <div class="bar"><div class="bar-fill" style="width:12%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">FIFA 2026 应援 meme</div>
+            <div class="tc-meta"><span>5d</span><span>🔍</span><span>👥 22</span></div>
+            <div class="tc-addr">0x6d55...2214</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-r">▼3%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTR Citrea ✦ Product -->
+      <div class="tc product-tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#201010,#381818)">
+            🔴
+            <div class="cdot cdot-base">Ba</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">CTR</span>
+              <span class="badge-pm"><span class="pm-star">✦</span> Product</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$4</span></div>
+                <div>MC <span>$167M</span></div>
+                <div>TX <span>2</span></div>
+                <div class="bar"><div class="bar-fill" style="width:18%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">Citrea BTC ZK Rollup 协议代币，首个在比特币上部署 ZK 证明的 L2，主网已上线。</div>
+            <a class="tc-website" href="#">🌐 citrea.xyz</a>
+            <div class="tc-meta"><span>1d</span><span>🔍</span><span>👥 3,401</span></div>
+            <div class="tc-addr">0xcc99...1f87</div>
+            <div class="tc-xpost">
+              <div class="tc-xp-hdr">
+                <div><div class="tc-xp-av" style="background:linear-gradient(135deg,#201010,#381818)">🔴</div><span class="tc-xp-handle">@citrea_xyz</span></div>
+                <div class="tc-xp-x">✕</div>
+              </div>
+              <div class="tc-xp-text">Citrea mainnet is live. The first ZK Rollup on Bitcoin. No trust assumptions. Just math. $CTR is the network fee token. We built this for years.</div>
+              <img class="tc-xp-img" src="memeforge_xpost_citrea.png" alt="">
+              <div class="tc-xp-foot"><span>❤️ 2.1K</span><span>📊 108K</span></div>
+            </div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲1</span>
+              <span class="tt tt-g">▲2%</span>
+              <span class="tt tt-gr">⬛ 8%</span>
+              <span class="tt tt-gr">⬛ 3%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRUMP2 (no product) -->
+      <div class="tc">
+        <div class="tc-body">
+          <div class="tc-av" style="background:linear-gradient(135deg,#20100a,#381810)">
+            🏛️
+            <div class="cdot cdot-sol">S</div>
+          </div>
+          <div class="tc-main">
+            <div class="tc-r1">
+              <span class="tc-name">TRUMP2</span>
+              <div class="tc-vmc" style="margin-left:auto">
+                <div>V <span>$445K</span></div>
+                <div>MC <span>$92K</span></div>
+                <div>TX <span>678</span></div>
+                <div class="bar"><div class="bar-fill" style="width:65%"></div></div>
+              </div>
+            </div>
+            <div class="tc-desc">Political meme · 高波动</div>
+            <div class="tc-meta"><span>2d</span><span>🔍</span><span>👥 891</span></div>
+            <div class="tc-addr">0x9f00...3312</div>
+            <div class="tc-tags">
+              <span class="tt tt-g">▲4</span>
+              <span class="tt tt-g">▲67%</span>
+              <span class="tt tt-gr">⬛ 1%</span>
+              <span class="tt tt-gr">⬛ 0%</span>
+              <span class="tt tt-gr">💤 0%</span>
+              <button class="buy-btn">⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<!-- ============================================================ -->
+<!-- ============================================================ -->
+<!-- VIEW 2a: MemeRush + Apply Modal (Phase 2 · Create 入口)    -->
+<!-- ============================================================ -->
+<div id="v-p2a" class="view">
+<div class="mr-page" style="position:relative;">
+  <div class="mr-header">
+    <span class="mr-title">Meme Rush</span>
+    <div class="mr-htabs"><div class="mr-htab on">跟踪</div><div class="mr-htab">Watchlist</div><div class="mr-htab">持仓</div></div>
+    <div class="mr-hicons"><div class="mr-icon">⊞</div><div class="mr-icon">🔔</div><div class="mr-icon">⚙</div></div>
+    <button class="mf-apply-btn" onclick="openApplyModal()">🪙 4meme 发币</button>
+  </div>
+  <div class="mr-cols">
+    <!-- COL 1 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">新币</span><span class="col-count">1,284</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a2010,#3d3018)">🤖<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">SCI-BOT</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$140K</span></div><div>MC <span>$4.1M</span></div><div>TX <span>892</span></div><div class="bar"><div class="bar-fill" style="width:72%;"></div></div></div></div>
+            <div class="tc-desc">AI 代码分析工具，实时监控 BSC 链上交易异常，自动触发风控告警并推送 Telegram。</div>
+            <a class="tc-website" href="#">🌐 scibot.io</a>
+            <div class="tc-meta"><span>3m</span><span>🔍</span><span>👥 89</span></div>
+            <div class="tc-addr">0x4f2a...e9c3</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲2,638%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#0a2010,#0f3018)">🐸<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">PEPE2</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$2.1M</span></div><div>MC <span>$85K</span></div><div>TX <span>1,204</span></div><div class="bar"><div class="bar-fill" style="width:95%;"></div></div></div></div>
+            <div class="tc-desc">Green frog meme · 没有实际功能</div>
+            <div class="tc-meta"><span>12m</span><span>🔍</span><span>👥 234</span></div>
+            <div class="tc-addr">0xa3b1...f229</div>
+            <div class="tc-tags"><span class="tt tt-g">▲3</span><span class="tt tt-g">▲89%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1a0d30,#2d1850)">🔮<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">4lpha AI</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$48K</span></div><div>MC <span>$2.2M</span></div><div>TX <span>203</span></div><div class="bar"><div class="bar-fill" style="width:45%;"></div></div></div></div>
+            <div class="tc-desc">聚合 SOL 链上链下 Alpha 信号，KOL 动态 + 大单预警实时推送，抓早期机会。</div>
+            <a class="tc-website" href="#">🌐 4lphaai.xyz</a>
+            <div class="tc-meta"><span>28m</span><span>🔍</span><span>👥 61</span></div>
+            <div class="tc-addr">0xc9e4...8a11</div>
+            <div class="tc-tags"><span class="tt tt-g">▲2</span><span class="tt tt-g">▲430%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1c1c20,#28282e)">😢<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">WOJAK</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$890K</span></div><div>MC <span>$12K</span></div><div>TX <span>534</span></div><div class="bar"><div class="bar-fill" style="width:55%;background:var(--red)"></div></div></div></div>
+            <div class="tc-desc">meme coin · 无产品</div>
+            <div class="tc-meta"><span>45m</span><span>🔍</span><span>👥 178</span></div>
+            <div class="tc-addr">0x77f2...1c04</div>
+            <div class="tc-tags"><span class="tt tt-r">▼2</span><span class="tt tt-r">▼12%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a2000,#3d3000)">🐕<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">DOGE3</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$1.2M</span></div><div>MC <span>$28K</span></div><div>TX <span>892</span></div><div class="bar"><div class="bar-fill" style="width:80%;"></div></div></div></div>
+            <div class="tc-desc">doge fork · 社区驱动</div>
+            <div class="tc-meta"><span>1h</span><span>🔍</span><span>👥 312</span></div>
+            <div class="tc-addr">0x5d11...a802</div>
+            <div class="tc-tags"><span class="tt tt-g">▲5</span><span class="tt tt-g">▲45%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+    <!-- COL 2 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">即将发行</span><span class="col-count">389</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#001240,#002070)">⌨️<div class="cdot cdot-base">Ba</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">CodeRush</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$31K</span></div><div>MC <span>$1.8M</span></div><div>TX <span>142</span></div><div class="bar"><div class="bar-fill" style="width:38%;"></div></div></div></div>
+            <div class="tc-desc">基于 LLM 的代码生成助手，支持 Solidity 合约审计与自动补全，部署在 Base 链。</div>
+            <a class="tc-website" href="#">🌐 coderush.build</a>
+            <div class="tc-meta"><span>2h</span><span>🔍</span><span>👥 44</span></div>
+            <div class="tc-addr">0x8e22...b330</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲189%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1a0a30,#2d1850)">🌕<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">MOON</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$340K</span></div><div>MC <span>$7K</span></div><div>TX <span>445</span></div><div class="bar"><div class="bar-fill" style="width:48%;"></div></div></div></div>
+            <div class="tc-desc">moon meme · to the moon</div>
+            <div class="tc-meta"><span>3h</span><span>🔍</span><span>👥 87</span></div>
+            <div class="tc-addr">0xf031...cc92</div>
+            <div class="tc-tags"><span class="tt tt-g">▲2</span><span class="tt tt-g">▲12%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#300020,#500038)">💬<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">PettiChat</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$56K</span></div><div>MC <span>$1.4M</span></div><div>TX <span>187</span></div><div class="bar"><div class="bar-fill" style="width:42%;"></div></div></div></div>
+            <div class="tc-desc">链上 AI 聊天助手，支持 BSC 钱包登录，多轮对话历史上链存储，数据自主可控。</div>
+            <a class="tc-website" href="#">🌐 pettichat.ai</a>
+            <div class="tc-meta"><span>4h</span><span>🔍</span><span>👥 52</span></div>
+            <div class="tc-addr">0xd44a...7e18</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲320%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1a1208,#2d2010)">🥔<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">SPUD</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$3K</span></div><div>MC <span>$26K</span></div><div>TX <span>96</span></div><div class="bar"><div class="bar-fill" style="width:20%;background:var(--red)"></div></div></div></div>
+            <div class="tc-desc">potato meme · 低流动性</div>
+            <div class="tc-meta"><span>4d</span><span>🔍</span><span>👥 19</span></div>
+            <div class="tc-addr">0xb920...2231</div>
+            <div class="tc-tags"><span class="tt tt-r">▼1</span><span class="tt tt-r">▼34%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+    <!-- COL 3 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">已迁移</span><span class="col-count">5,891</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#001830,#002d55)">📊<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">CTR</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$892K</span></div><div>MC <span>$18M</span></div><div>TX <span>2,340</span></div><div class="bar"><div class="bar-fill" style="width:88%;"></div></div></div></div>
+            <div class="tc-desc">DeFi 数据聚合 · 链上追踪</div>
+            <div class="tc-meta"><span>3d</span><span>🔍</span><span>👥 1,204</span></div>
+            <div class="tc-addr">0x1a4c...33fe</div>
+            <div class="tc-tags"><span class="tt tt-g">▲8</span><span class="tt tt-g">▲156%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a1500,#3d2000)">🦴<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">BONK2</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$4.5M</span></div><div>MC <span>$120K</span></div><div>TX <span>8,901</span></div><div class="bar"><div class="bar-fill" style="width:100%;"></div></div></div></div>
+            <div class="tc-desc">BONK fork · 社区 meme</div>
+            <div class="tc-meta"><span>7d</span><span>🔍</span><span>👥 5,621</span></div>
+            <div class="tc-addr">0x9e12...aa08</div>
+            <div class="tc-tags"><span class="tt tt-g">▲12</span><span class="tt tt-g">▲67%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#180030,#2a0055)">🎭<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">CHAD</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$1.8M</span></div><div>MC <span>$55K</span></div><div>TX <span>3,412</span></div><div class="bar"><div class="bar-fill" style="width:60%;"></div></div></div></div>
+            <div class="tc-desc">chad meme · 强势持有者社区</div>
+            <div class="tc-meta"><span>14d</span><span>🔍</span><span>👥 2,890</span></div>
+            <div class="tc-addr">0x3e22...b109</div>
+            <div class="tc-tags"><span class="tt tt-g">▲6</span><span class="tt tt-g">▲23%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#0a2030,#102840)">🧠<div class="cdot cdot-base">Ba</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">NeuralNet</span><span class="badge-pm"><span>✦</span> Product</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$230K</span></div><div>MC <span>$6.2M</span></div><div>TX <span>671</span></div><div class="bar"><div class="bar-fill" style="width:52%;"></div></div></div></div>
+            <div class="tc-desc">去中心化 AI 推理网络</div>
+            <div class="tc-meta"><span>21d</span><span>🔍</span><span>👥 445</span></div>
+            <div class="tc-addr">0x4422...c890</div>
+            <div class="tc-tags"><span class="tt tt-g">▲3</span><span class="tt tt-g">▲78%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+  </div>
+</div>
+
+  <!-- Apply overlay -->
+  <div class="mf-overlay" id="p2aOverlay" onclick="closeApplyModal()"></div>
+  <!-- Apply modal -->
+  <div class="mf-modal" id="p2aModal">
+    <div class="mf-modal-hdr">
+      <div class="mf-modal-title"><span>🪙</span> 通过 4meme 发布 Token</div>
+      <button class="mf-modal-close" onclick="closeApplyModal()">✕</button>
+    </div>
+    <div class="mf-modal-body" id="p2aModalBody">
+      <div class="mf-step-row">
+        <div class="mf-step"><div class="mf-step-dot mf-dot-cur">1</div><div class="mf-step-lbl cur">填写信息</div></div>
+        <div class="mf-step-line"></div>
+        <div class="mf-step"><div class="mf-step-dot mf-dot-nxt">2</div><div class="mf-step-lbl">发布上链</div></div>
+        <div class="mf-step-line"></div>
+        <div class="mf-step"><div class="mf-step-dot mf-dot-nxt">3</div><div class="mf-step-lbl">获得认证</div></div>
+      </div>
+
+      <div class="mf-section-lbl">4meme 发行参数</div>
+
+      <!-- Preset selector -->
+      <div class="mf-field">
+        <label class="mf-label">发行模板 <span class="req">*</span></label>
+        <div class="mf-preset-tabs">
+          <button class="mf-preset-tab active" onclick="switchPreset('normal')">普通</button>
+          <button class="mf-preset-tab" onclick="switchPreset('preset1')">Preset 1</button>
+          <button class="mf-preset-tab" onclick="switchPreset('preset2')">Preset 2</button>
+        </div>
+        <div class="mf-preset-desc" id="presetDesc">标准发行，填写基础 Token 信息即可上线</div>
+      </div>
+
+      <!-- Basic fields: all presets -->
+      <div class="mf-grid2">
+        <div class="mf-field"><label class="mf-label">Token 名称 <span class="req">*</span></label><input class="mf-input" placeholder="e.g. SCI-BOT"></div>
+        <div class="mf-field"><label class="mf-label">Ticker <span class="req">*</span></label><input class="mf-input" placeholder="e.g. SCIBOT"></div>
+      </div>
+      <div class="mf-grid2">
+        <div class="mf-field"><label class="mf-label">TG Link</label><div class="mf-wrap"><span class="mf-pfx">✈</span><input class="mf-input pl" placeholder="t.me/yourgroup"></div></div>
+        <div class="mf-field"><label class="mf-label">Website</label><div class="mf-wrap"><span class="mf-pfx">🌐</span><input class="mf-input pl" placeholder="https://..."></div></div>
+      </div>
+      <div class="mf-field">
+        <label class="mf-label">Token Logo</label>
+        <div class="mf-upload-zone" onclick="document.getElementById('logoInput').click()">
+          <div class="mf-upload-ic" id="logoPreviewIc">📷</div>
+          <div class="mf-upload-hint">点击上传图片（建议 200×200 px，< 1 MB）</div>
+          <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="previewLogo(this)">
+        </div>
+      </div>
+
+      <!-- Preset 1 + 2: Paired Token & Dev 买入比例 -->
+      <div id="preset-p1-fields" style="display:none">
+        <div class="mf-grid2">
+          <div class="mf-field">
+            <label class="mf-label">Paired Token <span class="req">*</span></label>
+            <select class="mf-input" style="cursor:pointer">
+              <option value="">请选择</option>
+              <option>BNB</option><option>USDT</option><option>USDC</option><option>FDUSD</option>
+            </select>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">Dev 买入比例 <span class="req">*</span></label>
+            <div class="mf-wrap"><input class="mf-input pl" placeholder="0.5" type="number" min="0" max="10" step="0.1" style="padding-right:28px"><span class="mf-sfx">%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preset 2 only: Tax settings -->
+      <div id="preset-p2-fields" style="display:none">
+        <div class="mf-grid2">
+          <div class="mf-field">
+            <label class="mf-label">买入 Tax <span class="req">*</span></label>
+            <div class="mf-wrap"><input class="mf-input pl" placeholder="3" type="number" min="0" max="25" style="padding-right:28px"><span class="mf-sfx">%</span></div>
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">卖出 Tax <span class="req">*</span></label>
+            <div class="mf-wrap"><input class="mf-input pl" placeholder="3" type="number" min="0" max="25" style="padding-right:28px"><span class="mf-sfx">%</span></div>
+          </div>
+        </div>
+        <div class="mf-grid2">
+          <div class="mf-field">
+            <label class="mf-label">初始流动性 (BNB)</label>
+            <input class="mf-input" placeholder="e.g. 1.0" type="number" min="0.1" step="0.1">
+          </div>
+          <div class="mf-field">
+            <label class="mf-label">锁仓周期</label>
+            <select class="mf-input" style="cursor:pointer">
+              <option>不锁仓</option><option>30 天</option><option>90 天</option><option>180 天</option><option>365 天</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider: MemeForge certification fields below -->
+      <div class="mf-divider">MemeForge 认证信息（可选加速上榜）</div>
+      <div class="mf-field"><label class="mf-label">产品官网 <span class="req">*</span></label><div class="mf-wrap"><span class="mf-pfx">🌐</span><input class="mf-input pl" placeholder="https://sci-bot.ru"></div></div>
+      <div class="mf-field"><label class="mf-label">GitHub 仓库 <span class="req">*</span></label><div class="mf-wrap"><span class="mf-pfx">⌥</span><input class="mf-input pl" placeholder="github.com/your/repo"></div></div>
+      <div class="mf-field"><label class="mf-label">产品简介 <span class="req">*</span></label><textarea class="mf-ta" placeholder="简述你的产品功能、技术栈和当前用户数…"></textarea></div>
+      <div class="mf-field"><label class="mf-label">叙事定位</label><textarea class="mf-ta" style="min-height:54px" placeholder="这个 token 背后的故事是什么？（可选）"></textarea></div>
+      <button class="mf-submit" onclick="showApplySuccess()">🚀 一键发币 + 提交 MemeForge 认证</button>
+      <div class="mf-note">提交即同意 MemeForge 对你的代码仓库进行只读分析<br>通过后将在 MemeRush 列表展示 ✦ Product Meme 标签</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- VIEW 2b: MemeRush + AI Score Popup (Phase 2 · AI 评分)     -->
+<!-- ============================================================ -->
+<div id="v-p2b" class="view">
+<div class="mr-page">
+  <div class="mr-header">
+    <span class="mr-title">Meme Rush</span>
+    <div class="mr-htabs"><div class="mr-htab on">跟踪</div><div class="mr-htab">Watchlist</div><div class="mr-htab">持仓</div></div>
+    <div class="mr-hicons"><div class="mr-icon">⊞</div><div class="mr-icon">🔔</div><div class="mr-icon">⚙</div></div>
+  </div>
+  <div style="padding:6px 14px 4px;font-size:12px;color:#848E9C;background:#0d0f14;border-bottom:1px solid #1a1d24;">
+    点击 <span style="color:#F0B90B;background:rgba(240,185,11,.1);border:1px solid rgba(240,185,11,.28);padding:0 6px;border-radius:3px;font-size:10px;cursor:default;">✦ Product 8.2</span> 标签查看 AI 真实性评分
+  </div>
+  <div class="mr-cols">
+    <!-- COL 1 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">新币</span><span class="col-count">1,284</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a1040,#3d1858)">🎭<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">WAIFU</span><span class="badge-pm-ai" onclick="showPopup(event,'waifu')"><span>✦</span> Product <span class="ais-chip">8.9</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$140K</span></div><div>MC <span>$5.5M</span></div><div>TX <span>892</span></div><div class="bar"><div class="bar-fill" style="width:72%;"></div></div></div></div>
+            <div class="tc-desc">AI Agent + NFT 铸造平台 · waifu.fun</div>
+            <div class="tc-meta"><span>3m</span><span>🔍</span><span>👥 89</span></div>
+            <div class="tc-addr">0x4f2a...e9c3</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲2,638%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#0a2010,#0f3018)">🐸<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">PEPE2</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$2.1M</span></div><div>MC <span>$85K</span></div><div>TX <span>1,204</span></div><div class="bar"><div class="bar-fill" style="width:95%;"></div></div></div></div>
+            <div class="tc-desc">Green frog meme · 没有实际功能</div>
+            <div class="tc-meta"><span>12m</span><span>🔍</span><span>👥 234</span></div>
+            <div class="tc-addr">0xa3b1...f229</div>
+            <div class="tc-tags"><span class="tt tt-g">▲3</span><span class="tt tt-g">▲89%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#0a2010,#143018)">🤖<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">SYFR</span><span class="badge-pm-ai" onclick="showPopup(event,'syfr')"><span>✦</span> Product <span class="ais-chip">8.6</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$48K</span></div><div>MC <span>$1.17M</span></div><div>TX <span>203</span></div><div class="bar"><div class="bar-fill" style="width:45%;"></div></div></div></div>
+            <div class="tc-desc">AI 自动化交易策略 · syfrcoin.com</div>
+            <div class="tc-meta"><span>28m</span><span>🔍</span><span>👥 61</span></div>
+            <div class="tc-addr">0xc9e4...8a11</div>
+            <div class="tc-tags"><span class="tt tt-g">▲2</span><span class="tt tt-g">▲430%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1c1c20,#28282e)">😢<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">WOJAK</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$890K</span></div><div>MC <span>$12K</span></div><div>TX <span>534</span></div><div class="bar"><div class="bar-fill" style="width:55%;background:var(--red)"></div></div></div></div>
+            <div class="tc-desc">meme coin · 无产品</div>
+            <div class="tc-meta"><span>45m</span><span>🔍</span><span>👥 178</span></div>
+            <div class="tc-addr">0x77f2...1c04</div>
+            <div class="tc-tags"><span class="tt tt-r">▼2</span><span class="tt tt-r">▼12%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a2000,#3d3000)">🐕<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">DOGE3</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$1.2M</span></div><div>MC <span>$28K</span></div><div>TX <span>892</span></div><div class="bar"><div class="bar-fill" style="width:80%;"></div></div></div></div>
+            <div class="tc-desc">doge fork · 社区驱动</div>
+            <div class="tc-meta"><span>1h</span><span>🔍</span><span>👥 312</span></div>
+            <div class="tc-addr">0x5d11...a802</div>
+            <div class="tc-tags"><span class="tt tt-g">▲5</span><span class="tt tt-g">▲45%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+    <!-- COL 2 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">即将发行</span><span class="col-count">389</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#001830,#00304a)">🏦<div class="cdot cdot-base">Ba</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">GITBANK</span><span class="badge-pm-ai" onclick="showPopup(event,'gitbank')"><span>✦</span> Product <span class="ais-chip">8.4</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$31K</span></div><div>MC <span>$383K</span></div><div>TX <span>142</span></div><div class="bar"><div class="bar-fill" style="width:38%;"></div></div></div></div>
+            <div class="tc-desc">GitHub 合并触发链上支付 · gitbank.io</div>
+            <div class="tc-meta"><span>2h</span><span>🔍</span><span>👥 44</span></div>
+            <div class="tc-addr">0x8e22...b330</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲189%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1a0a30,#2d1850)">🌕<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">MOON</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$340K</span></div><div>MC <span>$7K</span></div><div>TX <span>445</span></div><div class="bar"><div class="bar-fill" style="width:48%;"></div></div></div></div>
+            <div class="tc-desc">moon meme · to the moon</div>
+            <div class="tc-meta"><span>3h</span><span>🔍</span><span>👥 87</span></div>
+            <div class="tc-addr">0xf031...cc92</div>
+            <div class="tc-tags"><span class="tt tt-g">▲2</span><span class="tt tt-g">▲12%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a1800,#3d2400)">🐒<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">WUKONG</span><span class="badge-pm-ai" onclick="showPopup(event,'wukong')"><span>✦</span> Product <span class="ais-chip low">6.8</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$56K</span></div><div>MC <span>$66K</span></div><div>TX <span>187</span></div><div class="bar"><div class="bar-fill" style="width:42%;"></div></div></div></div>
+            <div class="tc-desc">做空协议金库 · shortmeme.live</div>
+            <div class="tc-meta"><span>4h</span><span>🔍</span><span>👥 52</span></div>
+            <div class="tc-addr">0xd44a...7e18</div>
+            <div class="tc-tags"><span class="tt tt-g">▲1</span><span class="tt tt-g">▲320%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#1a1208,#2d2010)">🥔<div class="cdot cdot-bsc">B</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">SPUD</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$3K</span></div><div>MC <span>$26K</span></div><div>TX <span>96</span></div><div class="bar"><div class="bar-fill" style="width:20%;background:var(--red)"></div></div></div></div>
+            <div class="tc-desc">potato meme · 低流动性</div>
+            <div class="tc-meta"><span>4d</span><span>🔍</span><span>👥 19</span></div>
+            <div class="tc-addr">0xb920...2231</div>
+            <div class="tc-tags"><span class="tt tt-r">▼1</span><span class="tt tt-r">▼34%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+    <!-- COL 3 --><div class="mr-col"><div class="col-hdr">
+        <div class="col-hdr-r1"><span class="col-nm">已迁移</span><span class="col-count">5,891</span><input class="col-search" placeholder="搜索 Token"></div>
+        <div class="col-hdr-r2"><button class="cpill on">P1</button><button class="cpill">P2</button><button class="cpill">P3</button><span class="col-fi">🎛</span></div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#001528,#002040)">📊<div class="cdot cdot-base">Ba</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">COMPUTE</span><span class="badge-pm-ai" onclick="showPopup(event,'compute')"><span>✦</span> Product <span class="ais-chip">8.1</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$892K</span></div><div>MC <span>$202K</span></div><div>TX <span>2,340</span></div><div class="bar"><div class="bar-fill" style="width:88%;"></div></div></div></div>
+            <div class="tc-desc">链上量化终端 · computeonbase.com</div>
+            <div class="tc-meta"><span>3d</span><span>🔍</span><span>👥 1,204</span></div>
+            <div class="tc-addr">0x1a4c...33fe</div>
+            <div class="tc-tags"><span class="tt tt-g">▲8</span><span class="tt tt-g">▲156%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#2a1500,#3d2000)">🦴<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">BONK2</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$4.5M</span></div><div>MC <span>$120K</span></div><div>TX <span>8,901</span></div><div class="bar"><div class="bar-fill" style="width:100%;"></div></div></div></div>
+            <div class="tc-desc">BONK fork · 社区 meme</div>
+            <div class="tc-meta"><span>7d</span><span>🔍</span><span>👥 5,621</span></div>
+            <div class="tc-addr">0x9e12...aa08</div>
+            <div class="tc-tags"><span class="tt tt-g">▲12</span><span class="tt tt-g">▲67%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#180030,#2a0055)">🎭<div class="cdot cdot-sol">S</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">CHAD</span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$1.8M</span></div><div>MC <span>$55K</span></div><div>TX <span>3,412</span></div><div class="bar"><div class="bar-fill" style="width:60%;"></div></div></div></div>
+            <div class="tc-desc">chad meme · 强势持有者社区</div>
+            <div class="tc-meta"><span>14d</span><span>🔍</span><span>👥 2,890</span></div>
+            <div class="tc-addr">0x3e22...b109</div>
+            <div class="tc-tags"><span class="tt tt-g">▲6</span><span class="tt tt-g">▲23%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="tc ptc">
+        <div class="tc-body"><div class="tc-av" style="background:linear-gradient(135deg,#0f0a28,#1a1240)">🌟<div class="cdot cdot-base">Ba</div></div>
+          <div class="tc-main">
+            <div class="tc-r1"><span class="tc-name">STARGAZE</span><span class="badge-pm-ai" onclick="showPopup(event,'stargaze')"><span>✦</span> Product <span class="ais-chip">8.3</span></span><div class="tc-vmc" style="margin-left:auto"><div>V <span>$230K</span></div><div>MC <span>$133K</span></div><div>TX <span>671</span></div><div class="bar"><div class="bar-fill" style="width:52%;"></div></div></div></div>
+            <div class="tc-desc">隐私计算 + 物理 AI · stargaze.cc</div>
+            <div class="tc-meta"><span>21d</span><span>🔍</span><span>👥 445</span></div>
+            <div class="tc-addr">0x4422...c890</div>
+            <div class="tc-tags"><span class="tt tt-g">▲3</span><span class="tt tt-g">▲78%</span><span class="tt tt-gr">⬛ 0%</span><span class="tt tt-gr">💤 0%</span><button class="buy-btn">⚡</button></div>
+          </div>
+        </div>
+      </div></div>
+  </div>
+</div>
+
+<!-- AI Popup (Phase 2b) -->
+<div id="aiPopup" class="ai-popup">
+  <div class="pop-header">
+    <div class="pop-tok-row">
+      <div class="pop-avatar" id="popAvatar"></div>
+      <div><div class="pop-tok-name" id="popName"></div><div class="pop-tok-desc" id="popDesc"></div></div>
+      <button class="pop-close" onclick="closePopup()">✕</button>
+    </div>
+    <div class="pop-score-row">
+      <svg class="score-svg" viewBox="0 0 68 68">
+        <circle class="ring-bg" cx="34" cy="34" r="28"/>
+        <circle class="ring-val" id="popRingVal" cx="34" cy="34" r="28" stroke-dasharray="175.9" stroke-dashoffset="44"/>
+        <text class="ring-label" x="34" y="38" text-anchor="middle" font-size="16" font-weight="800" fill="#e8e8e8" id="popScoreNum">8.2</text>
+      </svg>
+      <div class="pop-verdict">
+        <div class="verd" id="popVerdict"></div>
+        <div class="verd-sub" id="popVerdSub"></div>
+      </div>
+    </div>
+  </div>
+  <div class="pop-divider"></div>
+  <div class="pop-breakdown">
+    <div class="pop-bd-title">评分维度</div>
+    <div class="bd-item"><span class="bd-icon">⌨️</span><span class="bd-name">代码功能一致性</span><div class="bd-bar"><div class="bd-bar-fill bfg" id="bd1" style="width:90%"></div></div><span class="bd-score" id="bs1">9/10</span></div>
+    <div class="bd-item"><span class="bd-icon">🌐</span><span class="bd-name">产品真实可访问性</span><div class="bd-bar"><div class="bd-bar-fill bfg" id="bd2" style="width:80%"></div></div><span class="bd-score" id="bs2">8/10</span></div>
+    <div class="bd-item"><span class="bd-icon">📈</span><span class="bd-name">活跃度与用户数据</span><div class="bd-bar"><div class="bd-bar-fill bfy" id="bd3" style="width:70%"></div></div><span class="bd-score" id="bs3">7/10</span></div>
+    <div class="bd-item"><span class="bd-icon">🔗</span><span class="bd-name">链上数据关联度</span><div class="bd-bar"><div class="bd-bar-fill bfy" id="bd4" style="width:75%"></div></div><span class="bd-score" id="bs4">7.5/10</span></div>
+  </div>
+  <div class="pop-detail" id="popDetail"></div>
+  <div class="pop-links">
+    <button class="pop-link" id="popWebLink"><span class="pl-ic">🌐</span>官网</button>
+    <button class="pop-link" id="popGitLink"><span class="pl-ic">⌥</span>GitHub</button>
+    <button class="pop-link"><span class="pl-ic">📊</span>完整报告</button>
+  </div>
+</div>
+</div>
+
+<script>
+
+// ---- Phase switcher ----
+function switchView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('v-' + id).classList.add('active');
+  event.target.classList.add('active');
+  closePopup();
+  closeApplyModal();
+}
+
+// ---- Apply modal ----
+function openApplyModal() {
+  document.getElementById('p2aOverlay').classList.add('show');
+  document.getElementById('p2aModal').classList.add('show');
+}
+function closeApplyModal() {
+  var o = document.getElementById('p2aOverlay');
+  var m = document.getElementById('p2aModal');
+  if (o) o.classList.remove('show');
+  if (m) m.classList.remove('show');
+}
+function showApplySuccess() {
+  document.getElementById('p2aModalBody').innerHTML =
+    '<div style="text-align:center;padding:40px 20px;">' +
+    '<div style="font-size:52px;margin-bottom:18px;">⚡</div>' +
+    '<h3 style="font-size:18px;font-weight:700;margin-bottom:8px;">申请已提交！</h3>' +
+    '<p style="color:#848E9C;margin-bottom:24px;font-size:13px;line-height:1.7;">AI 正在分析你的 GitHub 仓库和产品官网<br>预计 24h 内完成评估，结果将通过 Token 页面通知</p>' +
+    '<div style="background:#0f1115;border:1px solid #2b2f38;border-radius:10px;padding:18px;max-width:340px;margin:0 auto;text-align:left;">' +
+    '<div style="font-size:10px;color:#848E9C;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;">分析进度</div>' +
+    '<div style="display:flex;gap:10px;margin-bottom:9px;align-items:center;"><span>✅</span><span style="font-size:12px;color:#0ECB81">域名验证完成</span></div>' +
+    '<div style="display:flex;gap:10px;margin-bottom:9px;align-items:center;"><span>✅</span><span style="font-size:12px;color:#0ECB81">GitHub 仓库抓取完成</span></div>' +
+    '<div style="display:flex;gap:10px;margin-bottom:9px;align-items:center;"><span style="animation:spin 1.2s linear infinite;display:inline-block">⏳</span><span style="font-size:12px;color:#848E9C">代码功能一致性分析中…</span></div>' +
+    '<div style="display:flex;gap:10px;align-items:center;"><span style="color:#2b2f38">⬜</span><span style="font-size:12px;color:#3a4050">生成综合评分报告</span></div>' +
+    '</div>' +
+    '<button onclick="closeApplyModal()" style="margin-top:24px;background:#1a1d21;border:1px solid #2b2f38;border-radius:8px;padding:9px 24px;color:#848E9C;cursor:pointer;font-family:inherit;font-size:12px;">关闭</button>' +
+    '</div>';
+}
+
+// ---- AI Popup (Phase 2b) ----
+var tokenData = {
+  /* ── 真实产品型 token（ClawBot + DexScreener 核查）── */
+  waifu: { name:'WAIFU', desc:'AI Agent + NFT 平台 · BSC · Sol the Architect',
+    icon:'🎭', avatar:'linear-gradient(135deg,#2a1040,#3d1858)',
+    score:'8.9', offset:38, verdict:'✅ 真实产品',
+    verdSub:'文档完整，有 Twitter @0xSolace_，BSC 上产品率最高案例',
+    bd:[['92%','bfg','9.2/10'],['88%','bfg','8.8/10'],['85%','bfg','8.5/10'],['90%','bfg','9/10']],
+    detail:'waifu.fun + docs.waifu.fun 均可访问，AI Agent 与 NFT 铸造功能完整，Twitter 活跃，是本批 BSC 毕业 token 中唯一具备完整产品生态的项目，MC $5.48M。',
+    web:'waifu.fun', git:'docs.waifu.fun' },
+  gitbank: { name:'GITBANK', desc:'GitHub 驱动支付协议 · Base · $383K',
+    icon:'🏦', avatar:'linear-gradient(135deg,#001830,#00304a)',
+    score:'8.4', offset:46, verdict:'✅ 真实产品',
+    verdSub:'GitHub 监听 + 合并触发支付 + 预算锁仓，代码已开源',
+    bd:[['88%','bfg','8.8/10'],['85%','bfg','8.5/10'],['78%','bfy','7.8/10'],['86%','bfg','8.6/10']],
+    detail:'gitbank.io + docs + GitHub 三端完整。核心功能：监听 GitHub 合并事件自动触发链上支付，支持预算锁仓和贡献者分成。Base 链原生部署，是 Clanker 生态产品型 token 代表。',
+    web:'gitbank.io', git:'github.com/gitbank-io' },
+  compute: { name:'COMPUTE', desc:'链上量化终端 · Base · $202K',
+    icon:'📊', avatar:'linear-gradient(135deg,#001528,#002040)',
+    score:'8.1', offset:51, verdict:'✅ 真实产品',
+    verdSub:'Bloomberg Terminal 级别链上数据，机构级交易工具',
+    bd:[['85%','bfg','8.5/10'],['82%','bfg','8.2/10'],['76%','bfy','7.6/10'],['84%','bfg','8.4/10']],
+    detail:'computeonbase.com + docs + roadmap + whitepaper 完整。提供链上量化智能分析、Bloomberg Terminal 风格数据面板、Base 链机构级交易工具，是 Base 链交易工具类产品型 token 的典型案例。',
+    web:'computeonbase.com', git:'computeonbase.com/docs' },
+  syfr: { name:'SYFR', desc:'AI 自动化交易策略 · SOL · $1.17M',
+    icon:'🤖', avatar:'linear-gradient(135deg,#0a2010,#143018)',
+    score:'8.6', offset:42, verdict:'✅ 真实产品',
+    verdSub:'Myfxbook 有实盘交易记录，AI 策略功能可验证',
+    bd:[['90%','bfg','9/10'],['86%','bfg','8.6/10'],['80%','bfg','8/10'],['88%','bfg','8.8/10']],
+    detail:'syfrcoin.com 可访问，在 Myfxbook 上有公开的实盘 AI 自动化交易记录，策略表现可查证。SOL 链毕业 token 中 MC 最高的真实产品之一（$1.17M），是产品型 meme 在 SOL 上的代表案例。',
+    web:'syfrcoin.com', git:'syfrcoin.com' },
+  stargaze: { name:'STARGAZE', desc:'隐私计算 + 物理 AI · Base · $133K',
+    icon:'🌟', avatar:'linear-gradient(135deg,#0f0a28,#1a1240)',
+    score:'8.3', offset:48, verdict:'✅ 真实产品',
+    verdSub:'文档+白皮书最完整，机器证明技术路线清晰',
+    bd:[['87%','bfg','8.7/10'],['84%','bfg','8.4/10'],['79%','bfy','7.9/10'],['85%','bfg','8.5/10']],
+    detail:'stargaze.cc + docs + whitepaper 均可访问。技术路线：zkSNARK 隐私计算 + 机器证明 + 物理 AI 融合，是 Base 链资料最完整的隐私协议类产品型 token，由 ClawBot 评为文档质量最高项目。',
+    web:'stargaze.cc', git:'stargaze.cc/docs' },
+  /* ── 边界案例 ── */
+  wukong: { name:'WUKONG', desc:'首个可做空 Meme 的协议金库 · BSC · $66K',
+    icon:'🐒', avatar:'linear-gradient(135deg,#2a1800,#3d2400)',
+    score:'6.8', offset:86, verdict:'⚠️ 边界案例',
+    verdSub:'shortmeme.live 官网可访问，DexScreener 未同步，功能声明待验证',
+    bd:[['68%','bfy','6.8/10'],['65%','bfy','6.5/10'],['60%','bfy','6/10'],['72%','bfy','7.2/10']],
+    detail:'shortmeme.live 官网已上线，Twitter @Wukong_short + Telegram 社群活跃。叙事：首个允许做空任意 Meme 的协议金库（BSC）。MemeRush 已收录官网，但 DexScreener 尚未同步——这是新发行 token 的常见情况，也说明 MemeRush 数据覆盖比 DexScreener 更及时。功能声明（做空协议）技术可行，是 BSC 链上典型的"边界型产品 meme"。',
+    web:'shortmeme.live', git:'x.com/Wukong_short' }
+};
+
+function showPopup(e, tokenId) {
+  e.stopPropagation();
+  var d = tokenData[tokenId];
+  if (!d) return;
+  var popup = document.getElementById('aiPopup');
+  document.getElementById('popAvatar').style.background = d.avatar;
+  document.getElementById('popAvatar').textContent = d.icon;
+  document.getElementById('popName').textContent = d.name;
+  document.getElementById('popDesc').textContent = d.desc;
+  document.getElementById('popScoreNum').textContent = d.score;
+  document.getElementById('popRingVal').setAttribute('stroke-dashoffset', d.offset);
+  document.getElementById('popVerdict').textContent = d.verdict;
+  document.getElementById('popVerdSub').textContent = d.verdSub;
+  document.getElementById('popDetail').innerHTML = '<strong>AI 分析：</strong>' + d.detail;
+  document.getElementById('popWebLink').onclick = function(){ window.open('https://' + d.web,'_blank'); };
+  document.getElementById('popGitLink').onclick = function(){ window.open('https://' + d.git,'_blank'); };
+  d.bd.forEach(function(b, i) {
+    document.getElementById('bd'+(i+1)).style.width = b[0];
+    document.getElementById('bd'+(i+1)).className = 'bd-bar-fill ' + b[1];
+    document.getElementById('bs'+(i+1)).textContent = b[2];
+  });
+  var rect = e.target.getBoundingClientRect();
+  var popW = 310, popH = 460;
+  var left = rect.left, top = rect.bottom + 8;
+  if (left + popW > window.innerWidth - 12) left = window.innerWidth - popW - 12;
+  if (left < 12) left = 12;
+  if (top + popH > window.innerHeight - 12) top = rect.top - popH - 8;
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+  popup.classList.remove('show');
+  void popup.offsetWidth;
+  popup.classList.add('show');
+}
+
+function closePopup() {
+  var p = document.getElementById('aiPopup');
+  if (p) p.classList.remove('show');
+}
+
+document.addEventListener('click', function(e) {
+  var popup = document.getElementById('aiPopup');
+  if (popup && !popup.contains(e.target) && !e.target.classList.contains('badge-pm-ai') && !e.target.closest('.badge-pm-ai')) {
+    closePopup();
+  }
+});
+
+
+
+function switchPreset(type) {
+  // Update tab active state
+  document.querySelectorAll('.mf-preset-tab').forEach(function(btn) { btn.classList.remove('active'); });
+  var tabs = document.querySelectorAll('.mf-preset-tab');
+  var descs = { normal:'标准发行，填写基础 Token 信息即可上线', preset1:'含流动性配置：需指定 Paired Token 和 Dev 买入比例', preset2:'完整配置：含税率、初始流动性和锁仓设置' };
+  var idx = { normal:0, preset1:1, preset2:2 };
+  if (tabs[idx[type]]) tabs[idx[type]].classList.add('active');
+  var descEl = document.getElementById('presetDesc');
+  if (descEl) descEl.textContent = descs[type] || '';
+  // Show/hide field groups
+  var p1 = document.getElementById('preset-p1-fields');
+  var p2 = document.getElementById('preset-p2-fields');
+  if (p1) p1.style.display = (type === 'preset1' || type === 'preset2') ? 'block' : 'none';
+  if (p2) p2.style.display = (type === 'preset2') ? 'block' : 'none';
+}
+
+function previewLogo(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var ic = document.getElementById('logoPreviewIc');
+    if (ic) ic.textContent = '✅';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+</script>
+</body>
+</html>
