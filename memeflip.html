@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemeFlip — 0x002 提案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0f1e;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ─── Hero ─────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1a3a 40%, #0f1e35 100%);
+    border-bottom: 1px solid rgba(59,130,246,.2);
+    padding: 64px 40px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .track-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(99,102,241,.12);
+    border: 1px solid rgba(99,102,241,.4);
+    border-radius: 999px;
+    padding: 6px 18px;
+    margin-bottom: 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .track-badge .track-code { color: #a5b4fc; }
+  .track-badge .track-name { color: #94a3b8; }
+  .track-badge .sep { color: #334155; }
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 span.yellow { color: #fbbf24; }
+  .hero h1 span.blue   { color: #60a5fa; }
+  .hero-tagline {
+    font-size: 19px;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.65;
+  }
+  .hero-tagline strong { color: #e2e8f0; }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: #64748b;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta strong { color: #94a3b8; }
+
+  /* ─── Layout ────────────────────────────────────────────── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+  .section { padding: 52px 0; border-bottom: 1px solid rgba(148,163,184,.08); }
+  .section:last-child { border-bottom: none; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ─── 三问 Block ─────────────────────────────────────────── */
+  .three-q { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: rgba(148,163,184,.08); border-radius: 14px; overflow: hidden; }
+  .q-block { background: #0d1525; padding: 28px 24px; }
+  .q-num { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: #4ade80; margin-bottom: 10px; }
+  .q-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin-bottom: 12px; }
+  .q-body { font-size: 13.5px; color: #94a3b8; line-height: 1.7; }
+  .q-body strong { color: #e2e8f0; }
+  .q-body .arrow { display: block; color: #4ade80; font-weight: 700; margin: 6px 0; }
+  .q-body .metric { display: inline-block; background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.25); color: #4ade80; border-radius: 6px; padding: 3px 10px; font-size: 12.5px; font-weight: 600; margin-top: 8px; }
+
+  /* ─── Cards ─────────────────────────────────────────────── */
+  .card-grid { display: grid; gap: 16px; }
+  .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .card {
+    background: #0d1525;
+    border: 1px solid rgba(148,163,184,.1);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h4 { font-size: 15px; font-weight: 700; color: #e2e8f0; margin-bottom: 8px; }
+  .card p { font-size: 13.5px; color: #64748b; line-height: 1.65; }
+  .card ul { margin: 8px 0 0 16px; }
+  .card li { font-size: 13px; color: #64748b; margin-bottom: 4px; }
+  .card.accent-red   { border-color: rgba(239,68,68,.3); }
+  .card.accent-amber { border-color: rgba(245,158,11,.3); }
+  .card.accent-blue  { border-color: rgba(59,130,246,.3); }
+  .card.accent-green { border-color: rgba(34,197,94,.3); }
+  .card.accent-purple{ border-color: rgba(139,92,246,.3); }
+
+  /* ─── User Flow ──────────────────────────────────────────── */
+  .flow-row { display: flex; align-items: stretch; gap: 0; margin: 24px 0; }
+  .flow-box {
+    flex: 1;
+    background: #0d1525;
+    border: 1px solid rgba(148,163,184,.1);
+    border-radius: 10px;
+    padding: 20px 18px;
+    font-size: 13.5px;
+  }
+  .flow-box .fb-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .flow-box .fb-label.red { color: #f87171; }
+  .flow-box .fb-label.green { color: #4ade80; }
+  .flow-box ul { margin-left: 14px; color: #94a3b8; }
+  .flow-box li { margin-bottom: 5px; line-height: 1.5; }
+  .flow-arrow { display: flex; align-items: center; padding: 0 16px; font-size: 24px; color: #334155; }
+
+  /* ─── Table ─────────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 4px 0; }
+  th { background: rgba(15,23,42,1); color: #64748b; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(148,163,184,.12); }
+  td { padding: 12px 14px; border-bottom: 1px solid rgba(148,163,184,.06); color: #cbd5e1; vertical-align: top; }
+  tr:hover td { background: rgba(148,163,184,.03); }
+  td code { background: rgba(148,163,184,.1); border-radius: 4px; padding: 1px 6px; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: #93c5fd; }
+  td .sub { font-size: 11.5px; color: #475569; margin-top: 2px; }
+  td strong { color: #f1f5f9; }
+
+  /* ─── Timeline ───────────────────────────────────────────── */
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(148,163,184,.08); border-radius: 12px; overflow: hidden; }
+  .tl-week { background: #0d1525; padding: 20px 18px; }
+  .tl-week .wk-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #475569; margin-bottom: 6px; }
+  .tl-week .wk-title { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-bottom: 10px; }
+  .tl-week ul { margin-left: 14px; }
+  .tl-week li { font-size: 12.5px; color: #64748b; margin-bottom: 4px; line-height: 1.5; }
+
+  /* ─── Metric Boxes ───────────────────────────────────────── */
+  .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  .metric-box { background: #0d1525; border-radius: 10px; padding: 18px 16px; border: 1px solid rgba(148,163,184,.1); }
+  .metric-box.pass { border-color: rgba(74,222,128,.25); }
+  .metric-box.fail { border-color: rgba(239,68,68,.25); }
+  .metric-box .mb-flag { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .metric-box.pass .mb-flag { color: #4ade80; }
+  .metric-box.fail .mb-flag { color: #f87171; }
+  .metric-box .mb-val { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .metric-box.pass .mb-val { color: #4ade80; }
+  .metric-box.fail .mb-val { color: #f87171; }
+  .metric-box .mb-desc { font-size: 12.5px; color: #64748b; line-height: 1.5; }
+
+  /* ─── Resource Row ───────────────────────────────────────── */
+  .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .res-item { background: #0d1525; border: 1px solid rgba(148,163,184,.1); border-radius: 10px; padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .res-item .ri-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .res-item .ri-label { font-size: 11px; color: #475569; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .res-item .ri-val { font-size: 13.5px; color: #cbd5e1; }
+  .res-item .ri-sub { font-size: 12px; color: #475569; margin-top: 3px; }
+
+  /* ─── Risk Table ─────────────────────────────────────────── */
+  .risk-level-h { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+  .risk-level-l { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
+
+  /* ─── Callout ────────────────────────────────────────────── */
+  .callout { border-radius: 10px; padding: 18px 20px; margin: 20px 0; font-size: 14px; line-height: 1.7; }
+  .callout.blue { background: rgba(59,130,246,.08); border-left: 3px solid rgba(59,130,246,.5); }
+  .callout.amber { background: rgba(245,158,11,.08); border-left: 3px solid rgba(245,158,11,.5); }
+  .callout.green { background: rgba(34,197,94,.08); border-left: 3px solid rgba(34,197,94,.5); }
+  .callout strong { color: #f1f5f9; }
+  .callout ul { margin: 8px 0 0 16px; }
+  .callout li { margin-bottom: 4px; color: #94a3b8; }
+
+  /* ─── Demo ───────────────────────────────────────────────── */
+  .demo-frame-wrap { border-radius:14px; overflow:hidden; border:1px solid rgba(148,163,184,.15); box-shadow:0 32px 80px rgba(0,0,0,.7); }
+  .demo-chrome { background:#090a0e; padding:10px 14px; display:flex; align-items:center; gap:7px; border-bottom:1px solid #1a1a24; }
+  .demo-chrome .dc-dot { width:10px; height:10px; border-radius:50%; }
+  .demo-chrome .dc-url { background:#0f1015; border-radius:5px; padding:4px 14px; font-size:11px; color:#3a4050; font-family:monospace; margin-left:10px; flex:1; max-width:440px; }
+  .demo-screen-caption { text-align:center; margin-top:12px; font-size:12px; color:#475569; line-height:1.6; }
+  .demo-screen-caption strong { color:#94a3b8; }
+
+  /* ─── Insight Block ──────────────────────────────────────── */
+  .insight-box {
+    background: linear-gradient(135deg, rgba(99,102,241,.08) 0%, rgba(59,130,246,.06) 100%);
+    border: 1px solid rgba(99,102,241,.25);
+    border-radius: 12px;
+    padding: 28px 28px;
+    margin: 8px 0 24px;
+  }
+  .insight-box .ib-pre { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #a5b4fc; margin-bottom: 12px; }
+  .insight-box .ib-main { font-size: 16px; font-weight: 700; color: #e2e8f0; margin-bottom: 10px; line-height: 1.5; }
+  .insight-box .ib-sub { font-size: 13.5px; color: #94a3b8; line-height: 1.7; }
+  .insight-box .ib-sub strong { color: #c7d2fe; }
+
+  /* ─── Summary CTA ────────────────────────────────────────── */
+  .pitch-line { background: linear-gradient(135deg, rgba(34,197,94,.08) 0%, rgba(59,130,246,.06) 100%); border: 1px solid rgba(34,197,94,.2); border-radius: 12px; padding: 28px; margin-top: 28px; text-align: center; }
+  .pitch-line .pl-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #4ade80; margin-bottom: 12px; }
+  .pitch-line p { font-size: 16px; color: #86efac; line-height: 1.65; font-weight: 500; }
+
+  @media (max-width: 700px) {
+    .three-q, .timeline, .metrics-row { grid-template-columns: 1fr; }
+    .card-grid.cols-3, .card-grid.cols-2 { grid-template-columns: 1fr; }
+    .res-grid { grid-template-columns: 1fr; }
+    .flow-row { flex-direction: column; }
+    .flow-arrow { padding: 8px 0; transform: rotate(90deg); }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="track-badge">
+    <span class="track-code">0x002</span>
+    <span class="sep">·</span>
+    <span class="track-name">Meme 交易迁移 / 车头工具</span>
+  </div>
+  <h1>
+    <span class="yellow">Meme</span><span class="blue">Flip</span>
+  </h1>
+  <p class="hero-tagline">
+    BSC Meme 市场第一次有做空——<br>
+    <strong>发现、做多、做空、管仓，全在 MemeRush</strong>，牛熊皆可交易
+  </p>
+  <div class="hero-meta">
+    <span>⛓️ <strong>链：</strong>BSC</span>
+    <span>👤 <strong>参赛：</strong>个人</span>
+    <span>🏗️ <strong>交付：</strong>前端 Prototype + 真实链上交易</span>
+    <span>📅 <strong>截止：</strong>2026 年 6 月 13 日</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════════
+     01  三个核心问题
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">必答 / Three Core Questions</div>
+  <h2>🎯 三个核心问题</h2>
+
+  <div class="three-q">
+    <div class="q-block">
+      <div class="q-num">Q01 · 解决哪个业务问题</div>
+      <div class="q-title">BSC Meme 做空机制缺失：价格失真、用户无处对冲、平台与牛市共存亡</div>
+      <div class="q-body">
+        <strong>市场层面</strong>：无做空 = 大户拉盘无成本（价格发现失灵）；下跌时没有空头回补做缓冲，流动性死亡螺旋加速；Rug 出货无外部制衡；利润只来自"比别人先跑"，链上分析价值归零，机器人横行。<br><br>
+        <strong>用户层面</strong>：链上洞察无法货币化（预测到崩但没有工具变现）；持多头无法 Delta 对冲；熊市行情用户完全无事可做——<strong>平台交易量与大盘相关性 100%</strong>，抗周期能力为零。<br><br>
+        <span style="color:#94a3b8;font-size:12.5px;">市场验证：alt.fun（HyperEVM 杠杆 meme 平台）上线 12 天吸引 6,258+ tokens、累计 $30M+ 交易量。BSC 链上同类市场目前空白。</span>
+      </div>
+    </div>
+    <div class="q-block" style="border-left: 2px solid rgba(148,163,184,.08);">
+      <div class="q-num">Q02 · 改变哪个用户行为</div>
+      <div class="q-title">从「只能做现货」变成「可以直接做多 / 做空」</div>
+      <div class="q-body">
+        <strong>现在：</strong>买入后只能等涨，跌了只能割肉离场，下行行情完全无解<br>
+        <span class="arrow">↓</span>
+        <strong>之后：</strong>发现已毕业 Meme Token → 若有 Vault 覆盖，<strong>L↑ 做多 / S↓ 做空</strong>一键开仓 → My Positions 加减仓 / 平仓<br>
+        <span style="color:#4ade80;font-size:12px;">下跌行情中同样可以获利，不再只是「先跑赢」</span><br>
+        <span style="color:#64748b;font-size:11.5px;">覆盖范围：已从 Bonding Curve 毕业（Migrate）且 Likwid 有活跃 Vault 的代币子集</span>
+      </div>
+    </div>
+    <div class="q-block" style="border-left: 2px solid rgba(148,163,184,.08);">
+      <div class="q-num">Q03 · 30 天如何验证</div>
+      <div class="q-title">部署原型，看真实链上开仓数量</div>
+      <div class="q-body">
+        前端原型接 Likwid BSC Mainnet 合约上线，邀请目标用户测试<br><br>
+        <span class="metric">✅ ≥ 50 个独立钱包开仓 → 需求验证通过</span><br><br>
+        <span class="metric" style="background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.25);color:#f87171;">❌ &lt; 10 钱包开仓 → 重新评估</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     02  目标用户 & 当前阻碍
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">02 / User Insight</div>
+  <h2>👥 目标用户 & 当前阻碍</h2>
+
+  <div class="flow-row">
+    <div class="flow-box">
+      <div class="fb-label red">目标用户</div>
+      <ul>
+        <li><strong>有杠杆需求的活跃 Meme 交易者</strong>：习惯用合约思维操作（Margin Level / PnL / 加减仓），现货已满足不了风险偏好和资金效率</li>
+        <li><strong>想做空 Meme 的用户</strong>：链上有洞察（识别 Rug、识别拉盘见顶），但 BSC 上没有任何工具能把这种判断变现</li>
+      </ul>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">
+      <div class="fb-label red">当前阻碍</div>
+      <ul>
+        <li>MemeRush <strong>只有现货</strong>——用户发现已毕业 Meme Token 后，即使想加杠杆或做空，也必须跳出平台</li>
+        <li>下跌行情中用户<strong>零工具可用</strong>，只能离场；平台黏性完全依赖牛市</li>
+        <li>链上分析洞察<strong>无法变现</strong>：预测到崩但无做空路径，信息优势归零</li>
+        <li>竞品（Bullx / GMGN / Dexscreener）同样无此能力；<strong>BSC 链上 Meme 杠杆市场空白</strong>（alt.fun 在 HyperEVM，不覆盖 BSC）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     03  核心洞察
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">03 / Core Insight</div>
+  <h2>💡 核心洞察</h2>
+
+  <div class="insight-box">
+    <div class="ib-pre">洞察</div>
+    <div class="ib-main">用一个功能修复 BSC Meme 市场的结构性缺陷，同时让 MemeRush 第一次对周期不敏感——从牛市专用工具，变成全天候主战场。</div>
+    <div class="ib-sub">
+      Likwid 是部署在 BSC 的去中心化 AMM 协议，<strong>已上线 <a href="https://docs.likwid.fi/product/contract-address" target="_blank" style="color:#60a5fa;text-decoration:none;"><code>LikwidVault</code> + <code>LikwidMarginPosition</code></a></strong> 合约，支持任何已有 Vault 的 Token 做最高 5× 隔离保证金杠杆交易。MemeRush 毕业代币需<strong>单独接入 Likwid Vault</strong> 才能支持杠杆交易，初期覆盖范围有限；验证阶段以少量代币起步，证明需求后再扩大覆盖。<br><br>
+      更关键的是：<strong>合约（margin trading）是圈内用户的母语</strong>。Margin Level、PnL、加减仓、清算价是他们每天在 Binance 合约上做的事，<strong>学习成本为零</strong>。我们做的不是引入新机制，而是第一次给 BSC Meme 用户提供「做空 / 对冲」的能力。<br><br>
+      结论：<strong>链上合约层无需自建</strong>——Likwid 合约已部署、已审计，不需要写一行 Solidity。前端集成复杂度取决于 MemeRush 现有 LiquidMesh 交易框架的兼容性，<strong>需要评估交易兼容方案后才能确认工期</strong>（详见风险 #1）。<br><br>
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer;color:#60a5fa;font-size:13px;list-style:none;display:flex;align-items:center;gap:6px;user-select:none;" onclick="this.parentElement.querySelector('iframe').src=this.parentElement.querySelector('iframe').src">
+          <span style="font-size:10px;color:#3b82f6;transition:transform .2s;" class="analysis-arrow">▶</span>
+          Likwid 协议深度分析报告（合约机制、Vault 结构、多空使用条件）
+        </summary>
+        <iframe src="likwid_analysis.html" style="width:100%;height:700px;border:none;border-radius:10px;margin-top:10px;display:block;" title="Likwid 协议分析" loading="lazy"></iframe>
+      </details>
+      <script>
+        document.querySelector('.analysis-arrow') && document.querySelector('details').addEventListener('toggle', function(e){
+          const arrow = this.querySelector('.analysis-arrow');
+          if(arrow) arrow.style.transform = this.open ? 'rotate(90deg)' : '';
+        });
+      </script>
+    </div>
+  </div>
+
+  <div class="card-grid cols-3">
+    <div class="card accent-blue">
+      <div class="card-icon">⚙️</div>
+      <h4>合约层：零开发</h4>
+      <p>直接调用 Likwid 已部署、已审计合约。hackathon 范围内不写一行合约代码。</p>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-icon">🔗</div>
+      <h4>Vault 覆盖范围有限，需主动部署</h4>
+      <p>Token 毕业到 BSC ≠ 自动支持多空。Likwid Pool 是独立协议，需额外部署（<a href="https://docs.likwid.fi/whitepaper/protocol-mechanics/pool-creation" target="_blank" style="color:#fbbf24;text-decoration:none;"><code>createPool</code></a>）+ LP 注入流动性，<strong>与毕业流程无关、不自动创建</strong>。初期覆盖少量代币，验证需求后逐步扩大。</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-icon">👛</div>
+      <h4>钱包即账户</h4>
+      <p>用户用 MemeRush 已连接的 BSC 钱包直接交互，零注册、零 KYC、零跨链摩擦。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     04  解决机制 / Demo
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">04 / Mechanism & Demo</div>
+  <h2>🖥️ 解决机制 — 产品 Demo</h2>
+
+  <div class="callout blue" style="margin-bottom:24px;">
+    <strong>两个改动，一个闭环</strong>：① Token 列表页：已接入 Likwid Vault 的代币（初期少量）卡片显示 <strong>L↑ / S↓</strong> 按钮，点击直接开仓 &nbsp;②&nbsp; My Positions：现有仓位管理面板扩展，展示杠杆仓位健康度、PnL、Repay/Close 操作
+  </div>
+
+  <div class="demo-frame-wrap">
+    <div class="demo-chrome">
+      <div class="dc-dot" style="background:#ff5f57;"></div>
+      <div class="dc-dot" style="background:#febc2e;"></div>
+      <div class="dc-dot" style="background:#28c840;"></div>
+      <div class="dc-url">web3wallet.binance.com/meme-rush · MemeFlip Demo</div>
+    </div>
+    <iframe src="likwid-demo.html" style="width:100%;height:660px;border:none;display:block;" title="MemeFlip Demo"></iframe>
+  </div>
+  <p class="demo-screen-caption">
+    切换两个 Tab：<strong>Token List（已 Migrate token 显示 L↑ / S↓ 杠杆入口）</strong> →  <strong>My Positions（Position Tracker + 健康度条 + Repay/Close）</strong><br>
+    仓位字段直接来自 <a href="https://docs.likwid.fi/whitepaper/protocol-mechanics/margin-position-mechanics" target="_blank" style="color:#60a5fa;text-decoration:none;">Likwid 合约</a>：Margin Amount · Debt · Supply/Borrow APY · Liq. Price · Margin Level · PnL
+  </p>
+
+  <div class="callout amber" style="margin-top:24px;">
+    <strong>30 天范围外，不在本次验证目标内</strong>：止损止盈自动触发（需 keeper 机制）、App 端适配、扩大 Vault 覆盖代币数（Vault 创建无需 Likwid 许可，瓶颈是引导每个新池的初期流动性）、仓位风险预警推送。
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     05  为什么 Binance Wallet 适合做
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">05 / Why Binance Wallet</div>
+  <h2>🏆 为什么 Binance Wallet 适合做这件事</h2>
+
+  <div class="card-grid cols-3">
+    <div class="card accent-blue">
+      <div class="card-icon">🌐</div>
+      <h4>BSC 原生优势</h4>
+      <p>Likwid 部署在 BSC，Binance Wallet 是 BSC 最大钱包入口。流量和合约在同一条链，天然低摩擦。</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-icon">📊</div>
+      <h4>发现层已有，只差交易层</h4>
+      <p>MemeRush 已是活跃 Meme 交易者的 Token 发现工具。补上多空交易层，就是一个完整的「发现 → 多空 → 管仓」闭环。</p>
+    </div>
+    <div class="card accent-purple">
+      <div class="card-icon">🔧</div>
+      <h4>市场修复者，而非先到先得</h4>
+      <p>BSC Meme 做空缺失需要<strong>流量 + 发现层 + 用户聚集</strong>三者同时具备才能形成多空生态的 network effect。Bullx / GMGN 缺流量入口，纯 DEX 缺发现层；Binance Wallet × MemeRush 是唯一同时具备的载体。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     06  30天验证计划
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">06 / 30-Day Verification Plan</div>
+  <h2>📅 30 天验证计划</h2>
+
+  <div class="timeline">
+    <div class="tl-week">
+      <div class="wk-label">Week 1</div>
+      <div class="wk-title">兼容评估 + 原型开发</div>
+      <ul>
+        <li>评估 LiquidMesh 与 Likwid 交易兼容方案，确认集成路径</li>
+        <li>Token List L↑/S↓ 按钮（接入 Vault 的代币）</li>
+        <li>My Positions 仓位面板</li>
+        <li>Toast 开仓确认流程</li>
+      </ul>
+    </div>
+    <div class="tl-week">
+      <div class="wk-label">Week 2</div>
+      <div class="wk-title">内测 Beta</div>
+      <ul>
+        <li>邀请 10–20 名活跃 Meme 交易者测试</li>
+        <li>真实 BSC 链上交易</li>
+        <li>收集开仓失败 / 成功比率</li>
+        <li>记录 session 时长对比</li>
+      </ul>
+    </div>
+    <div class="tl-week">
+      <div class="wk-label">Week 3</div>
+      <div class="wk-title">开放 Beta</div>
+      <ul>
+        <li>扩大至更多用户</li>
+        <li>监控 Margin Level 分布</li>
+        <li>记录 Repay/Close 操作频次</li>
+        <li>页面错误率跟踪</li>
+      </ul>
+    </div>
+    <div class="tl-week">
+      <div class="wk-label">Week 4</div>
+      <div class="wk-title">数据复盘</div>
+      <ul>
+        <li>汇总独立开仓钱包数</li>
+        <li>计算功能渗透率</li>
+        <li>对比有/无杠杆用户留存</li>
+        <li>决策：扩产品化 or 重评估</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-box pass">
+      <div class="mb-flag">✅ 通过信号</div>
+      <div class="mb-val">≥ 50</div>
+      <div class="mb-desc">30 天内独立钱包开仓数<br>→ 证明有效需求，进入产品化</div>
+    </div>
+    <div class="metric-box pass">
+      <div class="mb-flag">✅ 辅助指标</div>
+      <div class="mb-val">+30%</div>
+      <div class="mb-desc">使用杠杆功能用户 vs 普通用户的 session 时长<br>→ 验证留存质量提升</div>
+    </div>
+    <div class="metric-box fail">
+      <div class="mb-flag">❌ 失败信号</div>
+      <div class="mb-val">&lt; 10</div>
+      <div class="mb-desc">30 天内独立钱包开仓数<br>→ 重新评估 Vault 覆盖率 or 用户教育成本</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     07  预期业务影响
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">07 / Expected Impact</div>
+  <h2>📈 预期业务影响</h2>
+
+  <table>
+    <thead>
+      <tr><th>维度</th><th>现状</th><th>目标变化</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>交易行为升级</strong></td>
+        <td>用户只能做现货，发现机会后要么观望要么去站外加杠杆</td>
+        <td>站内一键多空 + 仓位管理，发现到执行不再断裂</td>
+      </tr>
+      <tr>
+        <td><strong>人均交易额</strong></td>
+        <td>现货单次买卖，无杠杆放大</td>
+        <td>杠杆用户单笔名义价值 2–5× 于现货</td>
+      </tr>
+      <tr>
+        <td><strong>留存质量</strong></td>
+        <td>无持仓绑定，用户随时离开</td>
+        <td>有开仓就有管仓需求，日活留存更稳</td>
+      </tr>
+      <tr>
+        <td><strong>熊市 / 下行行情留存</strong></td>
+        <td>下跌行情中用户完全失活，平台 DAU 与大盘 100% 正相关</td>
+        <td>有空头仓位的用户在下跌中反而更活跃，平台第一次具备抗周期能力</td>
+      </tr>
+      <tr>
+        <td><strong>差异化竞争壁垒</strong></td>
+        <td>与 Bullx/GMGN 无本质功能差异</td>
+        <td>市场唯一 Meme 发现 + 链上多空一体化产品</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     08  所需负责人和资源
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">08 / Owners & Resources</div>
+  <h2>👤 所需负责人和资源</h2>
+
+  <div class="res-grid">
+    <div class="res-item">
+      <div class="ri-icon">🎯</div>
+      <div>
+        <div class="ri-label">Owner / PM</div>
+        <div class="ri-val">Elsa G（本提案提交人）</div>
+        <div class="ri-sub">负责需求、对接 Likwid、验证指标跟踪</div>
+      </div>
+    </div>
+    <div class="res-item">
+      <div class="ri-icon">💻</div>
+      <div>
+        <div class="ri-label">前端开发</div>
+        <div class="ri-val">1 名 FE，工期待兼容方案评估</div>
+        <div class="ri-sub">需先评估 LiquidMesh 框架与 Likwid 的交易兼容方案，再估算总工期</div>
+      </div>
+    </div>
+    <div class="res-item">
+      <div class="ri-icon">🔗</div>
+      <div>
+        <div class="ri-label">外部依赖（待调研）</div>
+        <div class="ri-val">Likwid 合约接口确认</div>
+        <div class="ri-sub">需调研 Likwid 是否提供可直接调用的公开合约接口；若无，需与 Likwid 方对接集成方案</div>
+      </div>
+    </div>
+    <div class="res-item">
+      <div class="ri-icon">🔍</div>
+      <div>
+        <div class="ri-label">QA</div>
+        <div class="ri-val">1 名 QA × 1 周</div>
+        <div class="ri-sub">链上交易验证、清算价计算核对、UI 边界 case</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout amber" style="margin-top:16px;">
+    <strong>BE 改动：待确认</strong>——若前端可直接调 Likwid 链上合约则无需 BE；若需查询 Vault 覆盖列表或封装交易路径，BE 介入程度待调研后评估。
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     09  最大风险
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">09 / Risks & Mitigations</div>
+  <h2>⚠️ 最大风险</h2>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>风险</th><th>等级</th><th>应对</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>
+          <strong>LiquidMesh 框架兼容性未知</strong><br>
+          <span class="sub">MemeRush 交易侧使用 LiquidMesh 框架，能否直接调用 Likwid 合约尚未验证；若不兼容，前端工期和架构方案需重新评估</span>
+        </td>
+        <td><span class="risk-level-h">高</span></td>
+        <td>立项后优先评估兼容方案；若 LiquidMesh 不兼容，Plan B：探索基于 PancakeSwap V4 hook 架构的杠杆方案（流动性更强、覆盖所有毕业代币，但工期更长，超出 30 天范围）</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>
+          <strong>Vault 覆盖率有限</strong><br>
+          <span class="sub">30 天内只有少量 Migrated token 有活跃 Vault（预计 10–20 个），用户选择受限</span>
+        </td>
+        <td><span class="risk-level-h">中</span></td>
+        <td>先上线验证用户行为，覆盖率是 Phase 2 与 Likwid 深度合作后可扩展的问题，不影响核心验证目标</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>
+          <strong>Likwid 流动性深度不足</strong><br>
+          <span class="sub">Vault TVL 较小时，大仓位开仓滑点高；协议处于早期</span>
+        </td>
+        <td><span class="risk-level-l">低</span></td>
+        <td>验证阶段聚焦小仓位行为验证（50 钱包开仓），不依赖大 TVL；MemeRush 导入流量本身有助于 TVL 成长</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>
+          <strong>Likwid 团队活跃度存疑</strong><br>
+          <span class="sub">Telegram 官方频道自五月初起无新消息，社区无明显运营迹象；协议合约虽已部署但团队响应能力未知，集成过程中遇到问题可能无法从官方获得支持</span>
+        </td>
+        <td><span class="risk-level-h">高</span></td>
+        <td>合约已审计、已部署，集成本身不依赖团队配合（permissionless）；但应做好"无官方 Support"的预案：① 技术问题通过合约源码和文档自行排查；② Phase 2 深度合作目标降级为"流动性激励洽谈"，若团队无响应则转向其他杠杆协议（如 PancakeSwap V4 Hook 方案）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     10  长期产品形态
+═══════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">10 / Long-term Vision</div>
+  <h2>🔭 MemeFlip 作为独立产品的终点</h2>
+
+  <div class="insight-box">
+    <div class="ib-pre">核心定位</div>
+    <div class="ib-main">BSC meme 的链上期货市场——不是给 MemeRush 加个按钮，而是一个用户专程来做方向性交易的独立产品。</div>
+    <div class="ib-sub">参照系：alt.fun 在 HyperEVM 上做的事，MemeFlip 在 BSC 做——但多一层社交 + 信息维度，让交易不只是杠杆，而是有 alpha 可挖的博弈市场。</div>
+  </div>
+
+  <div class="card-grid cols-3" style="margin-bottom:20px;">
+    <div class="card accent-blue">
+      <div class="card-icon">🔍</div>
+      <h4>发现层</h4>
+      <p>已毕业 BSC token 列表 + 每个 token 的<strong style="color:#93c5fd;">多空未平仓量 (OI) 比例 + 隐含资金费率</strong>。这两个数字在 meme token 维度上全球没有任何平台有——是 MemeFlip 的数据护城河。</p>
+    </div>
+    <div class="card accent-amber">
+      <div class="card-icon">⚡</div>
+      <h4>交易层</h4>
+      <p>Likwid 合约支撑的 1–5x 杠杆多空。Phase 2 接入 keeper 实现止损止盈自动触发；实时仓位健康度监控，清算价可视化。</p>
+    </div>
+    <div class="card accent-green">
+      <div class="card-icon">👥</div>
+      <h4>社交层</h4>
+      <p>链上仓位公开可见；KOL 持仓跟随（一键 copy trade）；<strong style="color:#86efac;">Short Leaderboard</strong> 实时展示哪些 token 被最多聪明钱做空。</p>
+    </div>
+  </div>
+
+  <div class="callout green" style="margin-bottom:16px;">
+    <strong>为什么社交层是护城河，而不是加分项</strong>
+    <ul>
+      <li>在 GMX / dYdX，你只知道价格，因为 BTC 走势只看宏观。</li>
+      <li>在 MemeFlip，「某大户正在做空 WAIFU」本身就是 alpha——可能是内幕，可能是轧空机会。</li>
+      <li>链上仓位数据 × meme 社区文化 = 一个专用博弈场，GMGN / Bullx 无法复制，因为他们没有交易层，也没有 Binance 流量做 Vault 冷启动。</li>
+    </ul>
+  </div>
+
+  <div class="callout amber">
+    <strong>最大约束：Vault 流动性冷启动</strong><br>
+    Token 有 Vault 才能开仓，而 Vault 需要初始 LP。短期解法：ops 为 Top 10 高交易量已毕业 token 主动 seed 初始流动性；一旦有真实交易量，协议手续费自然吸引外部 LP 进入。这是运营问题，不是技术问题。
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     11  一句话 Pitch
+═══════════════════════════════════════════════════════════ -->
+<div class="section" style="border-bottom:none;">
+  <div class="pitch-line">
+    <div class="pl-label">一句话 Pitch</div>
+    <p>BSC Meme 市场缺失做空机制已是结构性失灵——MemeRush 用 3 周工程量接上 Likwid 合约，<strong>零合约开发</strong>就能让用户在发现机会的地方直接做多、做空、对冲，把平台从<strong>牛市专用工具</strong>升级为<strong>全天候主战场</strong>。</p>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div style="text-align:center; padding: 32px; color: #334155; font-size: 12px; border-top: 1px solid rgba(148,163,184,.08);">
+  Binance Wallet Hackathon 2026 · 0x002 Meme 交易迁移 · MemeFlip · Elsa G
+</div>
+
+</body>
+</html>
