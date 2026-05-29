@@ -365,7 +365,7 @@
     <div class="card accent-amber">
       <div class="card-icon">🔗</div>
       <h4>Vault 覆盖范围有限，需主动部署</h4>
-      <p>Token 毕业到 BSC ≠ 自动支持多空。Likwid Pool 是独立协议，需额外部署（<a href="https://docs.likwid.fi/whitepaper/protocol-mechanics/pool-creation" target="_blank" style="color:#fbbf24;text-decoration:none;"><code>createPool</code></a>）+ LP 注入流动性，<strong>与毕业流程无关、不自动创建</strong>。初期覆盖少量代币，验证需求后逐步扩大。</p>
+      <p>毕业流动性直接进入 Likwid Vault 成为初始 pair reserves，无需单独迁移。但初始池子较浅（刚毕业代币通常 pair reserves $15~30k），<strong>单笔 &gt;$750 的交易滑点即超 5%</strong>，早期用户需控制仓位规模；随交易量增长 LP 自然进入后深度改善。初期覆盖少量代币，验证需求后逐步扩大。</p>
     </div>
     <div class="card accent-green">
       <div class="card-icon">👛</div>
@@ -621,11 +621,11 @@
       <tr>
         <td>3</td>
         <td>
-          <strong>Likwid 流动性深度不足</strong><br>
-          <span class="sub">Vault TVL 较小时，大仓位开仓滑点高；协议处于早期</span>
+          <strong>初期 Pair Reserves 较浅，大仓位滑点高</strong><br>
+          <span class="sub">刚毕业代币 pair reserves 约 $15~30k，$750+ 仓位滑点超 5%；lend reserves 利用率 &gt;80% 时借款利率非线性飙升</span>
         </td>
         <td><span class="risk-level-l">低</span></td>
-        <td>验证阶段聚焦小仓位行为验证（50 钱包开仓），不依赖大 TVL；MemeRush 导入流量本身有助于 TVL 成长</td>
+        <td>验证阶段聚焦小仓位（保证金 &lt;$500），不依赖大 TVL；在 UI 上展示当前 Vault 深度和建议仓位上限，帮助用户判断；MemeRush 导入流量本身有助于吸引外部 LP 进场，深度随时间改善</td>
       </tr>
       <tr>
         <td>4</td>
