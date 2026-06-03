@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Launchpad 横向对比 — MemeRush 接入评估</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0e1117; color: #e6edf3; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .header { border-bottom: 1px solid #21262d; padding-bottom: 20px; margin-bottom: 28px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: #f0f6fc; }
+  .header .meta { color: #8b949e; font-size: 13px; margin-top: 6px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 8px; vertical-align: middle; background: rgba(187,128,9,0.2); color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+  .section-title { font-size: 15px; font-weight: 700; color: #f0f6fc; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: inline-block; width: 3px; height: 15px; background: #58a6ff; border-radius: 2px; }
+  .table-wrap { background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { background: #21262d; color: #8b949e; font-weight: 600; text-align: left; padding: 9px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .data-table th.platform { color: #c9d1d9; font-size: 12px; text-transform: none; }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #1c2128; }
+  .metric-label { font-weight: 600; color: #f0f6fc; white-space: nowrap; }
+  .num { font-weight: 700; color: #f0f6fc; }
+  .wow-pos { color: #3fb950; font-weight: 600; }
+  .wow-neg { color: #f85149; font-weight: 600; }
+  .na { color: #484f58; font-style: italic; }
+  .est { color: #8b949e; font-size: 11px; }
+  .highlight-hype { background: rgba(255,166,87,0.04); }
+  .highlight-monad { background: rgba(88,166,255,0.04); }
+  .source-section { font-size: 11px; color: #8b949e; padding: 14px 16px; background: #161b22; border-top: 1px solid #21262d; }
+  .source-header { color: #6e7681; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+  .source-list { display: grid; grid-template-columns: 152px 1fr; gap: 5px 0; }
+  .source-row { display: contents; }
+  .source-label { font-weight: 600; color: #c9d1d9; font-size: 11px; white-space: nowrap; text-align: right; padding-right: 12px; border-right: 1px solid #30363d; line-height: 1.7; padding-top: 2px; }
+  .source-detail { color: #8b949e; line-height: 1.7; padding-left: 12px; padding-top: 2px; }
+  .fn-list { display: grid; grid-template-columns: 24px 1fr; gap: 5px 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #21262d; }
+  .fn-row { display: contents; }
+  .fn-num { font-size: 11px; text-align: center; color: #c9d1d9; font-weight: 600; line-height: 1.65; padding-top: 1px; }
+  .fn-text { color: #8b949e; line-height: 1.65; }
+  .source-section a { color: #58a6ff; text-decoration: none; }
+  code { background: #21262d; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #79c0ff; font-family: monospace; }
+  sup { color: #6e7681; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Meme Launchpad 横向对比 <span class="tag">MemeRush 接入评估</span></h1>
+    <div class="meta">数据采集：2026-06-03 &nbsp;·&nbsp; 作者：elsa.g &nbsp;·&nbsp; 数据源：DeFiLlama · four.meme API · alt.fun API · nad.fun API · GeckoTerminal · Doppler Indexer + Explore API</div>
+  </div>
+
+  <section>
+    <div class="section-title">📊 主流 Meme Launchpad 横向对比</div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>指标</th>
+            <th class="platform">🟣 pump.fun<br><span style="color:#8b949e;font-size:11px;font-weight:400;">Solana</span></th>
+            <th class="platform">🟡 four.meme<br><span style="color:#8b949e;font-size:11px;font-weight:400;">BSC</span></th>
+            <th class="platform" style="color:#ffa657;">🟠 alt.fun<br><span style="color:#8b949e;font-size:11px;font-weight:400;">HypeEVM</span></th>
+            <th class="platform" style="color:#58a6ff;">🔵 nad.fun<br><span style="color:#8b949e;font-size:11px;font-weight:400;">Monad</span></th>
+            <th class="platform" style="color:#a8d8ea;">🌊 Doppler<br><span style="color:#8b949e;font-size:11px;font-weight:400;">Base</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric-label">Launchpad 7d 交易量</td>
+            <td><span class="num">$303.5M</span></td>
+            <td><span class="num">$54.5M</span></td>
+            <td class="highlight-hype"><span class="num">$0.96M</span></td>
+            <td class="highlight-monad"><span class="num">$50K</span></td>
+            <td><span class="num">~$4.7M</span><br><span class="est">非 bankr 来源 <sup>⑧</sup></span></td>
+          </tr>
+          <tr>
+            <td class="metric-label">WoW（vs 上一周）</td>
+            <td><span class="wow-neg">−6.5%</span></td>
+            <td><span class="wow-pos">+15.7%</span></td>
+            <td class="highlight-hype"><span class="wow-neg">−84.5%</span></td>
+            <td class="highlight-monad"><span class="wow-neg">−48.8%</span></td>
+            <td><span class="wow-neg">~−52.7%</span><br><span class="est">总量口径（bankr）<sup>⑨</sup></span></td>
+          </tr>
+          <tr>
+            <td class="metric-label">7d 新发射数</td>
+            <td><span class="num">~50K+</span> <span class="est"><sup>①</sup></span></td>
+            <td><span class="num">~47K</span> <span class="est"><sup>②</sup></span></td>
+            <td class="highlight-hype"><span class="num">~2,275</span> <span class="est"><sup>③</sup></span></td>
+            <td class="highlight-monad"><span class="num">~1,050</span> <span class="est"><sup>③</sup></span></td>
+            <td><span class="num">~24,810</span> <span class="est"><sup>⑨</sup></span></td>
+          </tr>
+          <tr>
+            <td class="metric-label">7d 毕业数</td>
+            <td><span class="num">~500</span> <span class="est"><sup>④</sup></span></td>
+            <td><span class="num">~470</span> <span class="est"><sup>④</sup></span></td>
+            <td class="highlight-hype"><span class="num">~23</span> <span class="est"><sup>⑤</sup></span></td>
+            <td class="highlight-monad"><span class="num">~1</span> <span class="est"><sup>⑫</sup></span></td>
+            <td><span class="num">~0</span> <span class="est"><sup>⑩</sup></span></td>
+          </tr>
+          <tr>
+            <td class="metric-label">7d 头部 MCap<br><span style="font-weight:400;font-size:11px;color:#8b949e;">7d 内发射最高</span></td>
+            <td><span class="num">~$2B</span><br><span class="est">WIF（全量参考 <sup>⑥</sup>）</span></td>
+            <td><span class="num">~$412K</span><br><span class="est">UL（5/28 发射）<sup>⑦</sup></span></td>
+            <td class="highlight-hype"><span class="num">~$200K</span><br><span class="est">FLOOR</span></td>
+            <td class="highlight-monad"><span class="num">~$900K</span><br><span class="est">MUSHROOM</span></td>
+            <td><span class="num">~$234K</span><br><span class="est">SEARXLY（22h <sup>⑪</sup>）</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="source-section">
+        <div class="source-header">数据来源</div>
+        <div class="source-list">
+          <div class="source-row">
+            <div class="source-label">四大 Launchpad 交易量</div>
+            <div class="source-detail"><a href="https://defillama.com/dexs" target="_blank">DeFiLlama DEX</a> <code>/summary/dexs/{slug}</code>，7d = 近 7 天日量求和（pump.fun / four.meme / alt.fun / nad.fun）</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">Doppler 非 bankr 量</div>
+            <div class="source-detail"><a href="https://defillama.com/protocol/bankr" target="_blank">DeFiLlama Fees (bankr)</a> <code>/summary/fees/bankr</code>，bankr fees ÷ 1.2% = bankr 量（$147.2M）；协议总量 ÷ 0.969 ≈ $151.9M；展示值 = 总量 − bankr ≈ $4.7M</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">alt.fun 统计</div>
+            <div class="source-detail"><code>api.alt.fun/api/v1/stats</code> + <code>/api/v1/tokens?status=graduated</code></div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">nad.fun 发射数</div>
+            <div class="source-detail"><code>api.nad.fun/order/creation_time?direction=DESC</code>，客户端扫描 creationTime ≥ 7d 内</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">four.meme MCap</div>
+            <div class="source-detail">GeckoTerminal 核验（平台显示值与链上价格差异较大）</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">WoW 计算</div>
+            <div class="source-detail">当周 7d ÷ 上周 7d − 1；采集时间 2026-06-03</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">Doppler 发射数</div>
+            <div class="source-detail"><code>indexer-prod.doppler.lol</code> GraphQL，Base 链，前后两周 totalCount 对比</div>
+          </div>
+          <div class="source-row">
+            <div class="source-label">Doppler 头部 MCap</div>
+            <div class="source-detail"><code>app.doppler.lol/api/explore?sortBy=market_cap_usd</code>，top 100 客户端过滤 createdAt ≥ 7d，marketCapUsd ÷ 1e18</div>
+          </div>
+        </div>
+        <div class="fn-list">
+          <div class="fn-row"><div class="fn-num">①</div><div class="fn-text">pump.fun 无公开发射数 API；~50K+/周 为社区/Dune Analytics 公认量级，非本次实时采集</div></div>
+          <div class="fn-row"><div class="fn-num">②</div><div class="fn-text">four.meme 无发射数 API；按 token ID 区间估算：ID 跨度 ~1.63M / 242 天 ≈ 6,717/day</div></div>
+          <div class="fn-row"><div class="fn-num">③</div><div class="fn-text">alt.fun：<code>stats API</code> totalTokens 6,501 / 上线约 20 天 ≈ 325/day；nad.fun：total_count 28,605 / platform age ~190 天 ≈ 150/day（platform age 为估算，不确定性较高）</div></div>
+          <div class="fn-row"><div class="fn-num">④</div><div class="fn-text">pump.fun ~1% 毕业率有链上统计支撑；four.meme 无直接数据，沿用同比率，存在误差</div></div>
+          <div class="fn-row"><div class="fn-num">⑤</div><div class="fn-text">alt.fun <code>stats API</code> 直接返回 graduated: 65（平台上线至今）/ ~20 天 = 3.25/day × 7 ≈ 23，置信度最高</div></div>
+          <div class="fn-row"><div class="fn-num">⑥</div><div class="fn-text">pump.fun 无 7d 发射 MCap API，此处沿用全量历史头部 WIF（~$2B，2026-06-03 量级）作参考</div></div>
+          <div class="fn-row"><div class="fn-num">⑦</div><div class="fn-text">four.meme 7d MCap：按 ranking API top 1500 按 cap 字段换算（锚点 BANANA = $104M），仅供量级参考</div></div>
+          <div class="fn-row"><div class="fn-num">⑧</div><div class="fn-text">Doppler 非 bankr 量：bankr（最大 integrator，占协议 96.9%）7d fees $1.77M（DeFiLlama）÷ 1.2% swap fee = $147.2M；协议总量 = $147.2M ÷ 0.969 ≈ $151.9M；此处仅展示非 bankr 直接来源量 $151.9M − $147.2M ≈ $4.7M（bankr 为独立聚合 integrator，非 Doppler 原生流量）；Doppler indexer 被低估 ~4×，不使用</div></div>
+          <div class="fn-row"><div class="fn-num">⑨</div><div class="fn-text">Doppler 发射数来自 <code>indexer-prod.doppler.lol</code> GraphQL（Base 链）：本周 7d = 24,810，上周 7d = 37,527，WoW = −33.9%；体积 WoW −52.7% 为 bankr 总量口径（DeFiLlama fees $1.77M vs 上周 $3.73M）；非 bankr 量 $4.7M 的 WoW 无法独立拆分</div></div>
+          <div class="fn-row"><div class="fn-num">⑩</div><div class="fn-text">Doppler 毕业数：<code>indexer-prod.doppler.lol</code> GraphQL <code>migrationPools</code> query：全量历史共 16 个 migrated pool，最近一次迁移时间戳 1762196907（2025-11 月）；7d 窗口（2026-05-27 至今）内新增 migrationPools = 0；<code>app.doppler.lol</code> explore 页面 top token 均为 27d 前以上发射，无 7d 内毕业 token；本周毕业数 ≈ 0</div></div>
+          <div class="fn-row"><div class="fn-num">⑪</div><div class="fn-text">Doppler 7d 头部 MCap：<code>app.doppler.lol/api/explore?sortBy=market_cap_usd&amp;limit=100</code> top 100，客户端过滤 createdAt ≥ 1779840000（2026-05-27），marketCapUsd 字段 wei 精度（÷ 1e18）；最高为 SEARXLY（22h 前），$234K</div></div>
+          <div class="fn-row"><div class="fn-num">⑫</div><div class="fn-text">nad.fun 无 graduation_time 字段，API <code>is_graduated</code> 服务端过滤失效（返回全量 28,606）；改用 <code>creation_time?direction=DESC</code> 客户端扫描：7d 内创建 281 个 token，其中 1 个已标记 is_graduated=true（PAMPAM，0x4481...7777，创建于 5/28）；老 token 本周毕业数无法追溯，综合平台低量（$50K/周）估算 7d 总毕业数 ≤5</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
