@@ -72,7 +72,7 @@
             <td><span class="num">$303.5M</span></td>
             <td><span class="num">$54.5M</span></td>
             <td class="highlight-hype"><span class="num">$0.96M</span></td>
-            <td class="highlight-monad"><span class="num">$50K</span></td>
+            <td class="highlight-monad"><span class="num">~$389K</span><br><span class="est">Dune 内盘 <sup>⑫</sup></span></td>
             <td><span class="num">~$4.7M</span><br><span class="est">非 bankr 来源 <sup>⑧</sup></span></td>
           </tr>
           <tr>
@@ -80,7 +80,7 @@
             <td><span class="wow-neg">−6.5%</span></td>
             <td><span class="wow-pos">+15.7%</span></td>
             <td class="highlight-hype"><span class="wow-neg">−84.5%</span></td>
-            <td class="highlight-monad"><span class="wow-neg">−48.8%</span></td>
+            <td class="highlight-monad"><span class="wow-neg">−25.5%</span></td>
             <td><span class="wow-neg">~−52.7%</span><br><span class="est">总量口径（bankr）<sup>⑨</sup></span></td>
           </tr>
           <tr>
@@ -126,6 +126,10 @@
             <div class="source-detail"><code>api.alt.fun/api/v1/stats</code> + <code>/api/v1/tokens?status=graduated</code></div>
           </div>
           <div class="source-row">
+            <div class="source-label">nad.fun 交易量</div>
+            <div class="source-detail"><a href="https://dune.com/bc1phugo/monad-dashboard" target="_blank">Dune nadFun Dashboard</a>，query <code>NadFun_Daily_Info</code>（<code>volume_bonding_total</code> 字段，V1+V2 bonding curve）× MON/USD $0.0207；DeFiLlama DEX slug 数据无效（fee/vol 比率 16.5%）</div>
+          </div>
+          <div class="source-row">
             <div class="source-label">nad.fun 发射数</div>
             <div class="source-detail"><code>api.nad.fun/order/creation_time?direction=DESC</code>，客户端扫描 creationTime ≥ 7d 内</div>
           </div>
@@ -158,7 +162,7 @@
           <div class="fn-row"><div class="fn-num">⑨</div><div class="fn-text">Doppler 发射数来自 <code>indexer-prod.doppler.lol</code> GraphQL（Base 链）：本周 7d = 24,810，上周 7d = 37,527，WoW = −33.9%；体积 WoW −52.7% 为 bankr 总量口径（DeFiLlama fees $1.77M vs 上周 $3.73M）；非 bankr 量 $4.7M 的 WoW 无法独立拆分</div></div>
           <div class="fn-row"><div class="fn-num">⑩</div><div class="fn-text">Doppler 毕业数：<code>indexer-prod.doppler.lol</code> GraphQL <code>migrationPools</code> query：全量历史共 16 个 migrated pool，最近一次迁移时间戳 1762196907（2025-11 月）；7d 窗口（2026-05-27 至今）内新增 migrationPools = 0；<code>app.doppler.lol</code> explore 页面 top token 均为 27d 前以上发射，无 7d 内毕业 token；本周毕业数 ≈ 0</div></div>
           <div class="fn-row"><div class="fn-num">⑪</div><div class="fn-text">Doppler 7d 头部 MCap：<code>app.doppler.lol/api/explore?sortBy=market_cap_usd&amp;limit=100</code> top 100，客户端过滤 createdAt ≥ 1779840000（2026-05-27），marketCapUsd 字段 wei 精度（÷ 1e18）；最高为 SEARXLY（22h 前），$234K</div></div>
-          <div class="fn-row"><div class="fn-num">⑫</div><div class="fn-text">nad.fun 无 graduation_time 字段，API <code>is_graduated</code> 服务端过滤失效（返回全量 28,606）；改用 <code>creation_time?direction=DESC</code> 客户端扫描：7d 内创建 281 个 token，其中 1 个已标记 is_graduated=true（PAMPAM，0x4481...7777，创建于 5/28）；老 token 本周毕业数无法追溯，综合平台低量（$50K/周）估算 7d 总毕业数 ≤5；交易量口径：DeFiLlama DEX（slug: nad.fun）7d $49K，fees methodology 含 post-graduation LP manager collections，volume 口径未显式定义，存在含外盘可能，但 Monad 主网新上线、毕业 token 极少，外盘部分估计可忽略</div></div>
+          <div class="fn-row"><div class="fn-num">⑫</div><div class="fn-text">nad.fun 交易量：DeFiLlama DEX slug 数据无效——7d "volume" $49K 对应 fees $8.1K，隐含费率 16.5%，与官方 bonding curve 协议费 1%（V2）严重不符，系 adapter 将中间量误报为 volume。改用 Dune <code>NadFun_Daily_Info</code> query（bc1phugo）的 <code>volume_bonding_total</code> 字段（V1+V2 bonding curve 纯内盘）：7d = 18,739,627 MON，MON 价格 $0.02074（CoinGecko），= $388,793 ≈ <strong>~$389K</strong>；WoW 对比上周（5/20-5/26）25,149,037 MON = −25.5%。毕业数：<code>creation_time?direction=DESC</code> 客户端扫描 7d 内创建 281 个 token，其中 1 个已标记 is_graduated=true（PAMPAM，0x4481...7777，创建于 5/28）；老 token 毕业数无法追溯，综合平台量估算 7d 总毕业数 ≤5</div></div>
         </div>
       </div>
     </div>
