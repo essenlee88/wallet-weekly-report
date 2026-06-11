@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD 清单 2026 H1 — Elsa</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f7; color: #1d1d1f; font-size: 14px; }
+header { background: #1d1d1f; color: #fff; padding: 32px 40px; }
+header h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+header p { color: #999; font-size: 13px; }
+.stats { display: flex; gap: 16px; padding: 20px 40px; background: #fff; border-bottom: 1px solid #e5e5e5; flex-wrap: wrap; }
+.stat { text-align: center; padding: 12px 20px; border-radius: 10px; min-width: 90px; }
+.stat .num { font-size: 26px; font-weight: 700; }
+.stat .lbl { font-size: 11px; color: #666; margin-top: 2px; }
+.s-red { background: #fff1f0; color: #cf1322; }
+.s-orange { background: #fff7e6; color: #d46b08; }
+.s-yellow { background: #fffbe6; color: #ad8b00; }
+.s-blue { background: #e6f7ff; color: #0958d9; }
+.s-green { background: #f6ffed; color: #389e0d; }
+.s-gray { background: #f0f0f0; color: #595959; }
+.container { max-width: 1200px; margin: 0 auto; padding: 28px 40px; }
+.section { margin-bottom: 36px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #e8e8e8; }
+.section-header h2 { font-size: 16px; font-weight: 600; }
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+.badge-red { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+.badge-orange { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+.badge-yellow { background: #fffbe6; color: #ad8b00; border: 1px solid #ffe58f; }
+.badge-blue { background: #e6f7ff; color: #0958d9; border: 1px solid #91caff; }
+.badge-green { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+.badge-gray { background: #f5f5f5; color: #595959; border: 1px solid #d9d9d9; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+th { background: #fafafa; color: #666; font-weight: 500; padding: 10px 14px; text-align: left; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
+td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; line-height: 1.5; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.tag-web { background: #e6f7ff; color: #0958d9; }
+.tag-app { background: #f0f9ff; color: #0369a1; }
+.tag-webapp { background: #ede9fe; color: #6d28d9; }
+.tag-admin { background: #fdf4ff; color: #7e22ce; }
+.prd-link { color: #0958d9; text-decoration: none; font-weight: 500; }
+.prd-link:hover { text-decoration: underline; }
+.no-link { color: #bbb; font-size: 12px; }
+.wea { font-size: 11px; color: #8c8c8c; font-family: monospace; }
+.date { font-size: 12px; color: #888; white-space: nowrap; }
+.new-tag { display: inline-block; padding: 1px 5px; background: #ff4d4f; color: #fff; border-radius: 3px; font-size: 10px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
+.note { font-size: 12px; color: #999; margin-top: 2px; }
+.p-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.p-red { background: #ff4d4f; }
+.p-orange { background: #fa8c16; }
+.p-yellow { background: #fadb14; }
+.p-blue { background: #1677ff; }
+.p-green { background: #52c41a; }
+.p-gray { background: #d9d9d9; }
+.sec-note { font-size: 11px; color: #aaa; margin-left: 6px; }
+footer { text-align: center; padding: 20px; color: #bbb; font-size: 12px; border-top: 1px solid #eee; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PRD 清单 — 2026 H1</h1>
+  <p>统计周期：2026-01-01 ~ 2026-06-09 &nbsp;·&nbsp; 产品线：MemeRush Web / App / Alpha Admin &nbsp;·&nbsp; Owner: Elsa &nbsp;·&nbsp; 数据来源：tasks.md + Wea Tasks + Confluence API</p>
+</header>
+
+<div class="stats">
+  
+  <div class="stat s-orange"><div class="num">6</div><div class="lbl">P1 进行中</div></div>
+  <div class="stat s-yellow"><div class="num">9</div><div class="lbl">P2 编写中</div></div>
+  <div class="stat s-blue"><div class="num">4</div><div class="lbl">P3 暂缓</div></div>
+  <div class="stat s-green"><div class="num">39</div><div class="lbl">已完成</div></div>
+  <div class="stat s-gray"><div class="num">58</div><div class="lbl">PRD 合计</div></div>
+</div>
+
+<div class="container">
+
+
+
+<div class="section">
+  <div class="section-header">
+    <span class="p-dot p-orange"></span>
+    <h2>P1 — 开发中 / 待 KO / 排期</h2>
+    <span class="badge badge-orange">6 篇</span>
+  </div>
+  <table>
+    <tr><th width="36%">PRD 标题</th><th width="10%">平台</th><th width="14%">Confluence</th><th width="12%">Wea</th><th>备注</th></tr>
+    <tr>
+      <td><strong>链上指标增强 Dev+Sniper+Bundler</strong><br><span class="note">一期 Data 弹窗；二期 Web+App 全量</span></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544343973" target="_blank">Web PRD</a> &nbsp;<a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544361756" target="_blank">App PRD</a></td>
+      <td><span class="wea">T107745 / T113845</span></td>
+      <td>KO 6/9 开发中；W3W-36748 / W3W-45935</td>
+    </tr>
+    <tr>
+      <td><strong>PumpLive 直播预览</strong><br><span class="note">列表卡片+Social Tab 三态</span></td>
+      <td><span class="tag tag-app">App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=562484367" target="_blank">PRD</a></td>
+      <td><span class="wea">T136165</span></td>
+      <td>KO 完成，开发中；BE: franklin.b</td>
+    </tr>
+    <tr>
+      <td><strong>Top10 泡泡图 Holder Map</strong></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=560558682" target="_blank">PRD</a></td>
+      <td><span class="wea">T136164</span></td>
+      <td>Web 已上线；App 验收中；W3W-43802/43803</td>
+    </tr>
+    <tr>
+      <td><strong>Filter 升级 — Keywords 跨链 + 筛选面板 Tab 化</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=568700850" target="_blank">PRD</a></td>
+      <td><span class="wea">T133808</span></td>
+      <td>验收中</td>
+    </tr>
+
+    <tr>
+      <td><strong>支持 Virtuals Protocol（Base）</strong></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=575408756" target="_blank">PRD</a></td>
+      <td><span class="wea">T138292</span></td>
+      <td>KO 完成，排期确认中</td>
+    </tr>
+
+    <tr>
+      <td><strong>MemeRank 防操纵算法升级（AMS）</strong><span class="new-tag">NEW</span></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=578390027" target="_blank">PRD</a></td>
+      <td><span class="wea">T141690</span></td>
+      <td>KO 完成，预期 6/15 上线</td>
+    </tr>
+
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="p-dot p-yellow"></span>
+    <h2>P2 — PRD 编写中 / 完善中</h2>
+    <span class="badge badge-yellow">9 篇</span>
+  </div>
+  <table>
+    <tr><th width="36%">PRD 标题</th><th width="10%">平台</th><th width="14%">Confluence</th><th width="12%">Wea</th><th>备注</th></tr>
+    <tr>
+      <td><strong>屏蔽 Token 与自定义字段</strong></td>
+      <td><span class="tag tag-app">App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533109919" target="_blank">PRD</a></td>
+      <td><span class="wea">T124266 / T124265</span></td>
+      <td>PRDing；UED: Charlie T</td>
+    </tr>
+    <tr>
+      <td><strong>Filter Preset 保存与跨端同步</strong><br><span class="note">含 Global Preset（scope=global）</span></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=547957905" target="_blank">PRD</a></td>
+      <td><span class="wea">T114652</span></td>
+      <td>高优先级，待排期</td>
+    </tr>
+    <tr>
+      <td><strong>Embed Preview 增强</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543378502" target="_blank">PRD</a></td>
+      <td><span class="wea">T113838</span></td>
+      <td>Jackson approve；W3W-36509 待 FE 排期</td>
+    </tr>
+    <tr>
+      <td><strong>支持 TON 链</strong><span class="new-tag">NEW</span></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=568702819" target="_blank">PRD</a></td>
+      <td><span class="wea">—</span></td>
+      <td>5/20 创建；tasks.md 未跟踪，需确认排期</td>
+    </tr>
+    <tr>
+      <td><strong>Bags / Pump 收益分成展示与筛选</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=536873681" target="_blank">PRD</a></td>
+      <td><span class="wea">—</span></td>
+      <td>PRD 阶段；未 KO；3/13 创建</td>
+    </tr>
+    <tr>
+      <td><strong>Base 新协议 Doppler 支持</strong></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=571699795" target="_blank">PRD</a></td>
+      <td><span class="wea">T137704</span></td>
+      <td>PRD 阶段；待数据侧确认 swapFee 解析</td>
+    </tr>
+    <tr>
+      <td><strong>Hotkey 1/2 Quickbuy 按键买入</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=557643949" target="_blank">PRD</a></td>
+      <td><span class="wea">T126918</span></td>
+      <td>PRD 阶段；W3W-42857</td>
+    </tr>
+    <tr>
+      <td><strong>PumpAMM 协议支持</strong></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><span class="no-link">本地 HTML（待上传）</span></td>
+      <td><span class="wea">—</span></td>
+      <td>PRD 阶段</td>
+    </tr>
+    <tr>
+      <td><strong>Meme-Fi 新增链上多空策略层</strong><span class="new-tag">Hackathon</span></td>
+      <td><span class="tag tag-webapp">Web+App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=575429196" target="_blank">PRD</a></td>
+      <td><span class="wea">T136351</span></td>
+      <td>Hackathon 0x002；6/5 创建</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="p-dot p-blue"></span>
+    <h2>P3 — Backlog / 暂缓</h2>
+    <span class="badge badge-blue">4 篇</span>
+  </div>
+  <table>
+    <tr><th width="36%">PRD 标题</th><th width="10%">平台</th><th width="14%">Confluence</th><th width="12%">Wea</th><th>备注</th></tr>
+    <tr>
+      <td><strong>地址追踪指标（Blacklist Guard + SM Holdings）</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=537393543" target="_blank">PRD</a></td>
+      <td><span class="wea">T102723</span></td>
+      <td>P2 暂缓</td>
+    </tr>
+    <tr>
+      <td><strong>App Watchlist Token 支持用户自定义标签</strong></td>
+      <td><span class="tag tag-app">App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=529736389" target="_blank">PRD</a></td>
+      <td><span class="wea">—</span></td>
+      <td>暂缓</td>
+    </tr>
+    <tr>
+      <td><strong>App MemeRush 持仓代币标签</strong></td>
+      <td><span class="tag tag-app">App</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=515739600" target="_blank">PRD</a></td>
+      <td><span class="wea">—</span></td>
+      <td>暂缓</td>
+    </tr>
+    <tr>
+      <td><strong>沉浸模式</strong></td>
+      <td><span class="tag tag-web">Web</span></td>
+      <td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533111946" target="_blank">PRD</a></td>
+      <td><span class="wea">—</span></td>
+      <td>暂停，等用户反馈</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <span class="p-dot p-green"></span>
+    <h2>已完成上线</h2>
+    <span class="badge badge-green">39 篇</span>
+    <span class="sec-note">按上线/创建时间倒序</span>
+  </div>
+  <table>
+    <tr><th width="9%">日期</th><th width="33%">PRD 标题</th><th width="10%">平台</th><th width="14%">Confluence</th><th width="13%">Wea</th><th>Jira</th></tr>
+    <tr><td class="date">2026-06-08</td><td>4meme Open Four 协议接入</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=564650529" target="_blank">PRD</a></td><td><span class="wea">T132553</span></td><td>W3W-47185/47186</td></tr>
+    <tr><td class="date">2026-06-08</td><td>Customize Layout 拖动换位 + Protocol 协议染色</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=562864530" target="_blank">PRD</a></td><td><span class="wea">T129461</span></td><td>W3W-43730</td></tr>
+    <tr><td class="date">2026-06-04</td><td>FLAP 零税 Token 升级（TOKEN_V3_PERMIT）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=568493161" target="_blank">PRD</a></td><td><span class="wea">T132552</span></td><td>W3W-44286/44287</td></tr>
+    <tr><td class="date">2026-05-30</td><td>Website 品牌 Icon & 域名创建时间展示</td><td><span class="tag tag-app">App</span></td><td><span class="no-link">—</span></td><td><span class="wea">T141042</span></td><td>W3W-43735</td></tr>
+    <tr><td class="date">2026-05-29</td><td>Filter 键盘 Done 按钮</td><td><span class="tag tag-app">App</span></td><td><span class="no-link">—</span></td><td><span class="wea">T130939</span></td><td>W3W-43912</td></tr>
+    <tr><td class="date">2026-05-25</td><td>ETH 链 MemeRush 接入</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=560925969" target="_blank">PRD</a></td><td><span class="wea">T127532</span></td><td>W3W-43284/43285</td></tr>
+    <tr><td class="date">2026-05-22</td><td>MemeRank 评分权重优化 + BN 渗透率</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=564637029" target="_blank">PRD</a></td><td><span class="wea">T130938</span></td><td>W3W-44297/44298</td></tr>
+    <tr><td class="date">2026-05-15</td><td>BSC+Base 链交易手续费筛选与展示</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=547950832" target="_blank">PRD</a></td><td><span class="wea">T113841</span></td><td>W3W-40238/40296</td></tr>
+    <tr><td class="date">2026-05-13</td><td>Fusion 多链同屏交易</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533110849" target="_blank">PRD</a></td><td><span class="wea">T102724</span></td><td>W3W-37457</td></tr>
+    <tr><td class="date">2026-05-13</td><td>快捷搜索</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=536899730" target="_blank">PRD</a></td><td><span class="wea">T107739</span></td><td>W3W-36747</td></tr>
+    <tr><td class="date">2026-05-11</td><td>Token Detail X Preview + Website Preview Hotkey</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543378498" target="_blank">PRD</a></td><td><span class="wea">T114638</span></td><td>W3W-40276</td></tr>
+    <tr><td class="date">2026-05-08</td><td>Alpha CEX TAG 配置（Delist / Token Swap）</td><td><span class="tag tag-admin">Admin</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=512149372" target="_blank">PRD</a></td><td><span class="wea">T120008</span></td><td>W3W-32167</td></tr>
+    <tr><td class="date">2026-05-06</td><td>Flaunch 协议支持（Base 一期）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=551055061" target="_blank">PRD</a></td><td><span class="wea">T125524</span></td><td>W3W-41565/41566</td></tr>
+    <tr><td class="date">2026-04-29</td><td>Four.Meme AI Agent / X Mode 筛选下线</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=557495733" target="_blank">PRD</a></td><td><span class="wea">T125076/T125077</span></td><td>W3W-42560/42561</td></tr>
+    <tr><td class="date">2026-04-27</td><td>X Post 预览解析文章链接</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544359641" target="_blank">PRD</a></td><td><span class="wea">T102722/T113844</span></td><td>W3W-38840</td></tr>
+    <tr><td class="date">2026-04-27</td><td>MC / Vol 字体大小切换</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=547055595" target="_blank">PRD</a></td><td><span class="wea">T116752</span></td><td>W3W-40467</td></tr>
+    <tr><td class="date">2026-04-22</td><td>Website Icon + Preview 弹窗</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543378498" target="_blank">PRD</a></td><td><span class="wea">T113837</span></td><td>W3W-36509/39618</td></tr>
+    <tr><td class="date">2026-04-21</td><td>FORM Paired Token + Paired Token 过滤</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=551126041" target="_blank">PRD</a></td><td><span class="wea">T117332</span></td><td>W3W-40443/40444</td></tr>
+    <tr><td class="date">2026-04-18</td><td>协议筛选逻辑对齐竞品 DBC/LaunchLab</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543377043" target="_blank">PRD</a></td><td><span class="wea">T113839</span></td><td>W3W-38842/38843</td></tr>
+    <tr><td class="date">2026-04-18</td><td>Tax 筛选 Buy/Sell 分离（App）</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543369968" target="_blank">PRD</a></td><td><span class="wea">T107741</span></td><td>W3W-38184</td></tr>
+    <tr><td class="date">2026-04-18</td><td>Bundle 钱包分组切换</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543366624" target="_blank">PRD</a></td><td><span class="wea">T107744</span></td><td>—</td></tr>
+    <tr><td class="date">2026-04-13</td><td>X 转发推文预览（嵌套卡片 + 翻译）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544359641" target="_blank">PRD</a></td><td><span class="wea">T102698/T113843</span></td><td>W3W-36494/38839</td></tr>
+    <tr><td class="date">2026-04-13</td><td>链上指标增强一期 — Data 弹窗（App）</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544343974" target="_blank">PRD</a></td><td><span class="wea">T107746</span></td><td>W3W-38830</td></tr>
+    <tr><td class="date">2026-04-07</td><td>Tax 标签 Buy/Sell 分离展示（Web+App）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543359826" target="_blank">PRD</a></td><td><span class="wea">T107740</span></td><td>W3W-37825/37826</td></tr>
+    <tr><td class="date">2026-04-07</td><td>Hotkeys（Web 快捷键）</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533111559" target="_blank">PRD</a></td><td><span class="wea">T102695</span></td><td>W3W-35407</td></tr>
+    <tr><td class="date">2026-03-31</td><td>Customize Hide Empty Tag + 分隔线优化</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533103415" target="_blank">PRD</a></td><td><span class="wea">T107743</span></td><td>W3W-38069</td></tr>
+    <tr><td class="date">2026-03-30</td><td>Customize 翻译 + 右键 + 空标签 + 布局</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533103415" target="_blank">PRD</a></td><td><span class="wea">T102697</span></td><td>W3W-35937/35938</td></tr>
+    <tr><td class="date">2026-03-30</td><td>App Website Preview + 网站解析</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544344742" target="_blank">PRD</a></td><td><span class="wea">T107747</span></td><td>—</td></tr>
+    <tr><td class="date">2026-03-30</td><td>App 卡片默认隐藏空标签</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=544344575" target="_blank">PRD</a></td><td><span class="wea">T102703</span></td><td>W3W-38054</td></tr>
+    <tr><td class="date">2026-03-27</td><td>Tax Buy/Sell 分离展示（Web+App 规格）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=543359826" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-03-25</td><td>Twitter Handle / Web Community（follow 数据）</td><td><span class="tag tag-webapp">Web+App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=515748867" target="_blank">PRD</a></td><td><span class="wea">T102694</span></td><td>—</td></tr>
+
+    <tr><td class="date">2026-03-06</td><td>Hotkeys 早期版本（含 2nd Quickbuy Button）</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533111559" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-03-05</td><td>屏蔽 Token 与自定义字段（初版）</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533109919" target="_blank">PRD</a></td><td><span class="wea">T102704</span></td><td>—</td></tr>
+    <tr><td class="date">2026-03-04</td><td>Customize 设置增强（早期版）</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=533103415" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+
+    <tr><td class="date">2026-01-26</td><td>Twitter Preview 翻译与 Handle 列表</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=515748867" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+
+    <tr><td class="date">2026-01-21</td><td>Admin Pre-Alpha 支持 Limit Order Pair + Commission Fee</td><td><span class="tag tag-admin">Admin</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=513268597" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-01-19</td><td>Admin Alpha 后台增加 Delist 相关字段</td><td><span class="tag tag-admin">Admin</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=512149372" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-01-14</td><td>Quickbuy 按键调整与 2nd Button（早期版）</td><td><span class="tag tag-web">Web</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=512136264" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-01-12</td><td>Admin Pre-Alpha / Alpha 自动提交 Capital 审批</td><td><span class="tag tag-admin">Admin</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=508653355" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-01-05</td><td>App 列表暂停刷新逻辑调整 + 回到顶部按键</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=504520812" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+    <tr><td class="date">2026-01-04</td><td>Watchlist 收藏添加和取消流程优化</td><td><span class="tag tag-app">App</span></td><td><a class="prd-link" href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=504516691" target="_blank">PRD</a></td><td><span class="wea">—</span></td><td>—</td></tr>
+  </table>
+</div>
+
+</div>
+
+<footer>
+  生成时间：2026-06-09 &nbsp;·&nbsp; 数据来源：tasks.md + Wea Tasks（89 条） + Confluence API（总计 89 页） &nbsp;·&nbsp; <span style="color:#ff4d4f; font-weight:600;">NEW</span> = Confluence 新发现，tasks.md 未跟踪
+</footer>
+
+</body>
+</html>
