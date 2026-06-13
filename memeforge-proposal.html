@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemeForge — Binance Wallet Meme 创作引擎 | Hackathon 2026 提案</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #13131a;
+    --card-hover: #1a1a24;
+    --accent: #f0b90b;
+    --accent2: #8b5cf6;
+    --accent3: #06d6a0;
+    --text: #e4e4e7;
+    --text-dim: #a1a1aa;
+    --text-muted: #71717a;
+    --border: #27272a;
+    --danger: #ef4444;
+    --radius: 12px;
+    --radius-lg: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ---- Navigation ---- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+  nav .logo .icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #f97316); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  nav .links { display: flex; gap: 24px; }
+  nav .links a { color: var(--text-dim); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  nav .links a:hover { color: var(--accent); }
+  nav .cta { background: var(--accent); color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: transform 0.2s; }
+  nav .cta:hover { transform: scale(1.05); }
+
+  /* ---- Sections ---- */
+  section { padding: 80px 24px; max-width: 1000px; margin: 0 auto; }
+  .hero { padding-top: 120px; text-align: center; }
+  .hero .badge { display: inline-block; background: rgba(240,185,11,0.15); color: var(--accent); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(240,185,11,0.3); }
+  .hero h1 { font-size: 52px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--accent), #f97316, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .sub { font-size: 20px; color: var(--text-dim); max-width: 680px; margin: 0 auto 32px; }
+  .hero .meta { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-top: 16px; }
+  .hero .meta span { color: var(--text-muted); font-size: 14px; }
+  .hero .meta span strong { color: var(--text); }
+
+  h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+  h2 .num { color: var(--accent); font-size: 20px; vertical-align: super; margin-right: 6px; }
+  h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+  .section-desc { color: var(--text-dim); font-size: 16px; margin-bottom: 40px; max-width: 700px; }
+
+  /* ---- Cards ---- */
+  .card-grid { display: grid; gap: 20px; }
+  .card-grid.cols2 { grid-template-columns: repeat(2, 1fr); }
+  .card-grid.cols3 { grid-template-columns: repeat(3, 1fr); }
+  .card-grid.cols4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 28px; transition: background 0.2s, border-color 0.2s;
+  }
+  .card:hover { background: var(--card-hover); border-color: rgba(240,185,11,0.2); }
+  .card .icon { font-size: 28px; margin-bottom: 14px; }
+  .card h4 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .card p { color: var(--text-dim); font-size: 14px; line-height: 1.65; }
+  .card .tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-top: 12px; }
+  .tag-green { background: rgba(6,214,160,0.12); color: var(--accent3); }
+  .tag-purple { background: rgba(139,92,246,0.12); color: var(--accent2); }
+  .tag-yellow { background: rgba(240,185,11,0.12); color: var(--accent); }
+
+  /* ---- Pain Points ---- */
+  .pain-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .pain-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 24px; border-left: 3px solid var(--danger);
+  }
+  .pain-card h4 { font-size: 16px; margin-bottom: 6px; color: var(--danger); }
+  .pain-card p { color: var(--text-dim); font-size: 14px; }
+
+  /* ---- Comparison Table ---- */
+  .cmp-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); margin: 20px 0; }
+  .cmp-table th, .cmp-table td { padding: 14px 18px; text-align: left; font-size: 14px; }
+  .cmp-table th { background: var(--card); font-weight: 600; color: var(--text-dim); }
+  .cmp-table td { border-top: 1px solid var(--border); }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table .win { color: var(--accent3); font-weight: 600; }
+  .cmp-table .lose { color: var(--danger); }
+
+  /* ---- Flow / Architecture ---- */
+  .flow-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; }
+  .flow-step { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
+  .flow-step:last-child { margin-bottom: 0; }
+  .flow-step .num-box { min-width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .flow-step .num-box.warm { background: linear-gradient(135deg, rgba(240,185,11,0.2), rgba(249,115,22,0.2)); color: var(--accent); }
+  .flow-step .num-box.purple { background: rgba(139,92,246,0.15); color: var(--accent2); }
+  .flow-step .num-box.green { background: rgba(6,214,160,0.15); color: var(--accent3); }
+  .flow-step .content h4 { font-size: 16px; margin-bottom: 4px; }
+  .flow-step .content p { color: var(--text-dim); font-size: 14px; }
+  .flow-arrow { text-align: center; color: var(--text-muted); font-size: 14px; padding: 4px 0; }
+
+  /* ---- Metrics ---- */
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center; }
+  .metric-card .value { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+  .metric-card .value.y { color: var(--accent); }
+  .metric-card .value.p { color: var(--accent2); }
+  .metric-card .value.g { color: var(--accent3); }
+  .metric-card .label { font-size: 13px; color: var(--text-muted); }
+
+  /* ---- Timeline ---- */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 32px; }
+  .tl-item::before { content: ''; position: absolute; left: -26px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+  .tl-item .week { color: var(--accent); font-weight: 600; font-size: 13px; text-transform: uppercase; margin-bottom: 4px; }
+  .tl-item h4 { font-size: 16px; margin-bottom: 4px; }
+  .tl-item p { color: var(--text-dim); font-size: 14px; }
+
+  /* ---- CTA Section ---- */
+  .cta-section { text-align: center; padding: 100px 24px; }
+  .cta-section h2 { font-size: 40px; margin-bottom: 16px; }
+  .cta-section p { color: var(--text-dim); max-width: 600px; margin: 0 auto 32px; font-size: 18px; }
+  .cta-section .cta-btn { display: inline-block; background: linear-gradient(135deg, var(--accent), #f97316); color: #000; padding: 14px 40px; border-radius: 12px; font-weight: 700; font-size: 17px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(240,185,11,0.3); }
+  .cta-section .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(240,185,11,0.4); }
+
+  /* ---- Footer ---- */
+  footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+
+  /* ---- Divider ---- */
+  .divider { height: 1px; background: var(--border); margin: 0 auto; max-width: 1000px; }
+
+  /* ---- Highlight Box ---- */
+  .highlight-box { background: linear-gradient(135deg, rgba(240,185,11,0.06), rgba(139,92,246,0.06)); border: 1px solid rgba(240,185,11,0.2); border-radius: var(--radius-lg); padding: 28px; margin: 24px 0; }
+  .highlight-box h4 { color: var(--accent); margin-bottom: 6px; }
+  .highlight-box p { color: var(--text-dim); font-size: 14px; }
+
+
+  /* ---- Story Box ---- */
+  .story-box {
+    background: linear-gradient(135deg, rgba(240,185,11,0.04), rgba(139,92,246,0.04));
+    border: 1px solid rgba(240,185,11,0.15);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin: 0 0 40px;
+  }
+  .story-box .story-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+  .story-box .story-text p { color: var(--text-dim); font-size: 15px; line-height: 1.75; margin-bottom: 10px; }
+  .story-box .story-text p:last-child { margin-bottom: 0; }
+
+  /* ---- Flywheel ---- */
+  .flywheel-wrap { margin: 40px 0; text-align: center; }
+  .flywheel { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
+  .fw-node { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; min-width: 105px; text-align: center; transition: border-color 0.2s; }
+  .fw-node:hover { border-color: rgba(240,185,11,0.35); }
+  .fw-node.highlight { border-color: rgba(6,214,160,0.4); background: rgba(6,214,160,0.05); }
+  .fw-node .fw-icon { font-size: 20px; margin-bottom: 6px; }
+  .fw-node .fw-label { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+  .fw-arrow { color: var(--accent); font-size: 18px; flex-shrink: 0; }
+  .fw-caption { font-size: 12px; color: var(--text-muted); margin-top: 14px; font-style: italic; }
+
+  /* ---- Acquisition Grid ---- */
+  .acq-section { margin-top: 40px; }
+  .acq-section > h4 { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
+  .acq-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .acq-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: border-color 0.2s; }
+  .acq-card:hover { border-color: rgba(240,185,11,0.25); }
+  .acq-card .acq-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
+  .acq-card h5 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .acq-card p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .card-grid.cols2, .card-grid.cols3, .card-grid.cols4, .pain-grid, .metric-row { grid-template-columns: 1fr; }
+    .cmp-table { font-size: 12px; }
+    .cmp-table th, .cmp-table td { padding: 10px 12px; }
+    nav .links { display: none; }
+  }
+
+  /* Demo iframe section */
+  .demo-frame-wrap { border-radius:14px; overflow:hidden; border:1px solid #27272a; box-shadow:0 32px 80px rgba(0,0,0,.6); }
+  .demo-chrome { background:#090a0e; padding:10px 14px; display:flex; align-items:center; gap:7px; border-bottom:1px solid #1a1a24; }
+  .demo-chrome .dc-dot { width:10px; height:10px; border-radius:50%; }
+  .demo-chrome .dc-url { background:#0f1015; border-radius:5px; padding:4px 14px; font-size:11px; color:#3a4050; font-family:monospace; margin-left:10px; flex:1; max-width:380px; }
+  .demo-caption { text-align:center; margin-top:12px; font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .demo-caption .phase-hint { display:inline-block; background:rgba(240,185,11,.1); border:1px solid rgba(240,185,11,.25); color:var(--accent); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; margin:0 3px; }
+  /* Ask box */
+  .ask-box { background:rgba(240,185,11,.06); border:1px solid rgba(240,185,11,.2); border-radius:12px; padding:24px 28px; margin-bottom:28px; }
+  .ask-box h4 { font-size:15px; font-weight:700; color:var(--accent); margin-bottom:14px; }
+  .ask-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .ask-item { display:flex; align-items:flex-start; gap:10px; font-size:14px; line-height:1.6; }
+  .ask-item .ask-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+  .ask-item strong { color:var(--text); }
+  .ask-item span { color:var(--text-dim); }
+
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="logo"><div class="icon">⚡</div> MemeForge</div>
+  <div class="links">
+    <a href="#problem">痛点</a><a href="#solution">方案</a><a href="#how">机制</a><a href="#roadmap">路线图</a><a href="#metrics">指标</a>
+  </div>
+  <a href="#cta" class="cta">支持我们</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge">🏆 Binance Wallet Hackathon 2026 · 赛道 0x002</div>
+  <h1><span class="grad">MemeForge</span><br>让有产品的 Meme 被看见</h1>
+  <p class="sub">AI 持续扫描全链 Meme token 的元数据，自动识别背后有真实产品的项目，在 MemeRush 中标记、筛选、推送——创作者无需提交，交易者一眼看穿。</p>
+  <div class="meta">
+    <span>赛道 <strong>0x002 Meme 交易迁移</strong></span>
+    <span>周期 <strong>30 天 MVP</strong></span>
+    <span>负责人 <strong>Elsa G.</strong></span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 00. Vision Hook -->
+<section id="vision-hook" style="text-align: center; padding: 48px 24px 40px;">
+  <h2 style="font-size: clamp(22px, 4vw, 34px); font-weight: 700; line-height: 1.4; margin: 0 0 20px; border: none; padding: 0;">
+    AI 正在批量制造真正的产品创作者。<br>
+    他们缺的不是能力，是一个<span style="color: #F0B90B;">被看见、被持有、被交易</span>的渠道。
+  </h2>
+  <p style="font-size: 15px; color: #848E9C; max-width: 560px; margin: 0 auto; line-height: 1.7;">
+    Crypto 原生的发现 + 变现机制，第一次有机会成为他们的答案。<br>
+    MemeForge 是 Binance Wallet 在这件事上的入场点。
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- 1. Problem -->
+<section id="problem">
+  <h2><span class="num">01</span> 我们在解决什么问题</h2>
+
+  <div class="story-box">
+    <div class="story-label">真实场景</div>
+    <div class="story-text">
+      <p>Marcus 在上海用 Cursor 一个人写了一个 BSC 实时交易分析工具——2,400 个活跃用户，每月 $3K ARR。他发了 token，在 Twitter 喊了一周，交易量寥寥无几。没有人知道他的工具是真实的。</p>
+      <p>另一边，MemeRush 上每天有交易者在 HOT 榜里翻来翻去，想找有基本面支撑的 token，但没有任何机制帮他们区分真产品和空壳页面——所有 token 的信息呈现完全对等。</p>
+      <p style="color: var(--accent); font-weight: 600;">MemeForge 让这个连接发生。Marcus 的 token 出现在 Featured 区，带着 AI 验证标签和产品链接——交易者第一眼就能看出这不是普通 meme。</p>
+    </div>
+  </div>
+
+  <p class="section-desc">四个角色同时面临困境，而一个解法可以同时击中。</p>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <h4>🌊 Meme 市场：缺少持续凝聚注意力的元叙事</h4>
+      <p>纯投机 meme 进入疲劳期，毕业率下降、rug 疲劳蔓延。市场需要更大的故事重新凝聚注意力——「有真实产品的 token」是下一个可讲的元叙事，但没有平台系统性地把它讲出来。</p>
+    </div>
+    <div class="pain-card">
+      <h4>🎯 交易者：无法快速识别最新、最有前景的叙事</h4>
+      <p>所有 meme 聚合器的信息对等——价格、持仓、链上行为。交易者无法区分「这条叙事会持续」和「这只是今天的热搜」。他们需要的是识别新兴、有基本面叙事的信号层。</p>
+    </div>
+    <div class="pain-card">
+      <h4>🤖 AI 开发者：需要能实验注意力、快速变现的分发平台</h4>
+      <p>AI 已把产品门槛降至历史低点，但冷启动依然是瓶颈。他们需要的不是另一个 Product Hunt——而是一个可以快速测试市场注意力、有一定变现通道（即使有限）、且本身有增长前景的分发平台。</p>
+    </div>
+    <div class="pain-card">
+      <h4>🚀 MemeRush：需要差异化内容层来获得更多注意力</h4>
+      <p>当前 MemeRush 与竞品在交易体验上趋于同质。MemeForge 能带来：更多注意力（新叙事吸引新用户）、持续产出的原生内容、展示其他平台没有的专属字段，以及孵化新项目的长期可能性。</p>
+    </div>
+</div>
+
+  <div class="highlight-box" style="margin-top: 24px;">
+    <p>📊 <strong>数据洞察：Base 链已证明产品型 token 毕业率是纯 meme 的 3.4 倍——BSC 是更大的主战场。</strong></p>
+    <ul>
+      <li><strong>毕业率差异（Base 链，N=71,450，2026-05-20~25）</strong>：产品型 token 毕业率 <strong>2.2%</strong> vs 纯 meme <strong>0.64%</strong>，高出 <strong>3.4 倍</strong>（ClawBot DexScreener 核查口径，37 个真实产品 token 确认）。产品真实性与链上毕业率显著正相关，市场已在用钱投票。</li>
+      <li><strong>BSC 是主战场</strong>：BSC 是 MemeRush 核心流量来源，HOT 榜快照显示产品型 token 中位日交易量 $48,808，是纯 meme（$25,730）的 <strong>1.9 倍</strong>，但完全缺乏识别机制——代表案例 <a href="https://shortmeme.live/" target="_blank" style="color:#F0B90B;">WUKONG</a>（BSC 首个可做空 Meme 永续协议，支持 1x~20x 杠杆，有保险池 + Keeper 清算，合约已部署）链上标签仍为普通「Meme」。</li>
+      <li><strong>Base 有产品生态，缺曝光渠道</strong>：ClawBot 核查到 37 个真实 Base 产品 token（GITBANK、COMPUTE、STARGAZE 等），均已在 MemeRush 可交易，但无任何标记——MemeForge 标签层可直接拉升这批 token 在 BSC 用户中的可见度。</li>
+    </ul>
+    <p>这些「隐形产品」拥有真实用户黏性，被迫与投机盘在同一个噪音池竞争。而对 Binance 来说，识别它们只是第一步——<strong>真正的增量在于吸引更多创业者选择在 BSC 上发展</strong>：一旦他们在 MemeRush 获得第一批持有者和交易量，就有动力在产品内集成 BNB 支付、把 BSC 当作长期结算层。<br>
+    短期：产品型 token 带来更高交易黏性和更长生命周期的链上交易量。<br>
+    长期：MemeForge 成为小型创业者进入 BNB Chain 生态的入口，他们的产品用户最终转化为 BSC 的真实链上活跃度。<br>
+    Base 数据已给出答案，BSC 有更大的用户基础等待复制。这正是 MemeForge 瞄准的市场缺口。</p>
+    <p class="data-source" style="font-size: 11px; color: #888; margin-top: 8px;">数据来源：内部 DB token_market_pulse_rank_data（2026-05-20~25，BSC N=52,126 / Base N=71,450）· 内部 ClawBot 三链核查报告（2026-05-26，Base 核查 N=37）· four.meme HOT 榜自采样（2026-05-25，N=50）</p>
+
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+    <p style="margin: 0 0 8px; font-weight: 600;">📋 用户需求信号</p>
+    <ul style="margin: 0; padding-left: 20px;">
+      <li>「首页增加<strong>推荐独家/高质量 launch/OG 通道</strong>，帮新手快速找到主流玩法」——反馈 #80 · <span style="color:#0ECB81;">→ MemeForge Featured 产品型 token 区就是这个高质量通道</span></li>
+      <li>「代币界面增设 <strong>OG / Alpha 标签</strong>」——反馈 #97 · <span style="color:#0ECB81;">→ Product Meme 标签是这类需求的具体实现，且有 AI 真实性背书</span></li>
+    </ul>
+    <p class="data-source" style="font-size: 11px; color: #888; margin-top: 8px;">来源：<a href="https://confluence.toolsfdg.net/pages/viewpage.action?pageId=536899891" target="_blank" style="color:#888;">MemeRush 用户反馈表（AI Feedback List）</a>，2026-04-27 香港安小将线下活动收集（N=150 总条目）</p>
+  </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 2. Solution -->
+<section id="solution">
+  <h2><span class="num">02</span> 我们的方案：MemeRush 之上的 Product Meme 认证层</h2>
+  <p class="section-desc">不重做 launchpad，不自建游戏。只在 MemeRush 顶部加一层 AI 认证 + 官方曝光，分三期递进。每一期都独立可上线、可衡量。</p>
+
+  <div class="card-grid cols3">
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h4>一期：Product Meme 标签 + 全局筛选</h4>
+      <p>AI 主动扫描全链 Meme token，重点覆盖 <strong>BSC</strong>（MemeRush 核心市场）和 <strong>Base</strong>（产品型 token 毕业率高出纯 meme 3.4 倍的已验证生态）。识别到有产品背书的 token 自动打上「产品型」标签，兼容 SOL。效果：列表 UI 特殊样式标出、全局筛选开关（一键只看产品型）。交易量高、活跃度突出或产品内容优质的 token，由运营人工选择发 BW 官方 Twitter 给予曝光——BSC 和 Base 的产品 token 统一进入候选池。</p>
+      <span class="tag tag-yellow">MVP · 30 天</span>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h4>二期：站内创建 + AI 多维打分</h4>
+      <p>创作者直接在 MemeRush 内提交描述并创建 token；AI 从产品真实性、内容匹配度等维度打 1–10 分。分数和创作者描述<strong>直接展示在 token 列表卡片上</strong>，成为交易者新的决策维度。</p>
+      <span class="tag tag-purple">信息差优势</span>
+    </div>
+    <div class="card">
+      <div class="icon">🌱</div>
+      <h4>三期：Binance 生态资源接入</h4>
+      <p>Product Meme 认证体系与 Binance 生态资源打通：AI 评分高、持续交付的产品型 token 可进入 Binance Lab 关注通道，获得官方认证背书和潜在投资关注。核心逻辑不变——只认产品真实性，不限品类。给认真做产品的创作者一个「做真货有回报」的明确路径。</p>
+      <span class="tag tag-green">Binance Lab 联动</span>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top: 28px;">
+    <h4>💡 对 Meme 交易者的迁移价值</h4>
+    <p>在 GMGN / pump.fun，所有 token 的信息是对等的——价格、持仓、链上行为。<br>
+    在 BW MemeRush，Product Meme token 多了一层：<strong>AI 验证的产品真实性 + 创作者描述</strong>。<br>
+    这是别处没有的信息差，交易者能做出更有依据的判断。<strong>信息差优势是迁移的核心理由。</strong></p>
+  </div>
+
+  <div class="highlight-box" style="margin-top: 16px;">
+    <h4>🛠️ 对 AI / 产品创作者的迁移价值</h4>
+    <p>这批受益方不只是个人开发者，也包括支持 AI 产品的协议层——例如 Virtuals Protocol 在 Base 上孵化的 AI Agent token，在 MemeRush 里同样会被自动识别和标记，帮它们触达 BSC 的更大用户基础。<br><br>
+    对独立创作者：AI 已把产品门槛降至历史低点——一个人、一台电脑、一个周末，可以做出真实可用的 AI 工具。但这批人缺乏变现和曝光渠道：Product Hunt 太慢、Twitter 太随机、融资门槛太高。<br>
+    对 AI 协议方：已有产品生态，缺的是跨链曝光和 Binance 级别的流量背书。<br>
+    MemeRush 给两类人的是别处没有的组合：<strong>Binance 背书的即时曝光</strong> + <strong>代币化变现 / 流通通道</strong>。做出真实产品，MemeForge 帮你被看见、被持有、被交易。</p>
+  </div>
+
+  <div class="highlight-box" style="margin-top: 16px; border-color: rgba(240,185,11,0.4);">
+    <h4>🔄 用户行为转化</h4>
+    <p>
+      <strong>Meme 交易者</strong>：当前在 GMGN / DexScreener 依赖手动筛选或 FOMO，无法区分纯炒作与有产品支撑的 token，决策噪音大。<br>
+      → <strong>目标行为</strong>：在 MemeRush 使用「Product Meme」全局筛选器，主动寻找 AI 验证有产品背书的代币，决策有据可依，留存显著高于普通 meme 交易。<br><br>
+      <strong>AI 产品创作者</strong>：当前发币后曝光随机，产品价值与代币价值脱钩，缺乏结构性变现渠道。<br>
+      → <strong>目标行为</strong>：被 AI 被动扫描发现并 Featured 展示，无需主动提交任何内容，获得 Binance 背书曝光 + 代币化变现通道。
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 3. Competitive Comparison -->
+<section>
+  <h2><span class="num">03</span> 我们和他们不一样</h2>
+
+  <table class="cmp-table">
+    <tr>
+      <th>维度</th><th>GMGN / Pump.fun</th><th><strong>BW MemeRush + MemeForge</strong></th>
+    </tr>
+    <tr>
+      <td>交易者看到的信息</td><td class="lose">价格、持仓、链上行为（全市场对等）</td><td class="win">多一层 AI 验证的产品真实性 + 创作者描述</td>
+    </tr>
+    <tr>
+      <td>Product Meme 识别</td><td class="lose">无，真假混在一起</td><td class="win">AI 自动评估 + Featured 卡片区</td>
+    </tr>
+    <tr>
+      <td>创作者冷启动渠道</td><td class="lose">无，自生自灭</td><td class="win">BW 官方 Twitter 转发 + 顶部展示位</td>
+    </tr>
+    <tr>
+      <td>对认真创作者的吸引力</td><td class="lose">和投机盘混同，难以脱颖而出</td><td class="win">Binance 背书 = 比给钱更值钱的曝光</td>
+    </tr>
+    <tr>
+      <td>BW 的运营成本</td><td class="lose">不适用</td><td class="win">每个上线即一条社媒内容，趋近于零</td>
+    </tr>
+    <tr>
+      <td>对 Binance Wallet 的价值</td><td class="lose">—</td><td class="win">差异化迁移理由 + 供给侧冷启动飞轮</td>
+    </tr>
+  </table>
+</section>
+
+<div class="divider"></div>
+
+<!-- 4. How It Works -->
+<section id="how">
+  <h2><span class="num">04</span> 怎么运作</h2>
+  <p class="section-desc">三步流程，全程 AI 自动化，无需人工介入。一期 MVP 的完整运作方式。</p>
+
+  <div class="flow-box">
+    <div class="flow-step">
+      <div class="num-box warm">1</div>
+      <div class="content">
+        <h4>AI 主动扫描全链</h4>
+        <p>定时爬取所有新发 Meme token 的链上元数据（名称、描述、关联网站、Twitter 链接等）。无需创作者提交任何内容，完全被动识别。</p>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="num-box purple">2</div>
+      <div class="content">
+        <h4>AI 判定：有没有真实产品</h4>
+        <p>确定性 checklist + LLM 兜底：关联网站是否真实可访问？是否是可用产品而非空壳？内容与 token 描述是否一致？<br>
+        输出：通过 / 拒绝。全程无人工介入，每日自动轮跑。</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">原创性验证：检测产品官方渠道（网站 / Twitter bio）是否明确引用本 CA。创作者在官方渠道标注合约地址即视为完成绑定；同一产品存在多个 token 时，仅认证通过绑定验证的一个，其余标注「存在同名 token，注意甄别」。</p>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="num-box green">3</div>
+      <div class="content">
+        <h4>自动打标 + UI 展示 + 宣发</h4>
+        <p>通过的 token 在 MemeRush 列表中自动打上「产品型」标签，特殊 UI 样式标出，支持全局筛选开关。<br>
+        BW 官方 Twitter 人工选发——交易量高、活跃度突出或产品内容优质的 token 由运营择机发推曝光，而非每个 token 自动触发。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 05. Product Demo -->
+<section id="demo">
+  <h2><span class="num">05</span> 产品演示</h2>
+  <p class="section-desc">基于 MemeRush 真实 UI 的交互原型——不是 mockup，可以直接点击操作。</p>
+
+  <div class="demo-frame-wrap">
+    <div class="demo-chrome">
+      <div class="dc-dot" style="background:#ff5f57"></div>
+      <div class="dc-dot" style="background:#ffbd2e"></div>
+      <div class="dc-dot" style="background:#28c840"></div>
+      <div class="dc-url">web3wallet.binance.com/meme-rush · MemeForge Demo</div>
+    </div>
+    <iframe src="memeforge-demo.html" style="width:100%;height:680px;border:none;display:block;" title="MemeForge Demo"></iframe>
+  </div>
+  <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+    <div style="background:#131720;border:1px solid #2b2f38;border-radius:8px;padding:14px;">
+      <div style="color:#F0B90B;font-size:12px;font-weight:700;margin-bottom:8px;">Phase 1 · MVP</div>
+      <div style="font-size:12px;color:#848E9C;line-height:1.8;">
+        1. 顶部切换到 <strong style="color:#e8e8e8;">Phase 1</strong><br>
+        2. 观察列表中带 <strong style="color:#F0B90B;">✦ Product</strong> 黄色标签的 token<br>
+        3. 点击右上角「只看 Product Meme」筛选开关<br>
+        <span style="color:#0ECB81;margin-top:6px;display:block;">→ MemeForge 做的事：AI 自动扫描全链，识别有真实产品的 token 并打标，无需创作者提交</span>
+      </div>
+    </div>
+    <div style="background:#131720;border:1px solid #2b2f38;border-radius:8px;padding:14px;">
+      <div style="color:#9945FF;font-size:12px;font-weight:700;margin-bottom:8px;">Phase 2 · AI Score</div>
+      <div style="font-size:12px;color:#848E9C;line-height:1.8;">
+        1. 切换到 <strong style="color:#e8e8e8;">Phase 2</strong><br>
+        2. 点击任意带 <strong style="color:#F0B90B;">✦ Product 8.x</strong> 标签的 token<br>
+        3. 查看弹出的 AI 评分详情：产品真实性 / 内容匹配 / 活跃度分项<br>
+        <span style="color:#0ECB81;margin-top:6px;display:block;">→ MemeForge 做的事：AI 从多维度打 1–10 分，分数直接展示在列表卡片，成为交易者决策依据</span>
+      </div>
+    </div>
+    <div style="background:#131720;border:1px solid #2b2f38;border-radius:8px;padding:14px;">
+      <div style="color:#0ECB81;font-size:12px;font-weight:700;margin-bottom:8px;">Phase 3 · Game + Binance Lab</div>
+      <div style="font-size:12px;color:#848E9C;line-height:1.8;">
+        1. 切换到 <strong style="color:#e8e8e8;">Phase 3</strong><br>
+        2. 查看「🎮 Game Token 专区」横向卡片<br>
+        3. 注意 <strong style="color:#00d4d4;">Binance Lab 关注</strong> 徽章及奖励池信息<br>
+        <span style="color:#0ECB81;margin-top:6px;display:block;">→ MemeForge 做的事：将认证体系延伸至游戏 token，接入 Binance Lab 资源，给真实开发者链上可见的激励</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider"></div>
+
+<!-- 06. Binance Advantage -->
+<section>
+  <h2><span class="num">06</span> Binance Wallet 的天然优势</h2>
+
+  <div class="card-grid cols4">
+    <div class="card">
+      <div class="icon">👥</div>
+      <h4>已有用户基础</h4>
+      <p>不需要说服用户下载新钱包。Binance Wallet 数千万用户是冷启动第一推动力。</p>
+    </div>
+    <div class="card">
+      <div class="icon">📣</div>
+      <h4>官方 Twitter 渠道</h4>
+      <p>BW 官方账号转发 = Binance 背书。这是任何纯链上聚合器都拿不到的曝光资源，也是吸引创作者来 MemeRush 的核心钩子。</p>
+    </div>
+    <div class="card">
+      <div class="icon">💳</div>
+      <h4>法币入金 + 一键交易</h4>
+      <p>新玩家不需要先搞懂 Gas / 助记词 / 跨链。法币通道让被 Product Meme 吸引来的「纯路人」也能 5 分钟参与。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🌐</div>
+      <h4>多链覆盖</h4>
+      <p>BSC / Solana / Base / ETH 全链支持。创作者在哪条链发 token，Product Meme 层都能识别和展示。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 08. MVP + Roadmap -->
+<section id="roadmap">
+  <h2><span class="num">08</span> MVP 范围 &amp; 分期路线图</h2>
+  <p class="section-desc">一期是 30 天可交付的最小验证。二期 / 三期根据一期数据决定是否推进——不预先承诺，不预先建设。</p>
+
+  <h3 style="margin-top: 8px; margin-bottom: 16px;">一期 MVP 拆解（30 天可交付）</h3>
+  <div class="card-grid cols2">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h4>AI 全链扫描服务</h4>
+      <p style="margin-top: 8px;">
+        · AI 对 BSC 新发 Meme token 进行自动检查（一期仅覆盖 BSC）<br>
+        · 提取关联网站、Twitter、描述文本进行产品真实性判定<br>
+        · 无需创作者任何操作，完全被动发现<br>
+        · 每日自动轮跑，结果写入标签数据库
+      </p>
+      <span class="tag tag-yellow">后端 cronjob + 爬虫</span>
+    </div>
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h4>AI 评估接口（pass/fail）</h4>
+      <p style="margin-top: 8px;">
+        · 确定性 checklist：链接可访问性、域名校验、token 地址有效性<br>
+        · LLM 兜底：描述与页面内容匹配度、是否为真实可用产品<br>
+        · 输出：pass / fail + 简短理由，落库可追溯<br>
+        · 全流程自动，无人工介入
+      </p>
+      <span class="tag tag-green">checklist + LLM</span>
+    </div>
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h4>MemeRush 前端：Featured 卡片区</h4>
+      <p style="margin-top: 8px;">
+        · 列表顶部新增<strong>「精选 Product Meme」横向卡片区</strong>（类似 App Store Featured）<br>
+        · 每张卡片：tagline + Product Meme 标签 + 产品链接入口<br>
+        · 普通 meme 列表保持不变，底层逻辑零改动
+      </p>
+      <span class="tag tag-purple">最小改动，最大区分</span>
+    </div>
+    <div class="card">
+      <div class="icon">📣</div>
+      <h4>创作者招募 + 官方宣发</h4>
+      <p style="margin-top: 8px;">
+        · 招募首批 3–5 个独立 AI 开发者 / 小游戏创作者<br>
+        · 承诺给创作者：Featured 首位展示 + 二期优先资格；<strong>BW 官方 Twitter</strong> 发招募公告、发项目上线公告（每个入选均发）；交易量高或内容优质的项目额外获得推文曝光<br>
+        · 对创作者：Binance 背书比给钱更值钱<br>
+        · 对 BW：招募及上线公告是高质量原生内容，后续按表现选发，运营成本可控
+      </p>
+      <span class="tag tag-green">供给侧冷启动</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 40px; margin-bottom: 16px;">分期路线图</h3>
+  <div class="flow-box">
+    <div class="flow-step">
+      <div class="num-box warm">一期</div>
+      <div class="content">
+        <h4>Product Meme 标签 + 官方宣发（30 天 MVP）</h4>
+        <p>MemeRush 顶部新增「精选 Product Meme」横向卡片区，通过 AI pass/fail 的项目自动入选。<br>
+        配套：<strong>BW 官方 Twitter</strong> 发招募公告 + 每个入选项目的上线公告；交易量高或产品内容优质的项目额外获推文曝光，Featured 首位展示。<br>
+        核心假设：交易者会专门交易有 Binance 背书的 Product Meme token，留存显著高于普通 meme。</p>
+      </div>
+    </div>
+    <div class="flow-arrow">↓ 一期数据达标后推进</div>
+    <div class="flow-step">
+      <div class="num-box purple">二期</div>
+      <div class="content">
+        <h4>站内创建 + AI 多维打分</h4>
+        <p>创作者直接在 MemeRush 内提交描述并创建 token，AI 对产品真实性、内容匹配度等维度打 1–10 分。<br>
+        分数和创作者描述<strong>直接展示在 token 列表卡片上</strong>，成为交易者的新决策维度。<br>
+        对 GMGN 用户的迁移价值：在 BW 能看到别处看不到的产品层信息——信息差优势从「pass/fail 二值」升级为「连续分数」。<br>
+        <span style="color: var(--text-muted);">配套归属机制：提交时签署版权声明（ToS），开放社区举报通道，有效举报 48h 内处理；争议期间冻结对应 token 的 Featured 展示权益。</span></p>
+      </div>
+    </div>
+    <div class="flow-arrow">↓ 生态验证后，轻量接入</div>
+    <div class="flow-step">
+      <div class="num-box green">三期</div>
+      <div class="content">
+        <h4>产品型 token 深化：借力 four.meme OpenFour Preset</h4>
+        <p>four.meme OpenFour 已支持创作者提交自定义合约 preset，可在链上配置代币经济参数（解锁节奏、持仓限制等）。这让产品型开发者能将代币结构与产品交付节奏绑定——比如：用户增长达标才解锁下一批流动性。<br>
+        MemeRush 侧无需改动基础设施——识别使用 OpenFour preset 的产品型 token，在 Product Meme 层给予优先展示和背书。创作者自行在 four.meme 配置，BW 负责流量放大。轻接入，重曝光。</p>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- 08+. Long-term Vision -->
+<section>
+  <h2><span class="num" style="font-size:16px;">08<sup style="font-size:11px; vertical-align:super;">+</sup></span> 长期愿景：创作者经济飞轮</h2>
+  <p class="section-desc">AI 正在制造出一代从未有过如此强大创造力、但同样从未有过合适变现渠道的产品创作者。MemeForge 的长期命题是：成为这批人和 crypto 市场之间的基础设施。</p>
+
+  <!-- Flywheel diagram -->
+  <div class="flywheel-wrap">
+    <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; font-weight: 600;">自我增强飞轮</div>
+    <div class="flywheel">
+      <div class="fw-node">
+        <div class="fw-icon">🏗️</div>
+        <div class="fw-label">真实产品<br>发 Token</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-node">
+        <div class="fw-icon">🤖</div>
+        <div class="fw-label">AI 验证<br>&amp; 标签</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-node">
+        <div class="fw-icon">👁️</div>
+        <div class="fw-label">交易者<br>信任增加</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-node highlight">
+        <div class="fw-icon">📈</div>
+        <div class="fw-label">交易量<br>提升</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-node">
+        <div class="fw-icon">✨</div>
+        <div class="fw-label">更多真实<br>项目涌入</div>
+      </div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-node">
+        <div class="fw-icon">🏆</div>
+        <div class="fw-label">标签信誉<br>更强</div>
+      </div>
+    </div>
+    <div class="fw-caption">↩ 循环自我增强 — 信誉越高，吸引越多真实项目，交易量越大</div>
+  </div>
+
+  <div class="card-grid cols2">
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h4>阶段 A：建立信任层</h4>
+      <p>AI 扫描 + 认证，让「Product Meme」成为 MemeRush 上被认可的独立品类。交易者开始用不同的框架看待带产品的 token；创作者意识到做真货有被看见的机会。</p>
+      <span class="tag tag-yellow">当前路线图</span>
+    </div>
+    <div class="card">
+      <div class="icon">🔄</div>
+      <h4>阶段 B：AI 创作者经济飞轮</h4>
+      <p>AI 降低产品门槛 → 更多真实产品涌现 → MemeForge 认证放大曝光 → 产品获得用户和营收 → 更多创作者把 BSC 当建设基地 → 链上活跃度持续增长。Binance 成为 AI 创作者从「做出来」到「赚到钱」的最短路径。</p>
+      <span class="tag tag-green">自我增强</span>
+    </div>
+  </div>
+
+  <!-- Creator Acquisition Mechanisms -->
+  <div class="acq-section">
+    <h4>⚡ 获客机制：从黑客松创作者到真实产品社区</h4>
+    <div class="acq-grid">
+      <div class="acq-card">
+        <div class="acq-num">机制 01</div>
+        <h5>Hackathon Fast Pass</h5>
+        <p>ETHGlobal 等大型黑客松结束 48h 内，批量扫描获奖项目，向团队发 Fast Pass 邀请——跳过审核队列直接上线 Featured 区，保留最高热度窗口期。</p>
+      </div>
+      <div class="acq-card">
+        <div class="acq-num">机制 02</div>
+        <h5>可嵌入的病毒徽章</h5>
+        <p>一行代码在产品网站嵌入「Verified on MemeRush」徽章，链接到 MemeForge 详情页，形成从产品流量到 token 交易量的转化漏斗。</p>
+      </div>
+      <div class="acq-card">
+        <div class="acq-num">机制 03</div>
+        <h5>黑客松批量扫描</h5>
+        <p>持续监控 ETHGlobal、Devfolio、HackQuest 获奖项目，自动提取创作者联系方式并发送邀请，将全球创作者转化为 Binance Wallet 的第一批种子用户。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top: 28px;">
+    <h4>🌐 更大的叙事：crypto 是 AI 创作者的变现基础设施</h4>
+    <p>AI 已经解决了「创造」的问题。下一个瓶颈是<strong>分发、变现、和信任</strong>。<br>
+    传统路径（App Store 抽 30%、投资人稀释股权、广告平台吃流量红利）对独立创作者越来越不友好。<br>
+    Crypto-native 路径提供了完全不同的选项：社区即用户、持有即订阅、交易量即热度——而且全球、无需许可、无中间商。<br>
+    MemeForge 不只是一个 meme 认证工具，它是 Binance Wallet 在这个叙事上的入场门票：<strong>让真正在建设的 AI 开发者，第一次感受到 crypto 对他们是有用的。</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Risk & Resources -->
+<section>
+  <h2><span class="num">07</span> 风险 &amp; 资源需求</h2>
+  <div class="card-grid cols2">
+    <div class="card">
+      <h4>⚠️ 最大风险：最可能失败的原因</h4>
+      <p style="margin-top: 8px;">
+        <strong>① AI 判断准确性</strong>：将营销落地页误判为「真实产品」，或漏掉真实项目，直接损害平台信誉。<br>
+        <span style="color: var(--text-muted);">→ 对冲：多层验证（域名存活 + 内容匹配 + LLM 兜底）；初期设 30%–70% pass 率上限；0 起被申诉成功的误判为红线指标。</span>
+      </p>
+      <p style="margin-top: 12px;">
+        <strong>② 供给侧冷启动</strong>：上线时无足够优质 Product Meme，交易者失望离开。<br>
+        <span style="color: var(--text-muted);">→ 对冲：提前 BD 3–5 个已知 AI 工具创作者（确认意向再上线）；BW 官方 Twitter 转发确保每次上线都有曝光事件。</span>
+      </p>
+      <p style="margin-top: 12px;">
+        <strong>③ 内容归属争议（二期起）</strong>：开放创作者提交后，可能出现非原创者冒充提交他人作品，蹭 BW 背书牟利。<br>
+        <span style="color: var(--text-muted);">→ 对冲：① 提交时强制签署版权声明（ToS），法律责任转嫁给提交者；② 开放社区举报通道，有效举报 48h 内处理，情节严重者列入地址黑名单；③ 争议核实期间冻结对应 token 的 Featured 展示权益；④ 参考 Virtuals / 4meme 的行业实践——无平台实现事前完全验证，「ToS 责任转嫁 + 举报下架」是当前业界上限，MemeForge 同等执行即可。</span>
+      </p>
+    </div>
+    <div class="card">
+      <h4>👥 需要哪些负责人 &amp; 资源</h4>
+      <p style="margin-top: 8px;">
+        · <strong>BE（1–2人）</strong>：链上数据索引器、AI 扫描 cronjob、打分 API<br>
+        · <strong>FE（1人）</strong>：Featured 卡片区、全局筛选器、标签 UI<br>
+        · <strong>PM / Design（1人各）</strong>：功能定义 + 路线图；卡片 UI 设计<br>
+        · <strong>运营（1人，可兼）</strong>：创作者招募、种子项目引入<br>
+        · <strong>外部依赖</strong>：LLM API、four.meme OpenFour 协议数据
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 9. Success Metrics -->
+<section id="metrics">
+  <h2><span class="num">09</span> 验收指标</h2>
+
+  <div class="highlight-box" style="margin-bottom: 28px;">
+    <h4>🎯 核心假设（一期验证目标）</h4>
+    <p>3 个 Product Meme token，每个 D7 留存交易者 &gt; 普通 meme 均值的 120%。<br>
+    即：有 Binance 背书 + Featured 展示的 Product Meme，交易者留存显著优于普通 meme——若成立，二期 AI 多维打分值得投入。</p>
+  </div>
+
+  <div class="metric-row">
+    <div class="metric-card">
+      <div class="value y">≥3</div>
+      <div class="label">首发 Product Meme 创作者</div>
+    </div>
+    <div class="metric-card">
+      <div class="value p">120%</div>
+      <div class="label">D7 留存 vs 普通 meme 均值</div>
+    </div>
+    <div class="metric-card">
+      <div class="value g">≥3</div>
+      <div class="label">BW 官方 Twitter 转发次数</div>
+    </div>
+  </div>
+
+  <div class="card-grid cols2" style="margin-top: 28px;">
+    <div class="card">
+      <h4>📊 量化指标</h4>
+      <p style="margin-top: 8px;">
+        ✅ 创作者申请数 &gt; 10<br>
+        ✅ Featured 卡片区点击率 &gt; 普通 meme 列表均值 2x<br>
+        ✅ Product Meme token 持有地址数 &gt; 普通 meme 均值<br>
+        ✅ 0 起 AI 误判被申诉成功事件
+      </p>
+    </div>
+    <div class="card">
+      <h4>🎯 定性指标</h4>
+      <p style="margin-top: 8px;">
+        ✅ 至少 1 位创作者的产品因 Featured 获得真实用户增长<br>
+        ✅ 交易者社群出现「Product Meme」自发讨论<br>
+        ✅ 内部评委认可「这是 BW 区别于 GMGN 的差异化信息层」
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider"></div>
+
+<!-- 09b. Operations Plan -->
+<section id="ops">
+  <h2><span class="num" style="background:linear-gradient(135deg,#F0B90B,#f7d060);">09+</span> 配套运营方案</h2>
+  <p class="section-desc">产品层做信号识别，运营层做流量放大。两条线并行，冷启动期用运营撬动第一批创作者和交易者。</p>
+
+  <div class="card-grid cols2" style="margin-bottom:28px;">
+
+    <div class="card">
+      <h4>🎯 Phase 1 冷启动（上线前 2 周）</h4>
+      <p style="margin-top:10px;line-height:1.8;">
+        <strong>创作者招募</strong><br>
+        在 Twitter/小红书定向触达 vibe coder 社区（AI 工具开发者、独立开发者），发起「你的产品值得一个 Meme」招募帖。目标：提前锁定 5–10 个种子创作者，上线即有内容。<br><br>
+        <strong>种子 Token 白名单</strong><br>
+        运营人工筛选 3 个已有真实用户的 AI 产品，提前入驻 MemeForge，作为首发展示案例。评估维度：GitHub 活跃度 + 网站可访问 + Twitter 粉丝真实度。
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>📣 Phase 1 传播放大</h4>
+      <p style="margin-top:10px;line-height:1.8;">
+        <strong>BW 官方 Twitter 系列</strong><br>
+        每个通过认证的 Product Meme 配一条官推：「@xxx 的 AI 工具上链了，这是第一个真正有用户的 BSC meme——[CA]」。利用 BW 的背书权做差异化信号。<br><br>
+        <strong>每日榜单卡片</strong><br>
+        MemeRush 首页 Featured 区显示当日最高 AI Score 的 Product Meme，榜单截图由 BW 账号发布——把「上榜」变成对创作者有价值的事。
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>🏆 Phase 2 激励机制（随 AI 评分上线）</h4>
+      <p style="margin-top:10px;line-height:1.8;">
+        <strong>Product Meme 周榜</strong><br>
+        按 AI Score × 交易量综合排名，每周 Top 3 获得 BW 官方专题推文。排名公开透明，给创作者做产品的动力。<br><br>
+        <strong>创作者成长路径</strong><br>
+        认证 → Featured → Weekly Top → BW Lab 关注。每个阶段对应一个可见的权益升级，让「认真做产品」的路径清晰可见。
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>🌱 Phase 3 生态深化（Binance Lab 接入后）</h4>
+      <p style="margin-top:10px;line-height:1.8;">
+        <strong>Product Meme 成长路径可见化</strong><br>
+        认证 → Featured 展示 → Weekly Top → Binance Lab 关注通道。每个阶段对应可见权益，让「认真做产品」的路径有明确终点——不只是曝光，而是进入 Binance 生态的正式入口。<br><br>
+        <strong>社区质量共建</strong><br>
+        开放用户举报「假产品」机制，有效举报记录在案。降低 AI 误判风险的同时，让社区参与维护 Product Meme 品类的含金量。
+      </p>
+    </div>
+
+  </div>
+
+  <div class="highlight-box">
+    <h4>📅 运营时间轴（30 天）</h4>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:#F0B90B;font-weight:700;margin-bottom:6px;">Week 1</div>
+        <div style="font-size:12px;color:#e8e8e8;line-height:1.7;">种子创作者招募<br>内部白名单筛选<br>Twitter 内容排期</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:#F0B90B;font-weight:700;margin-bottom:6px;">Week 2</div>
+        <div style="font-size:12px;color:#e8e8e8;line-height:1.7;">首批 3 个 Product<br>Meme 公开认证<br>BW 官推首发</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:#F0B90B;font-weight:700;margin-bottom:6px;">Week 3</div>
+        <div style="font-size:12px;color:#e8e8e8;line-height:1.7;">AI Score 上线<br>周榜首期发布<br>收集创作者反馈</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:#F0B90B;font-weight:700;margin-bottom:6px;">Week 4</div>
+        <div style="font-size:12px;color:#e8e8e8;line-height:1.7;">D7 留存数据验证<br>复盘 AI 误判率<br>决策是否进二期</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 11. Why Now -->
+<section>
+  <h2><span class="num">10</span> 为什么是现在</h2>
+
+  <div class="card-grid cols2">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h4>AI 让「带产品的 Meme」开始批量出现</h4>
+      <p>一年前，独立开发者做一个真实可用的 AI 产品需要团队。现在一个人 + AI 就能做出来。带产品的 Meme 供给端正在爆发——MemeRush 需要一个识别和放大它们的机制。</p>
+    </div>
+    <div class="card">
+      <div class="icon">📉</div>
+      <h4>纯投机 Meme 的边际收益在下降</h4>
+      <p>毕业率下降、rug 疲劳蔓延、交易者对「下一个 PEPE」的热情递减。市场在等待「能拿在手里看得到产品」的下一种 meme 形态——这是 Product Meme 的时间窗口。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏰</div>
+      <h4>BW 在聚合器赛道的差异化窗口</h4>
+      <p>GMGN、Phantom、OKX Wallet 都在卷交易体验和费率，信息层全市场对等。BW 的官方背书 + Twitter 渠道是别人复制不了的——做一层「信息差」，先做先赢。</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h4>改动小，验证快</h4>
+      <p>MVP 不动 launchpad 底层、不发合约、不接支付。一个 Featured 卡片区 + 一个 AI 接口 + 一个提交页 = 30 天可交付。失败成本极低，成功了直接进二期。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔗</div>
+      <h4>Base 已验证，BSC 等待复制</h4>
+      <p>Base 链数据已给出答案：产品型 token 毕业率是纯 meme 的 <strong>3.4 倍</strong>（ClawBot 核查口径，37 个真实产品确认）。更重要的是，Virtuals Protocol 在 Base 上已将「AI Agent + 代币化」跑到数亿美元市值规模——证明真实产品背书的 token 有持续交易需求，不是短期投机。MemeForge 不重做 launchpad，而是把这层识别能力带到 BSC：BSC 有更大的用户基础，却没有 Virtuals 等效的产品层。这些创业者一旦在 BSC 获得第一批用户，就有理由将 BNB 集成为产品内支付手段，把一次性发币行为变成持续为 BNB Chain 贡献链上活跃度的长期关系。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <h2>Let's Ship This in 30 Days</h2>
+  <p>不重做 launchpad，不发合约，不建游戏。<br>就在 MemeRush 顶部加一层 AI 认证的 Product Meme，配上 BW 官方 Twitter 转发。<br><br>给交易者一个迁移过来的真实理由——别处看不到的产品层信息。</p>
+  
+  <div class="ask-box" style="max-width:600px;margin:0 auto 32px;">
+    <h4>📋 我们需要的资源</h4>
+    <div class="ask-grid">
+      <div class="ask-item"><span class="ask-icon">👨‍💻</span><div><strong>FE × 1人，3 周</strong><br><span>列表 UI 标签、筛选器、Featured 区</span></div></div>
+      <div class="ask-item"><span class="ask-icon">⚙️</span><div><strong>BE × 1–2人，3 周</strong><br><span>链上索引 + AI 扫描 cronjob + 打分 API</span></div></div>
+      <div class="ask-item"><span class="ask-icon">💰</span><div><strong>LLM API 预算 ~$200/月</strong><br><span>每日扫描约 2,000 个新发 token</span></div></div>
+      <div class="ask-item"><span class="ask-icon">📣</span><div><strong>BW 官推配合宣发</strong><br><span>每次 Product Meme 上线时转发</span></div></div>
+    </div>
+  </div>
+
+  <a href="https://w3w-hackthon.vercel.app/" class="cta-btn" target="_blank">🚀 提交提案</a>
+  <p style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">赛道 0x002 · MemeForge · Binance Wallet Hackathon 2026</p>
+</section>
+
+<footer>
+  <p>Proposal by Elsa G. · Binance Wallet · May 2026</p>
+  <p style="margin-top: 4px;">A thin layer of trust on top of MemeRush.</p>
+</footer>
+
+</body>
+</html>
