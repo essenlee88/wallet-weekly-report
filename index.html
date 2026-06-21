@@ -195,30 +195,33 @@ UV 可横向比较，WoW 仅反映流量变化</span></span></td><td style="back
 <tr><td class="product">Web Prediction</td><td style="background:rgba(220,252,231,0.46);">5,241<div class="wow wow-up wow-bold">+38.0%</div></td><td style="background:rgba(220,252,231,0.06);">17.10%<div class="wow wow-up">+5.0pp</div></td><td style="background:rgba(220,252,231,0.04);color:#555;font-size:11px;">19.04%<div class="wow wow-up">+3.59pp</div></td><td style="background:rgba(220,252,231,0.07);">10.14<div class="wow wow-up">+5.6%</div></td><td style="background:rgba(254,202,202,0.02);">22.53%<div class="wow wow-down">-1.69pp</div></td><td style="background:rgba(220,252,231,0.25);">8.32<div class="wow wow-up wow-bold">+20.8%</div></td><td style="background:rgba(220,252,231,0.00);">1.88<div class="wow wow-up">+0.21</div></td><td style="background:rgba(220,252,231,0.01);">9.90%<div class="wow wow-up">+0.53pp</div></td><td style="background:rgba(220,252,231,0.60);">55.50<div class="wow wow-up wow-bold">+107.3%</div></td><td style="background:rgba(220,252,231,0.01);">9.83%<div class="wow wow-up">+0.72pp</div></td><td style="background:rgba(220,252,231,0.60);">52.01<div class="wow wow-up wow-bold">+109.0%</div></td></tr></tbody></table>
   </div>
   <div class="analysis">
-    <h3>Web 侧数据解读</h3>
+    <h3>Web 侧：UV 增粘性降，Prediction 与核心板块分化加剧</h3>
     <p style="background:#FFF3CD;border-left:3px solid #FFC107;padding:8px 12px;margin-bottom:12px;border-radius:3px;font-size:13px;">
-      ⚠️ <strong>W20 口径变更说明：</strong>Web 全量新增爬虫过滤（country notContain Singapore + viewport_height≠761 + viewport_width≠1440）。
-      Web 整体 UV -56%，属口径切换预期；部分产品跌幅更大（Meme Rush -68%、Tokenised Stock -24%），口径切换有影响但 WoW 仍有参考价值；
-      Web 各产品 CTR / Clicks/User 普遍提升，为移除不点击的爬虫流量后的正常变化。
+      ⚠️ <strong>W21 口径说明：</strong>W21 起 Web 全量切换为登录用户口径（$distinct_id notContain "-" + $is_login_id isTrue）。W24 为本口径下的第4周连续可比数据。
     </p>
-    <p><strong>整体趋势总结：</strong>本周平台总UV出现下滑，多数产品渗透率环比下降，流量向少数高粘性产品集中。Web Prediction 逆势增长38%，成为唯一显著拉动大盘的板块；而 Trenches 系列产品普遍遭遇两位数跌幅，Meme 热度明显退潮。转化端，Token CTR 和 Trade CTR 整体疲软，仅 Alpha 和 Tokenised Stock 等细分榜单实现点击率提升。</p>
-
+    <p><strong>整体趋势：</strong>过去四周 Web 首页总 UV 持续攀升，W24 达 27,520（+11.95% WoW，较 W21 +22.9%）。然而用户粘性 V/U 从 W21 的 22.56 持续下滑至 W24 的 18.94（四周累计 -16%），呈现「量增质降」矛盾——新增/回流用户可能多为轻交互用户，首页内容未能有效承接流量，导致互动深度整体下降。</p>
 <ul>
-  <li><strong>Trenches / Meme 板块：</strong>全线溃退，Meme Rush UV 环比下降10.3%，Meme Rank 暴跌17.8%，Topic Rush 更是骤降37.2%。尽管 Meme Rush 仍保持高访问深度（Visits/User=27），但 Token CTR 和 Trade CTR 均下滑，说明用户浏览多但交易转化意愿减弱，板块进入存量博弈阶段。</li>
-  <li><strong>榜单板块（Markets）：</strong>Trending 渗透率下降6.6pp至40.4%，但仍是流量基石；Alpha 和 Smart Money 虽UV体量小，但 Token CTR 分别提升4.0pp和0.8pp，显示精准用户筛选效率提升。Tokenised Stock 表现亮眼，CTR 达29.7%（+2.8pp），Trade CTR 4.5%为榜单最高，或与近期合规资产热度有关。</li>
-  <li><strong>Portfolio 与落地页：</strong>Portfolio UV 下降3.9%，但 Trade CTR 逆势微增0.3pp至8.2%，用户交易意图稳定。Token Detail Page 访问深度最高（29次/用户），但 Trade CTR 下滑1.4pp至20.6%，需关注详情页到交易链路的转化漏斗优化。</li>
-  <li><strong>Perpetuals 与 Web Prediction：</strong>Perpetuals UV 微增1.4%，但渗透率下降2.6pp，Visits/User 下降7.6%，用户参与度减弱。Web Prediction 以+38% UV 和+3.6pp渗透率成为本周最大亮点，Trade CTR 提升0.7pp至9.8%，预测类产品正吸引新用户并带动交易转化。</li>
+  <li><strong>Trenches 板块持续失血：</strong>三产品 UV 连续四周下滑，W24 较 W21 总计损失约 1,200 UV。Topic Rush 最为严重，W24 单周暴跌 37.2%，已降至 294 UV；Meme Rank 四周累计 -39%（555→338）；Meme Rush 相对稳定但连续两周下滑（W23 -8.6%，W24 -10.3%）。高 CTR（Meme Rush 34.38%）说明留存用户粘性尚可，但用户基数萎缩趋势若不逆转，将持续侵蚀板块影响力。</li>
+  <li><strong>Markets 板块动能转换，Tokenised Stock 异军突起：</strong>Trending 连续三周下滑（W24 较 W22 高点 -7.3%），渗透率降至 40.4%（-6.7pp WoW）；Smart Money 和 Social Hype 各跌 8%。但 Tokenised Stock CTR W24 达 29.73%（近4周最高），TradeCTR 4.50% 为 Markets 板块最高，在 UV 有限（1,221）的情况下转化效率领先，显示合规资产方向的高潜力用户群体正在聚集。</li>
+  <li><strong>Portfolio 与工具类稳健但粘性下滑：</strong>Portfolio TradeCTR 维持 8.20%，用户价值高；Perpetuals UV 微增 +1.4%，连续稳健。但 Token Detail Page UV 四周累计 -5.7%（8,435→7,954），TradeCTR 从 23.12% 降至 20.62%（-2.5pp），作为关键交易页面的转化拖累需重点关注。</li>
+  <li><strong>Web Prediction 成最大增长极：</strong>W22 首周 917 UV → W23 爆增至 3,798（+314%）→ W24 再增 +38% 至 5,241，三周内成长为流量 Top3 模块。CTR 22.53%、TradeCTR 9.83% 均处于全站前列，表明产品不仅吸引点击，且能有效驱动交易，是当前 Web 端最成功的新增长引擎。</li>
 </ul>
-
 <p><strong>重点产品关注：</strong></p>
 <ul>
-  <li><strong>Web Prediction（UV +38%，渗透率+3.6pp）：</strong>增长最为突出，建议加大首页推荐和活动激励，利用预测机制提升用户停留与交易转化，同时监测留存率以防冲高回落。</li>
-  <li><strong>Markets > Tokenised Stock（CTR 29.7%，+2.8pp）：</strong>转化效率领先，可考虑增加该板块的曝光位或与合规资产方合作，打造差异化交易入口。</li>
-  <li><strong>Trenches > Topic Rush（UV -37.2%，但CTR +6.5pp）：</strong>用户量骤降但点击率大幅提升，说明剩余用户意图更明确。建议精简内容供给，聚焦高热度话题，避免流量分散。</li>
-  <li><strong>Markets > Trending（渗透率-6.6pp，UV -3.9%）：</strong>作为流量入口出现松动，需排查是否因推荐算法或内容更新频率下降导致用户流失，建议A/B测试新排序策略。</li>
-  <li><strong>Trenches > Meme Rank（UV -17.8%，CTR -10.3pp）：</strong>双指标恶化，Meme 赛道降温明显，建议暂时缩减资源投入，或转型为事件驱动型榜单以重获关注。</li>
+  <li><strong>Tokenised Stock（CTR 29.73%，TradeCTR 4.50%）：</strong>转化效率为 Markets 板块最高，但 UV 仅 1,221——建议提升其在首页 Markets 板块内的曝光优先级，A/B 测试扩大入口，验证作为「交易转化爆款」的规模化潜力。</li>
+  <li><strong>Token Detail Page（UV 四周 -5.7%，TradeCTR -2.5pp）：</strong>连续下滑且影响核心交易漏斗，建议立即分析来源渠道变化，检查页面加载速度与信息展示，优化 List 页→Detail 页跳转路径。</li>
+  <li><strong>Trenches > Topic Rush（UV -37.2%，但 CTR +6.5pp）：</strong>用户骤降但留存者意图更明确，建议精简内容供给，聚焦高热度话题；同时分析流失原因，判断是内容疲劳还是竞品分流。</li>
 </ul>
+<div class="actions" style="background:#f0f9ff;border-left:3px solid #0ea5e9;border-radius:0 6px 6px 0;padding:10px 16px;margin-top:12px;font-size:13px;">
+  <p><strong>💡 行动建议</strong></p>
+  <ol style="margin:6px 0 0 0;padding-left:18px;">
+    <li style="margin-bottom:4px;"><strong>【立即/本周】[PM]</strong> 提升 Tokenised Stock 在首页 Markets 板块曝光，A/B 测试入口位置 — W24 CTR 29.73%、TradeCTR 4.50% 领跑板块，但 UV 规模仍低（1,221）</li>
+    <li style="margin-bottom:4px;"><strong>【立即/本周】[FE/数据]</strong> 排查 Token Detail Page 来源流量下降原因 — UV 四周累计 -5.7%，TradeCTR 从 23.12% 降至 20.62%，影响全站交易转化</li>
+    <li style="margin-bottom:4px;"><strong>【下期跟进】[PM/用研]</strong> 对 Trenches 板块进行用户流失调研（重点 Topic Rush -37%、Meme Rank 四周 -39%）— 判断是内容疲劳、UX 问题还是竞品分流，决定是否缩减资源投入</li>
+    <li style="margin-bottom:4px;"><strong>【下期跟进】[数据]</strong> 分析 W24 新增用户画像及行为路径，定位 V/U 四周持续下滑的主因 — UV +22.9% 但 V/U -16%，新用户轻交互特征明显</li>
+  </ol>
+</div>
   </div>
-  <div class="footer">Generated 2026-06-21 &middot; Data source: Sensors Analytics &middot; W24 (06/12 ~ 06/18)</div>
+    <div class="footer">Generated 2026-06-21 &middot; Data source: Sensors Analytics &middot; W24 (06/12 ~ 06/18)</div>
 </body>
 </html>
