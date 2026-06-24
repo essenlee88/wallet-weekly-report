@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>MemeRush 在制需求清单 — 2026-06-24</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0d1117; color: #e2e8f0; font-size: 14px; line-height: 1.6; padding: 40px; max-width: 1080px; margin: 0 auto; }
+h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.meta { color: #64748b; font-size: 12px; margin-bottom: 36px; }
+.stats { display: flex; gap: 10px; margin-bottom: 36px; flex-wrap: wrap; }
+.stat { background: #131929; border: 1px solid #1e293b; border-radius: 8px; padding: 12px 18px; min-width: 88px; }
+.stat-num { font-size: 24px; font-weight: 700; line-height: 1; }
+.stat-label { font-size: 11px; color: #64748b; margin-top: 3px; }
+.s-blue   .stat-num { color: #60a5fa; }
+.s-purple .stat-num { color: #c084fc; }
+.s-orange .stat-num { color: #fb923c; }
+.section { margin-bottom: 32px; }
+.section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 7px; border-bottom: 1px solid #1e293b; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; }
+.section-count { font-size: 11px; color: #475569; margin-left: auto; }
+.card { background: #131929; border: 1px solid #1e293b; border-radius: 8px; padding: 11px 15px; margin-bottom: 7px; display: grid; grid-template-columns: 40px 1fr auto; gap: 0 12px; align-items: start; }
+.card:hover { border-color: #2d3f5e; }
+.card-id { color: #475569; font-size: 11px; padding-top: 3px; font-variant-numeric: tabular-nums; }
+.card-title { font-weight: 500; color: #e2e8f0; font-size: 13.5px; margin-bottom: 2px; }
+.card-desc { color: #94a3b8; font-size: 12px; }
+.card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-top: 2px; flex-shrink: 0; }
+.tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+.tag-web  { background: #1e3a5f; color: #60a5fa; }
+.tag-app  { background: #1a3a2e; color: #34d399; }
+.tag-both { background: #2d2a1f; color: #fbbf24; }
+.status { font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 500; white-space: nowrap; }
+.st-dev    { background: rgba(59,130,246,.12); color: #60a5fa; border: 1px solid rgba(59,130,246,.2); }
+.st-design { background: rgba(192,132,252,.12); color: #c084fc; border: 1px solid rgba(192,132,252,.2); }
+.st-prd    { background: rgba(251,146,60,.12);  color: #fb923c; border: 1px solid rgba(251,146,60,.2); }
+</style>
+</head>
+<body>
+
+<h1>MemeRush 在制需求清单</h1>
+<div class="meta">Web + App MemeRush &nbsp;|&nbsp; 2026-06-24 &nbsp;|&nbsp; PM: elsa.g</div>
+
+<div class="stats">
+  <div class="stat s-blue">  <div class="stat-num">5</div><div class="stat-label">开发中</div></div>
+  <div class="stat s-purple"><div class="stat-num">3</div><div class="stat-label">UI 设计中</div></div>
+  <div class="stat s-orange"><div class="stat-num">8</div><div class="stat-label">PRDing / 待 PRD</div></div>
+</div>
+
+<!-- 开发中 -->
+<div class="section">
+  <div class="section-header">
+    <span class="dot" style="background:#3b82f6;box-shadow:0 0 5px #3b82f688"></span>
+    <span class="section-title">开发中</span>
+    <span class="section-count">5</span>
+  </div>
+  <div class="card">
+    <div class="card-id">#145</div>
+    <div class="card-body">
+      <div class="card-title">Virtuals Protocol（Base）支持</div>
+      <div class="card-desc">接入 Base 链 Virtuals AI Agent token，含协议标签、费率展示；数据/WS/BE 分批提测</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-dev">开发中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#157</div>
+    <div class="card-body">
+      <div class="card-title">Finalizing 排序切换 — MC 默认 + 进度% 可选</div>
+      <div class="card-desc">Finalizing 阶段默认按 MC 排序，可切换进度%；用户选择记忆至 localStorage；KO 6/24</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-dev">开发中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#90</div>
+    <div class="card-body">
+      <div class="card-title">链上指标增强 — Dev + Sniper + Bundler</div>
+      <div class="card-desc">列表和详情页展示开发者钱包、狙击手、打包钱包等链上风险指标；KO 6/9</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-dev">开发中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#138</div>
+    <div class="card-body">
+      <div class="card-title">PumpLive 直播预览</div>
+      <div class="card-desc">token 卡片 + Social Tab 展示 Pump.fun 直播状态，三态：无直播 / 直播中 / 直播结束</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-app">App</span>
+      <span class="status st-dev">开发中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#152</div>
+    <div class="card-body">
+      <div class="card-title">空状态 UI 更新</div>
+      <div class="card-desc">列表空状态页面 UI 重新设计；Figma 已出稿，assignee: liam.cc</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-app">App</span>
+      <span class="status st-dev">开发中</span>
+    </div>
+  </div>
+</div>
+
+<!-- UI 设计中 -->
+<div class="section">
+  <div class="section-header">
+    <span class="dot" style="background:#c084fc;box-shadow:0 0 5px #c084fc88"></span>
+    <span class="section-title">UI 设计中</span>
+    <span class="section-count">3</span>
+  </div>
+  <div class="card">
+    <div class="card-id">#148</div>
+    <div class="card-body">
+      <div class="card-title">K 线图快速预览面板（Inline K-line Panel）</div>
+      <div class="card-desc">列表行新增 K 线 icon，点击弹出浮窗，含 TradingView K 线图 + 持仓数据 + 快捷买卖；快捷键 L；KO 6/24</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-web">Web</span>
+      <span class="status st-design">UI 设计中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#154a</div>
+    <div class="card-body">
+      <div class="card-title">Read the Card — 列表说明弹窗</div>
+      <div class="card-desc">列表右上角新增 ⓘ 入口，点击弹出 Bottom Sheet，逐项解释卡片所有元素含义（Chip 高亮 + 颜色阈值说明）；首次进入自动触发一次</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-app">App</span>
+      <span class="status st-design">UI 设计中</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#154b</div>
+    <div class="card-body">
+      <div class="card-title">发射平台协议介绍弹窗</div>
+      <div class="card-desc">在发射平台 Filter Panel 中点击平台名称，弹出该协议的介绍 modal；文案静态配置</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-app">App</span>
+      <span class="status st-design">UI 设计中</span>
+    </div>
+  </div>
+</div>
+
+<!-- PRDing -->
+<div class="section">
+  <div class="section-header">
+    <span class="dot" style="background:#fb923c;box-shadow:0 0 5px #fb923c88"></span>
+    <span class="section-title">PRDing / 待 PRD</span>
+    <span class="section-count">8</span>
+  </div>
+  <div class="card">
+    <div class="card-id">#149</div>
+    <div class="card-body">
+      <div class="card-title">协议费用分成展示</div>
+      <div class="card-desc">token 卡片/详情展示各协议费用模式标签（Creator Fee / Zero Tax）；覆盖 Pump.fun / FLAP / OpenFour / Virtuals / Zora / Bankr</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">PRD 待写</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#150</div>
+    <div class="card-body">
+      <div class="card-title">Token 资产重复使用检测</div>
+      <div class="card-desc">检测 token 的图片/Twitter/Website/Telegram 是否被其他 token 重复使用，辅助识别抄袭和关联项目</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">PRD 待写</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#141</div>
+    <div class="card-body">
+      <div class="card-title">Agentic Wallet × MemeRush Loop</div>
+      <div class="card-desc">用户在 MemeRush 内开启 agentic wallet，利用 MemeRush 数据驱动自动买卖，形成自优化交易 loop</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">PRDing</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#158</div>
+    <div class="card-body">
+      <div class="card-title">Recommended Filter 推荐筛选值</div>
+      <div class="card-desc">参考 pump.fun Recommended Filters toggle，一键应用经验证的常用筛选值组合；纯前端；需 bruce.s signal 回测数据</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">待回测数据</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#156</div>
+    <div class="card-body">
+      <div class="card-title">Pump.fun 返现奖励领取</div>
+      <div class="card-desc">用户可查看累计返现金额并一键领取（链上交互）；产品位置待议（Portfolio / Rewards 页面 vs MemeRush 内）</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">待 PRD</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#140</div>
+    <div class="card-body">
+      <div class="card-title">Base 新协议 Doppler 支持</div>
+      <div class="card-desc">接入 Base 链 Doppler 协议，PRD 基本 ready；待数据侧确认 swapFee 实时解析方案</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">待数据确认</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#80</div>
+    <div class="card-body">
+      <div class="card-title">App 简洁模式</div>
+      <div class="card-desc">App 端支持切换简洁 / 标准视图，减少列表信息密度，降低新用户认知负担</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-app">App</span>
+      <span class="status st-prd">PRD 待写</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-id">#100</div>
+    <div class="card-body">
+      <div class="card-title">批量发币 / 伪造平台筛选标识</div>
+      <div class="card-desc">识别并标注通过 uxento、rapidlaunch 等批量发币或仿冒平台发射的 token，支持在列表中筛选过滤</div>
+    </div>
+    <div class="card-right">
+      <span class="tag tag-both">Web + App</span>
+      <span class="status st-prd">PRD 待写</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
