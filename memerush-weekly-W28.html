@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemeRush 周报 · W28（2026-06-30~07-06）</title>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d2e; --border: #2a2d3e;
+    --text: #e8eaf0; --muted: #8b8fa8; --accent: #f0b90b;
+    --green: #0ecb81; --red: #f6465d; --blue: #1677ff; --purple: #9945ff;
+    --app-color: #f0b90b; --web-color: #1677ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; padding: 24px; }
+  .report-header { text-align: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .report-header h1 { font-size: 22px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+  .report-header .subtitle { color: var(--muted); font-size: 13px; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 14px; padding-left: 10px; border-left: 3px solid var(--accent); }
+  .section { margin-bottom: 32px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .kpi-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .kpi-value { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .kpi-wow { font-size: 12px; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .kpi-card.app .kpi-value { color: var(--app-color); }
+  .kpi-card.web .kpi-value { color: var(--web-color); }
+  .funnel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .funnel-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .funnel-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .tag-app { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
+  .tag-web { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
+  .funnel-step { margin-bottom: 12px; }
+  .funnel-step-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+  .funnel-step-label .step-name { color: var(--muted); }
+  .funnel-step-label .step-uv { font-weight: 600; }
+  .funnel-bar-bg { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+  .funnel-bar-fill { height: 8px; border-radius: 4px; }
+  .funnel-step-conv { text-align: right; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .app-bar { background: linear-gradient(90deg, var(--app-color), #ffd35c); }
+  .web-bar { background: linear-gradient(90deg, var(--web-color), #69a8ff); }
+  .funnel-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0; }
+  .funnel-wow { font-size: 11px; margin-left: 6px; font-weight: 600; }
+  .data-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .data-table th { background: #22253a; padding: 10px 14px; text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td.num { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .data-table td.muted { color: var(--muted); }
+  .badge-bsc { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+  .badge-sol { background: rgba(153,69,255,0.15); color: var(--purple); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+  .badge-base { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+  .badge-eth { background: rgba(130,145,255,0.15); color: #8291ff; border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .insight-box { background: rgba(240,185,11,0.05); border: 1px solid rgba(240,185,11,0.2); border-radius: 10px; padding: 14px 16px; }
+  .insight-box .insight-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+  .insight-box ul { padding-left: 16px; }
+  .insight-box li { font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  .insight-box li strong { color: var(--text); }
+  .highlight-green { color: var(--green); font-weight: 600; }
+  .wow-up { color: var(--green); }
+  .wow-down { color: var(--red); }
+  .muted { color: var(--muted); }
+  .verify-link { font-size: 10px; font-weight: 400; color: var(--muted); text-decoration: none; margin-left: 8px; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; vertical-align: middle; white-space: nowrap; }
+  .verify-link:hover { color: var(--accent); border-color: var(--accent); }
+  .pending-note { background: rgba(246,70,93,0.08); border: 1px solid rgba(246,70,93,0.25); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--red); margin-bottom: 12px; }
+  .report-footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <h1>MemeRush Quickbuy 转化漏斗 · 周报</h1>
+  <div class="subtitle">W28 &nbsp;|&nbsp; 2026-06-30 ~ 07-06（7天）&nbsp;|&nbsp; 生成于 2026-07-07</div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-grid">
+  <div class="kpi-card app">
+    <div class="kpi-label">App Flash Buy UV</div>
+    <div class="kpi-value">4,966</div>
+    <div class="kpi-wow wow-up">&#9650; +1.6% WoW</div>
+    <div class="kpi-sub">List UV: 56,305</div>
+  </div>
+  <div class="kpi-card web">
+    <div class="kpi-label">Web Quickbuy UV</div>
+    <div class="kpi-value">92</div>
+    <div class="kpi-wow wow-up">&#9650; +80.4% WoW</div>
+    <div class="kpi-sub">List UV: 11,190</div>
+  </div>
+  <div class="kpi-card app">
+    <div class="kpi-label">App FB 转化率 (FB/List)</div>
+    <div class="kpi-value">8.8%</div>
+    <div class="kpi-wow wow-down">&#9660; -0.6pp WoW（W27: 9.4%）</div>
+    <div class="kpi-sub">Enter→List: 53.8%</div>
+  </div>
+  <div class="kpi-card web">
+    <div class="kpi-label">Web QB 转化率 (QB/List)</div>
+    <div class="kpi-value">0.82%</div>
+    <div class="kpi-wow wow-up">&#9650; +0.37pp WoW（W27: 0.45%）</div>
+    <div class="kpi-sub">Card→QB: 10.8%</div>
+  </div>
+</div>
+
+<!-- Funnels -->
+<div class="funnel-grid" style="margin-bottom:32px;">
+
+<!-- App Funnel -->
+<div class="funnel-box">
+  <div class="funnel-title"><span class="tag-app">App</span> Flash Buy 漏斗（W27 → W28）</div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">进入 MemeRush</span>
+      <span class="step-uv">30,297 <span class="funnel-wow wow-up">&#9650;+10.1%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:100%"></div></div>
+  </div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">列表页访问</span>
+      <span class="step-uv">56,305 <span class="funnel-wow wow-up">&#9650;+8.4%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:186%"></div></div>
+    <div class="funnel-step-conv">Enter→List: 185.8% (W27: 188.9%)</div>
+  </div>
+  <hr class="funnel-divider">
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">Flash Buy 点击 UV</span>
+      <span class="step-uv">4,966 <span class="funnel-wow wow-up">&#9650;+1.6%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:26%"></div></div>
+    <div class="funnel-step-conv">List→FB: <strong>8.8%</strong>（W27: 9.4%，-0.6pp）</div>
+  </div>
+</div>
+
+<!-- Web Funnel -->
+<div class="funnel-box">
+  <div class="funnel-title"><span class="tag-web">Web</span> Quickbuy 漏斗（W27 → W28）</div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">① 列表访问</span>
+      <span class="step-uv">11,190 <span class="funnel-wow wow-down">&#9660;-2.1%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:100%"></div></div>
+  </div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">② Hover</span>
+      <span class="step-uv">1,436 <span class="funnel-wow wow-up">&#9650;+20.2%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:13%"></div></div>
+    <div class="funnel-step-conv">→ <strong>12.83%</strong>（W27: 10.45%，+2.38pp）</div>
+  </div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">③ Card 点击</span>
+      <span class="step-uv">855 <span class="funnel-wow wow-up">&#9650;+40.6%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:23%"></div></div>
+    <div class="funnel-step-conv">→ <strong>7.64%</strong>（W27: 5.32%，+2.32pp）</div>
+  </div>
+  <div class="funnel-step">
+    <div class="funnel-step-label">
+      <span class="step-name">④ Quickbuy 点击</span>
+      <span class="step-uv highlight-green">92 <span class="funnel-wow wow-up">&#9650;+80.4%</span></span>
+    </div>
+    <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:10%"></div></div>
+    <div class="funnel-step-conv">→ <strong class="highlight-green">0.82%</strong>（W27: 0.45%，+0.37pp）</div>
+  </div>
+</div>
+</div>
+
+<!-- Web Chain Attribution -->
+<div class="section">
+  <div class="section-title"><span class="tag-web">Web</span> 链归因（W27 → W28）</div>
+  <div style="overflow-x:auto; margin-bottom:16px;">
+  <table class="data-table" style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead><tr>
+      <th style="border:1px solid var(--border); padding:6px 10px; width:60px;">链</th>
+      <th style="border:1px solid var(--border); padding:6px 10px;">步骤</th>
+      <th style="border:1px solid var(--border); padding:6px 10px; text-align:right;">W27 UV</th>
+      <th style="border:1px solid var(--border); padding:6px 10px; text-align:right;">W28 UV</th>
+      <th style="border:1px solid var(--border); padding:6px 10px; text-align:right;">WoW</th>
+      <th style="border:1px solid var(--border); padding:6px 10px; text-align:right;">转化率 W27</th>
+      <th style="border:1px solid var(--border); padding:6px 10px; text-align:right;">转化率 W28</th>
+    </tr></thead>
+    <tbody>
+<tr><td rowspan="4" style="border:1px solid var(--border); padding:6px 10px; vertical-align:middle;"><span class="badge-bsc">BSC</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">① 列表</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,111</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">10,889</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -2.0%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">② Hover</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">984</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1,263</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +28.4%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">8.9%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11.6%</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">③ Card</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">466</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">726</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +55.8%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">4.2%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">6.7%</td></tr>
+<tr style="border-bottom: 2px solid var(--border);"><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">④ QB</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">43</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">84</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +95.3%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">0.4%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">0.8%</td></tr>
+<tr><td rowspan="4" style="border:1px solid var(--border); padding:6px 10px; vertical-align:middle;"><span class="badge-sol">SOL</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">① 列表</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">402</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">482</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +19.9%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">② Hover</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">358</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">378</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +5.6%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">89.1%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">78.4%</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">③ Card</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">206</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">235</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +14.1%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">51.2%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">48.8%</td></tr>
+<tr style="border-bottom: 2px solid var(--border);"><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">④ QB</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">13</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">19</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +46.2%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">3.2%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">3.9%</td></tr>
+<tr><td rowspan="4" style="border:1px solid var(--border); padding:6px 10px; vertical-align:middle;"><span class="badge-base">Base</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">① 列表</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">68</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">48</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -29.4%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">② Hover</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">63</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">43</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -31.7%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">92.6%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">89.6%</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">③ Card</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">33</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">19</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -42.4%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">48.5%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">39.6%</td></tr>
+<tr style="border-bottom: 2px solid var(--border);"><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">④ QB</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; 0.0%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1.5%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">2.1%</td></tr>
+<tr><td rowspan="4" style="border:1px solid var(--border); padding:6px 10px; vertical-align:middle;"><span class="badge-eth">ETH</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">① 列表</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">95</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">69</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -27.4%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">② Hover</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">70</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">45</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -35.7%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">73.7%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">65.2%</td></tr>
+<tr><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">③ Card</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">25</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">18</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-down">&#9660; -28.0%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">26.3%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">26.1%</td></tr>
+<tr style="border-bottom: 2px solid var(--border);"><td class="muted" style="border:1px solid var(--border); padding:6px 10px;">④ QB</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">2</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;"><span class="wow-up">&#9650; +100.0%</span></td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1.1%</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">2.9%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div style="font-size:11px;color:var(--muted);margin-top:6px;padding-left:4px">注：各步骤 UV 有跨链重叠（同一用户可跨链浏览），各链合计大于漏斗总数；链 = token 所在链（df_3，Web 端）</div>
+  <div class="insight-box" style="margin-top:12px;">
+    <div class="insight-title">归因结论</div>
+    <ul>
+      <li><strong>BSC QB 翻倍（+95.3%，43→84）</strong>：Card 也 +55.8%，Hover→Card 转化率从 54.1% 升至 57.5%；BSC 仍占 97%+ 列表流量（10,889/11,190），转化提升效果显著。</li>
+      <li><strong>SOL 全链路正增长</strong>：列表 +19.9%、QB +46.2%，SOL 高转化率（QB:3.94%）持续验证。</li>
+      <li><strong>Base/ETH 活跃度继续收缩</strong>：Base 全步骤下滑约 30-42%，与 App 端 Base FB -58.2% 方向一致。</li>
+      <li style="color: var(--accent);"><strong>结构性机会</strong>：BSC QB 转化率提升至 0.77%（43→84/10,889），仍有较大提升空间；SOL 基数（列表 482）仍小。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Web Protocol Attribution -->
+<div class="section">
+  <div class="section-title"><span class="tag-web">Web</span> Token Card 协议分布（W27 → W28）</div>
+  <table class="data-table">
+    <thead><tr><th>协议</th><th>链</th><th>W27 UV</th><th>W28 UV</th><th>WoW</th></tr></thead>
+    <tbody>
+<tr><td>FourMeme</td><td><span class="badge-bsc">BSC</span></td><td class="num">321</td><td class="num">606</td><td class="num"><span class="wow-up">&#9650; +88.8%</span></td></tr>
+<tr><td>Flap</td><td><span class="badge-bsc">BSC</span></td><td class="num">317</td><td class="num">351</td><td class="num"><span class="wow-up">&#9650; +10.7%</span></td></tr>
+<tr><td>OpenFour</td><td><span class="badge-bsc">BSC</span></td><td class="num">114</td><td class="num">122</td><td class="num"><span class="wow-up">&#9650; +7.0%</span></td></tr>
+<tr><td>Pump.fun</td><td><span class="badge-sol">SOL</span></td><td class="num">169</td><td class="num">230</td><td class="num"><span class="wow-up">&#9650; +36.1%</span></td></tr>
+<tr><td>Dynamic BC</td><td><span class="badge-sol">SOL</span></td><td class="num">117</td><td class="num">55</td><td class="num"><span class="wow-down">&#9660; -53.0%</span></td></tr>
+<tr><td>Clanker</td><td><span class="badge-base">Base</span></td><td class="num">28</td><td class="num">14</td><td class="num"><span class="wow-down">&#9660; -50.0%</span></td></tr>
+    </tbody>
+  </table>
+  <div class="insight-box" style="margin-top:12px;">
+    <div class="insight-title">协议洞察</div>
+    <ul>
+      <li><strong>BSC 三协议（FourMeme+Flap+OpenFour）合计 1,079（W27: 752，+43.5%）</strong>：FourMeme +88.8% 成为 Web 端最大流量协议来源。</li>
+      <li><strong>Dynamic BC -53.0%</strong>：与 App 端协议轮动一致，SOL 流量持续从 DBC 向 Pump.fun 迁移。</li>
+      <li><strong>Clanker -50.0%</strong>：与 App Base FB -58.2% 方向一致，Base 生态热度明显消退。</li>
+      <li><strong>Pump.fun +36.1%</strong>：SOL 协议中逆势增长，Web 端 SOL 用户偏好 Pump 生态。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- App Chain Attribution -->
+<div class="section">
+  <div class="section-title"><span class="tag-app">App</span> Flash Buy 归因（by Tab &amp; 协议，W27 → W28）</div>
+
+  <!-- Chain breakdown -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;padding-left:4px">Flash Buy UV by 链（df_13）</div>
+    <table class="data-table">
+      <thead><tr><th>链</th><th>W27 UV</th><th>W28 UV</th><th>WoW</th><th>说明</th></tr></thead>
+      <tbody>
+<tr><td><span class="badge-sol">SOL</span></td><td class="num">3,990</td><td class="num">4,044</td><td class="num"><span class="wow-up">&#9650; +1.4%</span></td><td class="muted">Pump.fun 反超 DBC，生态内部轮动</td></tr>
+<tr><td><span class="badge-bsc">BSC</span></td><td class="num">1,188</td><td class="num">1,346</td><td class="num"><span class="wow-up">&#9650; +13.3%</span></td><td class="muted">Four.meme 持续渗透，稳健增长</td></tr>
+<tr><td><span class="badge-base">Base</span></td><td class="num">395</td><td class="num">165</td><td class="num"><span class="wow-down">&#9660; -58.2%</span></td><td class="muted">Clanker -65.6%，Base 生态退潮</td></tr>
+<tr><td><span class="badge-eth">ETH</span></td><td class="num">10</td><td class="num">84</td><td class="num"><span class="wow-up">&#9650; +740.0%</span></td><td class="muted">绝对量仍小（84 UV）</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;padding-left:4px">注：UV 有跨链重叠，各链合计大于漏斗总数；链 = token 所在链（df_13）</div>
+  </div>
+
+  <div class="two-col" style="margin-bottom: 20px;">
+  <!-- Tab breakdown -->
+  <div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;padding-left:4px">Flash Buy UV by Tab（df_6）</div>
+    <table class="data-table">
+      <thead><tr><th>Tab</th><th>W27</th><th>W28</th><th>WoW</th><th>W28 占比</th></tr></thead>
+      <tbody>
+<tr><td><strong>finalizing</strong></td><td class="num">4,094</td><td class="num">3,984</td><td class="num"><span class="wow-down">&#9660; -2.7%</span></td><td class="muted">80.2%</td></tr>
+<tr><td><strong>new</strong></td><td class="num">727</td><td class="num">883</td><td class="num"><span class="wow-up">&#9650; +21.5%</span></td><td class="muted">17.8%</td></tr>
+<tr><td><strong>launched</strong></td><td class="num">460</td><td class="num">553</td><td class="num"><span class="wow-up">&#9650; +20.2%</span></td><td class="muted">11.1%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;padding-left:4px">注：UV 有重叠（用户可跨 tab 操作），合计大于总数</div>
+  </div>
+
+  <!-- Protocol breakdown -->
+  <div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px;padding-left:4px">Flash Buy UV by 协议（df_7，Top 变化）</div>
+    <table class="data-table">
+      <thead><tr><th>协议</th><th>链</th><th>W27</th><th>W28</th><th>WoW</th></tr></thead>
+      <tbody>
+<tr style="background: rgba(14,203,129,0.05);"><td><strong>Pump.fun</strong></td><td><span class="badge-sol">SOL</span></td><td class="num">1,900</td><td class="num">2,524</td><td class="num"><span class="wow-up">&#9650; +32.8%</span></td></tr>
+<tr style="background: rgba(246,70,93,0.05);"><td><strong>Dynamic BC</strong></td><td><span class="badge-sol">SOL</span></td><td class="num">2,486</td><td class="num">1,844</td><td class="num"><span class="wow-down">&#9660; -25.8%</span></td></tr>
+<tr><td><strong>Four.meme</strong></td><td><span class="badge-bsc">BSC</span></td><td class="num">981</td><td class="num">1,118</td><td class="num"><span class="wow-up">&#9650; +14.0%</span></td></tr>
+<tr><td><strong>Flap</strong></td><td><span class="badge-bsc">BSC</span></td><td class="num">242</td><td class="num">269</td><td class="num"><span class="wow-up">&#9650; +11.2%</span></td></tr>
+<tr><td><strong>Clanker</strong></td><td><span class="badge-base">Base</span></td><td class="num">314</td><td class="num">108</td><td class="num"><span class="wow-down">&#9660; -65.6%</span></td></tr>
+<tr><td><strong>OpenFour</strong></td><td><span class="badge-bsc">BSC</span></td><td class="num">46</td><td class="num">56</td><td class="num"><span class="wow-up">&#9650; +21.7%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">归因洞察（W28）</div>
+    <ul>
+      <li><strong>Pump.fun 首次反超 Dynamic BC</strong>：W28 Pump.fun=2,524 > DBC=1,844，历史性里程碑。DBC 已从 W26 峰值 5,363 连续两周腰斩（-66% 共两周），App FB 生态重心向 Pump.fun 迁移。</li>
+      <li><strong>Tab 结构重新分配</strong>：new(+21.5%) 和 launched(+20.2%) tab 增长——用户开始更多关注已上线/新推出 token；finalizing 仍主导（占比 80.2%）但份额下降。</li>
+      <li><strong>BSC 生态（四月榜）稳健</strong>：Four.meme +14.0%，Flap +11.2%，OpenFour +21.7%，BSC 三协议合计 W28=1,443。</li>
+      <li><strong>Clanker 大幅下滑（-65.6%）</strong>：Base 生态最大协议已降至 108 UV，印证 Base Chain 整体活跃度收缩。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- New/Returning (Pending W28) -->
+<div class="section">
+  <div class="section-title">新老用户转化（W27 数据，W28 待更新）</div>
+  <div class="pending-note">⚠ 以下为 W27 数据，W28 新老用户数据需手动从 Sensors 用户分群分析获取</div>
+  <table class="data-table">
+    <thead><tr><th>指标</th><th>新用户（首访 W27 周内）</th><th>老用户（首访早于 W27）</th><th>合计</th><th>新用户转化率</th><th>老用户转化率</th></tr></thead>
+    <tbody>
+      <tr><td>Web 列表 UV</td><td class="num">9,468 <span style="color:var(--muted);font-size:11px">（82.8%）</span></td><td class="num">1,884 <span style="color:var(--muted);font-size:11px">（16.5%）</span></td><td class="num">11,431</td><td class="muted">—</td><td class="muted">—</td></tr>
+      <tr><td>Web QB UV</td><td class="num" style="color:var(--red)">0 （0%）</td><td class="num">51 <span style="color:var(--muted);font-size:11px">（100%）</span></td><td class="num">51</td><td class="num" style="color:var(--red)">0%</td><td class="num highlight-green">2.71%</td></tr>
+      <tr><td>App 进入 MR UV</td><td class="num">925 <span style="color:var(--muted);font-size:11px">（3.4%）</span></td><td class="num">26,507 <span style="color:var(--muted);font-size:11px">（96.4%）</span></td><td class="num">27,486</td><td class="muted">—</td><td class="muted">—</td></tr>
+      <tr><td>App Flash Buy UV</td><td class="num">171 <span style="color:var(--muted);font-size:11px">（3.5%）</span></td><td class="num">4,702 <span style="color:var(--muted);font-size:11px">（96.3%）</span></td><td class="num">4,884</td><td class="num highlight-green">18.5%</td><td class="num highlight-green">17.7%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Retention (Partial W28) -->
+<div class="section">
+  <div class="section-title">用户留存</div>
+  <div class="pending-note">⚠ W28 cohort 留存数据需手动从 Sensors 留存分析获取（查询需 7 天完整数据）</div>
+  <div style="overflow-x:auto; margin-bottom:20px;">
+  <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr>
+        <th rowspan="2" style="border:1px solid var(--border); padding:6px 10px; background:var(--card); text-align:left;">Cohort</th>
+        <th colspan="3" style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--app-color) 12%, var(--card)); color:var(--app-color); text-align:center;"><span class="tag-app">App</span></th>
+        <th colspan="3" style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--web-color) 12%, var(--card)); color:var(--web-color); text-align:center;"><span class="tag-web">Web</span></th>
+      </tr>
+      <tr>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--app-color) 8%, var(--card)); text-align:right;">UV</th>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--app-color) 8%, var(--card)); text-align:right;">W+0</th>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--app-color) 8%, var(--card)); text-align:right; border-right:2px solid var(--border);">W+1</th>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--web-color) 8%, var(--card)); text-align:right;">UV</th>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--web-color) 8%, var(--card)); text-align:right;">W+0</th>
+        <th style="border:1px solid var(--border); padding:5px 8px; background:color-mix(in srgb, var(--web-color) 8%, var(--card)); text-align:right;">W+1</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W26</strong> <span class="muted" style="font-size:11px;">Jun 15–21</span></td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">34,697</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">22.90%</td>
+        <td class="num highlight-green" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">13.65%</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,763</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">10.53%</td>
+        <td class="num highlight-green" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">5.27%</td>
+      </tr>
+      <tr>
+        <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W27</strong> <span class="muted" style="font-size:11px;">Jun 22–28</span></td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">28,561</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">22.23%</td>
+        <td class="num" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待更新)</span></td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,538</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11.41%</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待更新)</span></td>
+      </tr>
+      <tr style="opacity:0.7;">
+        <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W28</strong> <span class="muted" style="font-size:11px;">Jun 30–Jul 6</span></td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待查询)</span></td>
+        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
+        <td class="num muted" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">— (7/6 后可查)</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待查询)</span></td>
+        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
+        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Geo (W27 reference) -->
+<div class="section">
+  <div class="section-title">地区分布（IP 归因，参考值，W27 沿用）</div>
+  <div class="pending-note">⚠ W28 地区数据待手动更新（Sensors 地理分布查询）</div>
+  <div style="overflow-x:auto; margin-bottom:10px;">
+  <table class="data-table" style="width:100%; border-collapse:collapse; font-size:13px;">
+    <thead>
+      <tr>
+        <th style="border:1px solid var(--border); padding:6px 10px; background:var(--card); text-align:left;">地区</th>
+        <th style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--web-color) 12%, var(--card)); color:var(--web-color); text-align:center;">Web 排名</th>
+        <th style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--web-color) 12%, var(--card)); color:var(--web-color); text-align:right; border-right:2px solid var(--border);">Web UV</th>
+        <th style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--app-color) 12%, var(--card)); color:var(--app-color); text-align:center;">App 排名</th>
+        <th style="border:1px solid var(--border); padding:6px 10px; background:color-mix(in srgb, var(--app-color) 12%, var(--card)); color:var(--app-color); text-align:right;">App UV</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="border:1px solid var(--border); padding:6px 10px;">&#127464;&#127475; China</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#2</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">457</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#1</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">7,178</td></tr>
+      <tr><td style="border:1px solid var(--border); padding:6px 10px;">&#127470;&#127475; India</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">—</td><td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">99 <span style="font-size:11px">(#6)</span></td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#2</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">2,028</td></tr>
+      <tr><td style="border:1px solid var(--border); padding:6px 10px;">&#127477;&#127472; Pakistan</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">—</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#3</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1,162</td></tr>
+      <tr><td style="border:1px solid var(--border); padding:6px 10px;">&#127463;&#127465; Bangladesh</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">—</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#4</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">1,126</td></tr>
+      <tr><td style="border:1px solid var(--border); padding:6px 10px;">&#127483;&#127475; Viet Nam</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#7</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">86</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#5</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">975</td></tr>
+      <tr style="opacity:0.85;"><td style="border:1px solid var(--border); padding:6px 10px;">&#127480;&#127468; Singapore</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">#1</td><td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right; border-right:2px solid var(--border);">4,503</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:center;">—</td><td class="muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="report-footer">
+  MemeRush Quickbuy 周报 · W28 (2026-06-30~07-06) · 生成于 2026-07-07<br>
+  数据来源: Sensors Analytics · App: df_mpclick/df_mpviewscreen + eventName · Web: webClick/pageView + elementID
+</div>
+
+</body>
+</html>
