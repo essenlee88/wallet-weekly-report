@@ -297,10 +297,10 @@
   </div>
 </div>
 
-<!-- New/Returning (Pending W28) -->
+<!-- New/Returning (W27 reference) -->
 <div class="section">
-  <div class="section-title">新老用户转化（W27 数据，W28 待更新）</div>
-  <div class="pending-note">⚠ 以下为 W27 数据，W28 新老用户数据需手动从 Sensors 用户分群分析获取</div>
+  <div class="section-title">新老用户转化（W27 参考值）</div>
+  <p style="font-size:12px; color:var(--muted); margin-bottom:10px;">Sensors API 不支持 <code>$first_visit_time</code> 用户属性过滤，W28 新老用户拆分需在 Sensors 用户分群模块手动查询；以下为 W27 参考数据。</p>
   <table class="data-table">
     <thead><tr><th>指标</th><th>新用户（首访 W27 周内）</th><th>老用户（首访早于 W27）</th><th>合计</th><th>新用户转化率</th><th>老用户转化率</th></tr></thead>
     <tbody>
@@ -312,10 +312,9 @@
   </table>
 </div>
 
-<!-- Retention (Partial W28) -->
+<!-- Retention -->
 <div class="section">
   <div class="section-title">用户留存</div>
-  <div class="pending-note">⚠ W28 cohort 留存数据需手动从 Sensors 留存分析获取（查询需 7 天完整数据）</div>
   <div style="overflow-x:auto; margin-bottom:20px;">
   <table style="width:100%; border-collapse:collapse; font-size:13px;">
     <thead>
@@ -336,8 +335,8 @@
     <tbody>
       <tr>
         <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W26</strong> <span class="muted" style="font-size:11px;">Jun 15–21</span></td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">34,697</td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">22.90%</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">34,698</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">22.89%</td>
         <td class="num highlight-green" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">13.65%</td>
         <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,763</td>
         <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">10.53%</td>
@@ -345,31 +344,32 @@
       </tr>
       <tr>
         <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W27</strong> <span class="muted" style="font-size:11px;">Jun 22–28</span></td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">28,561</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">28,562</td>
         <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">22.23%</td>
-        <td class="num" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待更新)</span></td>
+        <td class="num highlight-green" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">14.89%</td>
         <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,538</td>
         <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11.41%</td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待更新)</span></td>
+        <td class="num highlight-green" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">5.79%</td>
       </tr>
-      <tr style="opacity:0.7;">
+      <tr>
         <td style="border:1px solid var(--border); padding:6px 10px;"><strong>W28</strong> <span class="muted" style="font-size:11px;">Jun 30–Jul 6</span></td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待查询)</span></td>
-        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
-        <td class="num muted" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">— (7/6 后可查)</td>
-        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">— <span style="font-size:11px;color:var(--muted)">(待查询)</span></td>
-        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
-        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">—</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">29,256</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">23.59%</td>
+        <td class="num muted" style="border:1px solid var(--border); border-right:2px solid var(--border); padding:6px 8px; text-align:right;">8.43% <span style="font-size:11px">(截至 7/7)</span></td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">11,074</td>
+        <td class="num" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">12.38%</td>
+        <td class="num muted" style="border:1px solid var(--border); padding:6px 8px; text-align:right;">5.24% <span style="font-size:11px">(截至 7/7)</span></td>
       </tr>
     </tbody>
   </table>
   </div>
+  <p style="font-size:11px; color:var(--muted); margin-top:4px;">* Sensors 留存分析以周日为起点，W28 cohort = Jun 29–Jul 5（vs 报告口径 Jun 30–Jul 6）。App 事件：<code>app_click_mpcwallet_home_page_meme_rush_click</code>；Web 事件：<code>web_screen_view_dex_page_meme_rush</code>。W+1 截至 7/7，下周最终值可查。</p>
 </div>
 
 <!-- Geo (W27 reference) -->
 <div class="section">
-  <div class="section-title">地区分布（IP 归因，参考值，W27 沿用）</div>
-  <div class="pending-note">⚠ W28 地区数据待手动更新（Sensors 地理分布查询）</div>
+  <div class="section-title">地区分布（IP 归因，W27 参考值）</div>
+  <p style="font-size:12px; color:var(--muted); margin-bottom:10px;">Sensors API 不支持按地区维度拆分 UV，W28 地区分布需在 Sensors 用户分析模块手动查询；以下为 W27 参考数据。</p>
   <div style="overflow-x:auto; margin-bottom:10px;">
   <table class="data-table" style="width:100%; border-collapse:collapse; font-size:13px;">
     <thead>
