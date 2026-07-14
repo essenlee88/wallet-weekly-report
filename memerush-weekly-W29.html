@@ -106,7 +106,7 @@
     <div class="kpi-label">App FB 转化率（List→FB）</div>
     <div class="kpi-value">9.0%</div>
     <div class="kpi-wow wow-up">&#9650; +0.2pp WoW（W28: 8.8%）</div>
-    <div class="kpi-sub">弹窗确认率（③→④）: <strong style="color:var(--red)">13.7%</strong> <span class="step-new-label">首周</span></div>
+    <div class="kpi-sub">FB确认率（③→④）: <strong style="color:var(--red)">13.9%</strong> <span class="step-new-label">首周</span></div>
   </div>
   <div class="kpi-card web">
     <div class="kpi-label">Web QB 转化率（List→QB）</div>
@@ -135,20 +135,20 @@
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">② Flash Buy 按钮点击</span>
-        <span class="step-uv">4,839 UV <span class="funnel-wow wow-down">&#9660; -2.6%</span></span>
+        <span class="step-name">② Token 详情弹窗展示 <span class="step-new-label">NEW</span></span>
+        <span class="step-uv">4,921 UV <span class="funnel-wow wow-up">&#9650; +3.9%</span></span>
       </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
-      <div class="funnel-step-conv">①→② <strong>9.0%</strong> ▲ +0.2pp（W28: 8.8%）</div>
+      <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:9.1%"></div></div>
+      <div class="funnel-step-conv">①→② <strong>9.1%</strong> 点击 Token 卡片查看详情（W28: 4,736 UV）</div>
     </div>
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">③ Flash Buy 弹窗展示 <span class="step-new-label">NEW</span></span>
-        <span class="step-uv">4,921 UV <span class="funnel-wow wow-up">&#9650; +3.9%</span></span>
+        <span class="step-name">③ Flash Buy 按钮点击（弹窗内）</span>
+        <span class="step-uv">4,839 UV <span class="funnel-wow wow-down">&#9660; -2.6%</span></span>
       </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:9.1%"></div></div>
-      <div class="funnel-step-conv">②→③ 弹窗展示近 100%（多入口触发）</div>
+      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
+      <div class="funnel-step-conv">②→③ <strong>98.3%</strong> 看了详情几乎都点 Flash Buy &nbsp;|&nbsp; ①→③ <strong>9.0%</strong> ▲ +0.2pp</div>
     </div>
 
     <div class="funnel-step">
@@ -157,12 +157,12 @@
         <span class="step-uv" style="color:var(--red)">675 UV <span class="funnel-wow" style="color:var(--muted)">首周</span></span>
       </div>
       <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
-      <div class="funnel-step-conv">③→④ <strong class="highlight-red">13.7%</strong> 弹窗确认率 &nbsp;|&nbsp; ②→④ 13.9%</div>
+      <div class="funnel-step-conv">③→④ <strong class="highlight-red">13.9%</strong> FB 确认率 &nbsp;|&nbsp; ①→④ <strong class="highlight-red">1.25%</strong></div>
     </div>
 
     <hr class="funnel-divider">
     <div style="font-size:11px;color:var(--muted)">
-      List PV: 178,379 &nbsp;|&nbsp; ③ 弹窗 UV &gt; ② FB 点击 UV，因弹窗由 Flash Buy 按钮及 Token Card 点击双入口触发
+      List PV: 178,379 &nbsp;|&nbsp; ② Token 详情弹窗 = 点击 Token 卡片后弹出，Flash Buy 按钮位于弹窗内
       <br>④ W28 仅 44 UV（埋点本周正式上线），W29 为首个完整数据周
     </div>
   </div>
@@ -218,12 +218,12 @@
   <div class="section-title">App 漏斗分析</div>
   <div class="two-col">
     <div class="insight-box">
-      <div class="insight-title">新埋点首周：弹窗确认率 13.7%</div>
+      <div class="insight-title">新埋点首周：FB 确认率 13.9%，主要流失在确认步骤</div>
       <ul>
-        <li><strong>86.3% 的用户看到 Flash Buy 弹窗后放弃</strong>：4,921 人展示弹窗 → 只有 675 人点击"确认买入"。这是整个 Flash Buy 漏斗中最大流失点，也是埋点上线前不可见的瓶颈。</li>
-        <li><strong>弹窗有双入口</strong>：③ UV（4,921）> ② Flash Buy 点击 UV（4,839），说明 Token Card 点击也会打开同一弹窗。因此 ③→④ 确认率更能代表"弹窗内决策转化"。</li>
-        <li><strong>Flash Buy 按钮 UV 基本稳定</strong>：WoW -2.6%，与列表 -4.3% 相比，用户主动点击意愿反而略有提升（转化率 9.0% +0.2pp）。</li>
-        <li style="color:var(--accent);"><strong>建议</strong>：分析弹窗中放弃的原因——余额不足？金额未预填？确认步骤过多？下一步可加弹窗内行为细分埋点。</li>
+        <li><strong>漏斗完整后，最大流失点清晰可见</strong>：4,839 人点击 Flash Buy 按钮 → 只有 675 人点击"确认买入"（<strong class="highlight-red">86.1% 在确认步骤流失</strong>）。这是埋点上线前完全不可见的瓶颈。</li>
+        <li><strong>Token 详情弹窗→Flash Buy 几乎 100% 转化</strong>：4,921 人打开 Token 详情 → 4,839 人点击 Flash Buy（②→③ 98.3%），说明弹窗本身不是流失点，用户看了就有强烈购买意愿。</li>
+        <li><strong>Flash Buy 整体入口稳定</strong>：列表→FB 转化率 9.0%（+0.2pp），说明高意向用户比例略有提升。</li>
+        <li style="color:var(--accent);"><strong>建议</strong>：重点排查确认步骤流失原因——余额不足提示？Gas 估算失败？金额未预填？建议补充确认弹窗内的余额不足率和 Gas 错误率埋点。</li>
       </ul>
     </div>
     <div>
@@ -235,9 +235,10 @@
             <tr><td class="muted">① 列表 UV</td><td class="num">51,951</td><td class="num">56,327</td><td class="num">53,935</td><td class="muted">—</td></tr>
             <tr><td class="muted">② Flash Buy UV</td><td class="num">4,884</td><td class="num">4,966</td><td class="num">4,839</td><td class="muted">—</td></tr>
             <tr><td class="muted">①→② 转化率</td><td>9.4%</td><td>8.8%</td><td class="highlight-green">9.0%</td><td class="wow-up">▲ +0.2pp</td></tr>
-            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">③ 弹窗展示 UV <span class="step-new-label">NEW</span></td><td class="muted">—</td><td class="num">4,736</td><td class="num">4,921</td><td class="wow-up">▲ +3.9%</td></tr>
+            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">② Token 详情弹窗 UV <span class="step-new-label">NEW</span></td><td class="muted">—</td><td class="num">4,736</td><td class="num">4,921</td><td class="wow-up">▲ +3.9%</td></tr>
+            <tr><td class="muted">②→③ 弹窗内 FB 点击率</td><td class="muted">—</td><td class="muted">—</td><td class="highlight-green">98.3%</td><td class="muted">首周基准</td></tr>
             <tr style="background:rgba(14,203,129,0.05)"><td class="muted">④ 确认买入 UV <span class="step-new-label">NEW</span></td><td class="muted">—</td><td class="muted">44*</td><td class="num">675</td><td class="muted">首周</td></tr>
-            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">③→④ 确认率</td><td class="muted">—</td><td class="muted">—</td><td class="highlight-red">13.7%</td><td class="muted">首周基准</td></tr>
+            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">③→④ FB 确认率</td><td class="muted">—</td><td class="muted">—</td><td class="highlight-red">13.9%</td><td class="muted">首周基准</td></tr>
           </tbody>
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:8px">*W28 的 44 UV 为埋点上线初期不完整数据，不计入趋势</div>
@@ -348,7 +349,7 @@
     <tbody>
       <tr><td>App ① 列表页 UV</td><td>Sensors <code>df_mpviewscreen</code>，<code>eventName = app_screen_view_mpcwallet_page_rank_meme_pump</code>，周去重 UV，2026-07-14 查询</td></tr>
       <tr><td>App ② Flash Buy 点击 UV</td><td>Sensors <code>df_mpclick</code>，<code>eventName = app_click_mpcwallet_meme_rush_flashbuy_button</code></td></tr>
-      <tr><td>App ③ 弹窗展示 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpviewscreen</code>，<code>eventName = app_screen_view_mpcwallet_meme_rush_token_info_pop_up</code>；注意此弹窗由 Flash Buy 按钮及 Token Card 点击共同触发</td></tr>
+      <tr><td>App ② Token 详情弹窗 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpviewscreen</code>，<code>eventName = app_screen_view_mpcwallet_meme_rush_token_info_pop_up</code>；此弹窗在列表页点击 Token 卡片后弹出，Flash Buy 按钮位于弹窗内部</td></tr>
       <tr><td>App ④ 确认买入 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpclick</code>，<code>eventName = app_click_mpcwallet_meme_rush_buy_confirm</code>；W28 仅 44 UV（埋点上线初期），W29 为首个完整周</td></tr>
       <tr><td>Web ①–④ 漏斗 UV</td><td>Sensors <code>pageView/webClick</code>，<code>elementID</code> 分别为 <code>web_screen_view_dex_page_meme_rush</code>、<code>web_click_dex_hover_meme_rush</code>、<code>web_click_dex_token_card_meme_rush</code>、<code>web_click_dex_quickbuy_meme_rush</code></td></tr>
       <tr><td>Web QB by Tab <span class="step-new-label">NEW</span></td><td>Sensors <code>webClick</code>，<code>elementID = web_click_dex_quickbuy_meme_rush</code>，按 <code>tab</code>（<code>df_4</code>）字段拆分；W3W-48648 本周上线，W29 为首周基准，无 W28 对比</td></tr>
