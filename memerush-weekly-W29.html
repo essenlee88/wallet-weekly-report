@@ -271,21 +271,36 @@
       </ul>
     </div>
   </div>
+  <!-- flashbuy_button df_8 breakdown -->
+  <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">③ Flash Buy 点击后路径拆分（df_8：是否设置买入金额）</div>
+    <table class="data-table" style="margin-bottom:0;">
+      <thead><tr><th>df_8</th><th>含义</th><th>W28 UV</th><th>W29 UV</th><th>W29 PV</th><th>W29 UV 占比</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(246,70,93,0.05)"><td><strong>not_set</strong></td><td>未设置买入金额 → 跳到金额设置页</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="num">15,824</td><td class="highlight-red">95.0%</td></tr>
+        <tr style="background:rgba(14,203,129,0.05)"><td><strong>set</strong></td><td>已设置买入金额 → 进入交易流程</td><td class="num">922</td><td class="num highlight-green">874</td><td class="num">4,758</td><td class="highlight-green">18.1%</td></tr>
+        <tr><td colspan="2" class="muted">合计（含跨类重叠 ~634 UV）</td><td class="num">5,605</td><td class="num">5,473</td><td class="num">20,582</td><td class="muted">—</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--muted);margin-top:8px">UV 合计 &gt; 总 UV（4,839），因部分用户本周同时有 set 和 not_set 点击 &nbsp;|&nbsp; not_set 中 SOL 占 68%（3,126 UV），BSC 34%</div>
+  </div>
+
   <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
     <div style="font-size:13px;font-weight:600;margin-bottom:14px;">App 漏斗关键转化率趋势（W27→W28→W29）</div>
-        <table class="data-table" style="margin-bottom:0;">
-          <thead><tr><th>转化步骤</th><th>W27</th><th>W28</th><th>W29</th><th>趋势</th></tr></thead>
-          <tbody>
-            <tr><td class="muted">① 列表 UV</td><td class="num">51,951</td><td class="num">56,327</td><td class="num">53,935</td><td class="muted">—</td></tr>
-            <tr><td class="muted">② Flash Buy UV</td><td class="num">4,884</td><td class="num">4,966</td><td class="num">4,839</td><td class="muted">—</td></tr>
-            <tr><td class="muted">①→② 转化率</td><td>9.4%</td><td>8.8%</td><td class="highlight-green">9.0%</td><td class="wow-up">▲ +0.2pp</td></tr>
-            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">② Token 详情弹窗 UV <span class="step-new-label">NEW</span></td><td class="muted">—</td><td class="num">4,736</td><td class="num">4,921</td><td class="wow-up">▲ +3.9%</td></tr>
-            <tr><td class="muted">②→③ 弹窗内 FB 点击率</td><td class="muted">—</td><td class="muted">—</td><td class="highlight-green">98.3%</td><td class="muted">首周基准</td></tr>
-            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">④ 确认买入 UV <span class="step-new-label">NEW</span></td><td class="muted">—</td><td class="muted">44*</td><td class="num">675</td><td class="muted">首周</td></tr>
-            <tr style="background:rgba(14,203,129,0.05)"><td class="muted">③→④ FB 确认率</td><td class="muted">—</td><td class="muted">—</td><td class="highlight-red">13.9%</td><td class="muted">首周基准</td></tr>
-          </tbody>
-        </table>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px">*W28 的 44 UV 为埋点上线初期不完整数据，不计入趋势</div>
+    <table class="data-table" style="margin-bottom:0;">
+      <thead><tr><th>转化步骤</th><th>W27</th><th>W28</th><th>W29</th><th>趋势</th></tr></thead>
+      <tbody>
+        <tr><td class="muted">① 列表 UV</td><td class="num">51,951</td><td class="num">56,327</td><td class="num">53,935</td><td class="muted">—</td></tr>
+        <tr><td class="muted">③ Flash Buy 点击 UV</td><td class="num">4,884</td><td class="num">4,966</td><td class="num">4,839</td><td class="muted">—</td></tr>
+        <tr><td class="muted">①→③ 转化率</td><td>9.4%</td><td>8.8%</td><td class="highlight-green">9.0%</td><td class="wow-up">▲ +0.2pp</td></tr>
+        <tr style="background:rgba(246,70,93,0.05)"><td class="muted">　├ not_set（跳金额设置）</td><td class="muted">—</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="muted">95%</td></tr>
+        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">　└ set（进入交易流程）</td><td class="muted">—</td><td class="num">922</td><td class="num highlight-green">874</td><td class="muted">18%</td></tr>
+        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">④ buy_confirm UV <span class="step-new-label">NEW ~22%覆盖</span></td><td class="muted">—</td><td class="muted">44*</td><td class="num">675</td><td class="muted">首周</td></tr>
+        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">　└ 其中成功（code=0）</td><td class="muted">—</td><td class="muted">—</td><td class="num">158</td><td class="muted">44%</td></tr>
+        <tr><td class="muted">⑤ 实际成交（DataWind）</td><td class="muted">—</td><td class="muted">—</td><td class="num">718</td><td class="muted">App only</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px">*W28 的 44 UV 为埋点上线初期数据 &nbsp;|&nbsp; ④ 覆盖率 ≈ 22%（code=0: 158 UV / DataWind 成交 718 users）</div>
   </div>
 </div>
 
