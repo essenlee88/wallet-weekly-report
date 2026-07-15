@@ -5,467 +5,507 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MemeRush 周报 · W29（2026-07-07~07-13）</title>
 <style>
-  :root {
-    --bg: #0f1117; --card: #1a1d2e; --border: #2a2d3e;
-    --text: #e8eaf0; --muted: #8b8fa8; --accent: #f0b90b;
-    --green: #0ecb81; --red: #f6465d; --blue: #1677ff; --purple: #9945ff;
-    --app-color: #f0b90b; --web-color: #1677ff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; padding: 24px; }
-  .report-header { text-align: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-  .report-header h1 { font-size: 22px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
-  .report-header .subtitle { color: var(--muted); font-size: 13px; }
-  .new-badge { background: rgba(14,203,129,0.15); color: var(--green); border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 600; margin-left: 6px; }
-  .section-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 14px; padding-left: 10px; border-left: 3px solid var(--accent); }
-  .section { margin-bottom: 32px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
-  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
-  .kpi-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  .kpi-value { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-  .kpi-wow { font-size: 12px; }
-  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .kpi-card.app .kpi-value { color: var(--app-color); }
-  .kpi-card.web .kpi-value { color: var(--web-color); }
-  .kpi-card.highlight { border-color: rgba(14,203,129,0.4); }
-  .funnel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .funnel-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
-  .funnel-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
-  .tag-app { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
-  .tag-web { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
-  .funnel-step { margin-bottom: 12px; }
-  .funnel-step-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 13px; }
-  .funnel-step-label .step-name { color: var(--muted); }
-  .funnel-step-label .step-uv { font-weight: 600; }
-  .funnel-bar-bg { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
-  .funnel-bar-fill { height: 8px; border-radius: 4px; }
-  .funnel-step-conv { text-align: right; font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .app-bar { background: linear-gradient(90deg, var(--app-color), #ffd35c); }
-  .web-bar { background: linear-gradient(90deg, var(--web-color), #69a8ff); }
-  .new-bar { background: linear-gradient(90deg, var(--green), #52e8a8); }
-  .funnel-divider { border: none; border-top: 1px dashed var(--border); margin: 8px 0; }
-  .funnel-wow { font-size: 11px; margin-left: 6px; font-weight: 600; }
-  .data-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-  .data-table th { background: #22253a; padding: 10px 14px; text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
-  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table td.num { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .data-table td.muted { color: var(--muted); }
-  .badge-bsc { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
-  .badge-sol { background: rgba(153,69,255,0.15); color: var(--purple); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
-  .badge-base { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
-  .badge-eth { background: rgba(130,145,255,0.15); color: #8291ff; border-radius: 4px; padding: 1px 6px; font-size: 11px; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .insight-box { background: rgba(240,185,11,0.05); border: 1px solid rgba(240,185,11,0.2); border-radius: 10px; padding: 14px 16px; }
-  .insight-box .insight-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
-  .insight-box ul { padding-left: 16px; }
-  .insight-box li { font-size: 13px; color: var(--muted); margin-bottom: 5px; }
-  .insight-box li strong { color: var(--text); }
-  .alert-box { background: rgba(246,70,93,0.05); border: 1px solid rgba(246,70,93,0.25); border-radius: 10px; padding: 14px 16px; }
-  .alert-box .insight-title { font-size: 13px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
-  .alert-box ul { padding-left: 16px; }
-  .alert-box li { font-size: 13px; color: var(--muted); margin-bottom: 5px; }
-  .alert-box li strong { color: var(--text); }
-  .highlight-green { color: var(--green); font-weight: 600; }
-  .highlight-red { color: var(--red); font-weight: 600; }
-  .wow-up { color: var(--green); }
-  .wow-down { color: var(--red); }
-  .muted { color: var(--muted); }
-  .tab-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .tab-bar-label { width: 90px; font-size: 12px; }
-  .tab-bar-bg { flex: 1; background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; }
-  .tab-bar-fill { height: 10px; border-radius: 4px; background: linear-gradient(90deg, var(--web-color), #69a8ff); }
-  .tab-bar-val { font-size: 12px; font-weight: 600; min-width: 32px; text-align: right; }
-  .tab-bar-pct { font-size: 11px; color: var(--muted); min-width: 40px; text-align: right; }
-  .step-new-label { background: rgba(14,203,129,0.12); border: 1px dashed rgba(14,203,129,0.4); border-radius: 4px; padding: 2px 6px; font-size: 10px; color: var(--green); margin-left: 6px; font-weight: 600; }
-  .report-footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+:root {
+  --bg: #0f1117; --card: #1a1d2e; --border: #2a2d3e;
+  --text: #e8eaf0; --muted: #8b8fa8; --accent: #f0b90b;
+  --green: #0ecb81; --red: #f6465d; --blue: #1677ff; --purple: #9945ff;
+  --app-color: #f0b90b; --web-color: #1677ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+/* Header */
+.report-header { text-align: center; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.report-header h1 { font-size: 20px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+.report-header .meta { color: var(--muted); font-size: 12px; }
+.summary-bar { background: rgba(240,185,11,0.07); border: 1px solid rgba(240,185,11,0.2); border-radius: 8px; padding: 10px 16px; font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+.summary-bar strong { color: var(--text); }
+
+/* KR Block */
+.kr-block { margin-bottom: 36px; }
+.kr-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.kr-badge { background: var(--accent); color: #000; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; margin-top: 2px; }
+.kr-badge.kr2 { background: var(--purple); color: #fff; }
+.kr-badge.kr3 { background: var(--green); color: #000; }
+.kr-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.kr-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* Progress bar */
+.progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.progress-wrap { flex: 1; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.progress-bg { background: var(--border); border-radius: 6px; height: 10px; overflow: hidden; position: relative; }
+.progress-fill { height: 10px; border-radius: 6px; }
+.progress-fill.kr1 { background: linear-gradient(90deg, var(--accent), #ffd35c); }
+.progress-fill.kr2 { background: linear-gradient(90deg, var(--purple), #c085ff); }
+.progress-fill.kr3 { background: linear-gradient(90deg, var(--green), #52e8a8); }
+.progress-meta { display: flex; gap: 16px; font-size: 12px; }
+.pm-item { display: flex; flex-direction: column; align-items: center; }
+.pm-val { font-size: 18px; font-weight: 700; }
+.pm-label { font-size: 10px; color: var(--muted); }
+.wow-up { color: var(--green); }
+.wow-down { color: var(--red); }
+
+/* Shared */
+.section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; margin-top: 18px; }
+.data-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); font-size: 13px; }
+.data-table th { background: #22253a; padding: 8px 12px; text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.data-table tr:last-child td { border-bottom: none; }
+.num { font-variant-numeric: tabular-nums; font-weight: 600; }
+.muted { color: var(--muted); }
+.highlight-green { color: var(--green); font-weight: 600; }
+.highlight-red { color: var(--red); font-weight: 600; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.badge-bsc { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+.badge-sol { background: rgba(153,69,255,0.15); color: var(--purple); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+.badge-eth { background: rgba(130,145,255,0.15); color: #8291ff; border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+.badge-base { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 6px; font-size: 11px; }
+.tag-app { background: rgba(240,185,11,0.15); color: var(--app-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
+.tag-web { background: rgba(22,119,255,0.15); color: var(--web-color); border-radius: 4px; padding: 1px 7px; font-size: 11px; }
+.new-badge { background: rgba(14,203,129,0.15); color: var(--green); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+
+/* Funnel */
+.funnel-step { margin-bottom: 10px; }
+.funnel-label { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 13px; }
+.funnel-label .name { color: var(--muted); }
+.funnel-bar-bg { background: var(--border); border-radius: 3px; height: 7px; overflow: hidden; }
+.funnel-bar-fill { height: 7px; border-radius: 3px; }
+.app-bar { background: linear-gradient(90deg, var(--app-color), #ffd35c); }
+.web-bar { background: linear-gradient(90deg, var(--web-color), #69a8ff); }
+.new-bar { background: linear-gradient(90deg, var(--green), #52e8a8); }
+.funnel-conv { text-align: right; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.funnel-divider { border: none; border-top: 1px dashed var(--border); margin: 6px 0; }
+.dropout-box { margin: 4px 0 8px 0; padding: 8px 12px; background: rgba(246,70,93,0.06); border: 1px dashed rgba(246,70,93,0.3); border-radius: 6px; }
+.dropout-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 12px; }
+.dropout-bar-bg { background: var(--border); height: 5px; border-radius: 3px; overflow: hidden; margin-top: 3px; }
+.dropout-bar-fill { height: 5px; border-radius: 3px; background: linear-gradient(90deg, var(--red), #ff8095); opacity: 0.7; }
+
+/* Suggestions */
+.suggestions { margin-top: 14px; }
+.suggestion { background: rgba(240,185,11,0.04); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 10px 14px; margin-bottom: 10px; }
+.suggestion.p0 { border-left-color: var(--red); background: rgba(246,70,93,0.04); }
+.suggestion.p1 { border-left-color: var(--blue); background: rgba(22,119,255,0.04); }
+.sug-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.sug-priority { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+.sug-priority.p0 { background: rgba(246,70,93,0.2); color: var(--red); }
+.sug-priority.p1 { background: rgba(22,119,255,0.2); color: var(--blue); }
+.sug-priority.p2 { background: rgba(139,143,168,0.2); color: var(--muted); }
+.sug-title { font-size: 13px; font-weight: 600; }
+.sug-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.sug-body strong { color: var(--text); }
+
+/* Missing data */
+.data-missing { background: rgba(246,70,93,0.06); border: 1px solid rgba(246,70,93,0.2); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--muted); }
+.data-missing strong { color: var(--red); }
+
+/* Error codes */
+.error-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.error-table td { padding: 5px 8px; border-bottom: 1px solid var(--border); }
+.error-table tr:last-child td { border-bottom: none; }
+.error-bar { display: inline-block; height: 8px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+
+/* Divider */
+.kr-divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+/* Footer */
+.report-footer { text-align: center; color: var(--muted); font-size: 11px; margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="report-header">
-  <h1>MemeRush Quickbuy 转化漏斗 · 周报</h1>
-  <div class="subtitle">W29 &nbsp;|&nbsp; 2026-07-07 ~ 07-13（7天）&nbsp;|&nbsp; 生成于 2026-07-14 &nbsp;|&nbsp; <span style="color:var(--green)">★ 新增弹窗漏斗埋点 + Web QB by Tab</span></div>
+  <h1>MemeRush 周报 · W29</h1>
+  <div class="meta">2026-07-07 ~ 07-13 &nbsp;·&nbsp; 生成于 2026-07-15 &nbsp;·&nbsp; Elsa</div>
 </div>
 
-<!-- KPI Cards -->
-<div class="kpi-grid">
-  <div class="kpi-card app">
-    <div class="kpi-label">总交易额（W29）</div>
-    <div class="kpi-value">$170,828</div>
-    <div class="kpi-sub">3,965 笔 &nbsp;|&nbsp; 718 users &nbsp;|&nbsp; BSC $126,890 / SOL $41,265 / ETH $2,614 / BASE $60</div>
-  </div>
-  <div class="kpi-card web">
-    <div class="kpi-label">Web Quickbuy UV</div>
-    <div class="kpi-value">63</div>
-    <div class="kpi-wow wow-down">&#9660; -31.5% WoW（W28: 92）</div>
-    <div class="kpi-sub">List UV: 11,524 &nbsp;|&nbsp; by Tab &#10003;</div>
-  </div>
-  <div class="kpi-card app">
-    <div class="kpi-label">App FB 转化率（List→FB）</div>
-    <div class="kpi-value">9.0%</div>
-    <div class="kpi-wow wow-up">&#9650; +0.2pp WoW（W28: 8.8%）</div>
-    <div class="kpi-sub">FB确认率（④→⑤）: <strong style="color:var(--red)">13.9%</strong> <span class="step-new-label">首周</span></div>
-  </div>
-  <div class="kpi-card web">
-    <div class="kpi-label">Web QB 转化率（List→QB）</div>
-    <div class="kpi-value">0.55%</div>
-    <div class="kpi-wow wow-down">&#9660; -0.27pp WoW（W28: 0.82%）</div>
-    <div class="kpi-sub">Card→QB: 7.9%（W28: 10.8%）&nbsp;|&nbsp; by Tab &#10003;</div>
-  </div>
+<!-- One-line summary -->
+<div class="summary-bar">
+  本周摘要：<strong>KR3 转化率 9.0%（+0.2pp）</strong>，首次揭示漏斗核心卡点——95% 的 Flash Buy 点击因未设买入金额被跳出流程，是 KR3 达成的最大阻力；Web QB -31.5% WoW 需排查；buy_confirm 埋点覆盖率仅 ~22%，底层数据待补齐。
 </div>
 
-<!-- Funnel -->
-<div class="section">
-  <div class="section-title">转化漏斗（W28 → W29）</div>
-  <div class="funnel-grid">
-
-  <!-- App Funnel -->
-  <div class="funnel-box">
-    <div class="funnel-title"><span class="tag-app">APP</span> Flash Buy 漏斗</div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">① MemeRush 列表页曝光</span>
-        <span class="step-uv">53,935 UV <span class="funnel-wow wow-down">&#9660; -4.3%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:100%"></div></div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">② Token 详情弹窗展示 <span class="step-new-label">NEW</span></span>
-        <span class="step-uv">4,921 UV <span class="funnel-wow wow-up">&#9650; +3.9%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:9.1%"></div></div>
-      <div class="funnel-step-conv">①→② <strong>9.1%</strong> 点击 Token 卡片查看详情（W28: 4,736 UV）</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">③ Flash Buy 按钮点击</span>
-        <span class="step-uv">4,839 UV <span class="funnel-wow wow-down">&#9660; -2.6%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
-      <div class="funnel-step-conv">①→③ <strong>9.0%</strong> ▲ +0.2pp（W28: 8.8%）</div>
-    </div>
-
-    <!-- not_set dropout -->
-    <div style="margin:-4px 0 8px 0; padding:10px 12px; background:rgba(246,70,93,0.06); border:1px dashed rgba(246,70,93,0.35); border-radius:6px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-size:12px;color:var(--muted)">↳ 未设置买入金额（df_8=not_set）→ 跳到金额设置页，流失</span>
-        <span style="font-size:13px;font-weight:600;color:var(--red)">4,599 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">95%</span></span>
-      </div>
-      <div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden;">
-        <div style="width:95%;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--red),#ff8095);opacity:0.7;"></div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;">这批用户不进入交易流程，buy_confirm 不触发，漏斗此处断掉 &nbsp;|&nbsp; SOL 占 68%（3,126 UV）</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">③' 已设置金额，进入交易流程（df_8=set）</span>
-        <span class="step-uv highlight-green">874 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">18%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:1.62%"></div></div>
-      <div class="funnel-step-conv">③ 中真正进入交易流程的部分（W28: 922 UV）</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">④ 交易回调（buy_confirm）<span class="step-new-label">NEW ~22%覆盖</span></span>
-        <span class="step-uv" style="color:var(--red)">675 UV</span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
-      <div class="funnel-step-conv">交易发出后回调，含成功+失败 &nbsp;|&nbsp; 仅覆盖 3.17+ 版本（~22%），③'→④ 转化率暂不可信</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">⑤ 实际成交（订单系统）</span>
-        <span class="step-uv highlight-green">718 users &nbsp;|&nbsp; 3,965 笔</span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:1.33%;background:linear-gradient(90deg,#0ecb81,#52e8a8)"></div></div>
-      <div class="funnel-step-conv">总交易额 <strong class="highlight-green">$170,828</strong> &nbsp;|&nbsp; App+Web 合并口径</div>
-    </div>
-
-    <hr class="funnel-divider">
-    <div style="font-size:11px;color:var(--muted)">
-      List PV: 178,379
-      <br>③ <code>meme_rush_flashbuy_button</code>：列表页 Flash Buy 按钮（含首次设置浮窗），非弹窗内按钮；弹窗内 FB 按钮为 <code>meme_rush_token_info_button</code>（df_8=quickbuy），暂未纳入漏斗
-      <br>④ <code>meme_rush_buy_confirm</code>：交易发出后的回调结果，非"确认"按钮点击；仅覆盖 3.17+ 版本（~22%），③→④ 转化率低估实际水平；W28 仅 44 UV 为覆盖不完整数据
-      <br>⑤ 来自 DataWind 订单系统（App only），718 成功用户 vs ④ code=0 仅 158 UV，差距 4.5x 即埋点覆盖率差异
-    </div>
-  </div>
-
-  <!-- Web Funnel -->
-  <div class="funnel-box">
-    <div class="funnel-title"><span class="tag-web">WEB</span> Quickbuy 漏斗</div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">① 列表页曝光</span>
-        <span class="step-uv">11,524 UV <span class="funnel-wow wow-up">&#9650; +3.0%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:100%"></div></div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">② Hover（意向信号）</span>
-        <span class="step-uv">1,532 UV <span class="funnel-wow wow-up">&#9650; +6.7%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:13.3%"></div></div>
-      <div class="funnel-step-conv">①→② <strong>13.3%</strong> ▲ +0.5pp（W28: 12.8%）</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">③ Token Card 点击</span>
-        <span class="step-uv">801 UV <span class="funnel-wow wow-down">&#9660; -6.4%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:6.95%"></div></div>
-      <div class="funnel-step-conv">①→③ <strong>6.95%</strong> ▼ -0.7pp &nbsp; ②→③ <strong>52.3%</strong> ▼ -7.3pp</div>
-    </div>
-
-    <div class="funnel-step">
-      <div class="funnel-step-label">
-        <span class="step-name">④ Quickbuy 点击</span>
-        <span class="step-uv highlight-red">63 UV <span class="funnel-wow wow-down">&#9660; -31.5%</span></span>
-      </div>
-      <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:0.55%"></div></div>
-      <div class="funnel-step-conv">①→④ <strong class="highlight-red">0.55%</strong> ▼ -0.27pp &nbsp; ③→④ <strong class="highlight-red">7.9%</strong> ▼ -2.9pp</div>
-    </div>
-
-    <hr class="funnel-divider">
-    <div style="font-size:11px;color:var(--muted)">List PV: 45,979 &nbsp;|&nbsp; Hover 和列表均在增长，QB 下滑集中在 Card→QB 阶段</div>
-  </div>
-
-  </div><!-- /funnel-grid -->
-</div>
-
-<!-- App Funnel Insights -->
-<div class="section">
-  <div class="section-title">App 漏斗分析</div>
-
-  <!-- buy_confirm 结果分布 -->
-  <div style="margin-bottom:20px;">
-    <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">buy_confirm 回调结果分布（W29，总 PV 3,058）<span class="new-badge">NEW</span></div>
-    <table class="data-table">
-      <thead><tr><th>df_9</th><th>SignalErrorCode</th><th>含义</th><th>UV</th><th>PV</th><th>PV 占比</th></tr></thead>
-      <tbody>
-        <tr style="background:rgba(14,203,129,0.05)"><td class="num">0</td><td>SUCCESS</td><td>成功</td><td class="num highlight-green">158</td><td class="num highlight-green">1,346</td><td class="highlight-green">44.0%</td></tr>
-        <tr style="background:rgba(246,70,93,0.08)"><td class="num">4</td><td><strong>NOT_ENOUGH_BALANCE</strong></td><td><strong>支付币余额不足</strong></td><td class="num highlight-red">491</td><td class="num highlight-red">1,134</td><td class="highlight-red">37.1%</td></tr>
-        <tr><td class="num">6</td><td>CALLDATA_ERROR</td><td>交易构建/Calldata 失败</td><td class="num">113</td><td class="num">254</td><td>8.3%</td></tr>
-        <tr><td class="num">14</td><td>ENTER_SPREAD_LOGIC</td><td>进入 Spread 逻辑（滑点弹窗，非失败）</td><td class="num">27</td><td class="num">87</td><td>2.8%</td></tr>
-        <tr><td class="num">9</td><td>CUSTOM_ERROR</td><td>自定义错误（后端/SAS 返回 message）</td><td class="num">20</td><td class="num">82</td><td>2.7%</td></tr>
-        <tr><td class="num">7</td><td>SIGN_ERROR</td><td>签名失败</td><td class="num">29</td><td class="num">47</td><td>1.5%</td></tr>
-        <tr><td class="num">2</td><td>SERVER_ERROR</td><td>服务端错误</td><td class="num">17</td><td class="num">36</td><td>1.2%</td></tr>
-        <tr><td class="num">10</td><td>NATIVE_TOKEN_NOT_ENOUGH</td><td>Gas 不足（原生币）</td><td class="num">10</td><td class="num">35</td><td>1.1%</td></tr>
-        <tr><td class="num">3</td><td>NOT_SUPPORT_NETWORK</td><td>不支持网络</td><td class="num">10</td><td class="num">31</td><td>1.0%</td></tr>
-        <tr><td class="num">1</td><td>NETWORK_ERROR</td><td>网络错误</td><td class="num">2</td><td class="num">6</td><td>0.2%</td></tr>
-      </tbody>
-    </table>
-    <div style="font-size:11px;color:var(--muted);margin-top:6px">
-      失败分类：余额问题（code 4+10）= <strong>38.2%</strong> &nbsp;|&nbsp; 技术失败（code 6+9+7+2+3+1）= <strong>~15%</strong> &nbsp;|&nbsp; 流程分流（code 14）= 2.8%（进滑点弹窗，非失败）
-      <br>SOL 占 code 4 的 59%（308 UV）；code 6 集中在 3.16.7+3.16.4 版本（66%），疑 SOL/Jupiter routing bug &nbsp;|&nbsp; BI 字典建议补充 code 3/6/7/9/11/12/13 枚举映射
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="alert-box">
-      <div class="insight-title">⚠ 失败原因拆解：余额问题 38% + 技术失败 15%</div>
-      <ul>
-        <li><strong>余额问题（code 4+10）合计 38.2%</strong>：NOT_ENOUGH_BALANCE（37.1%，491 UV）是最大拦截。Flash Buy 点击前无余额预检，用户设了金额但账户里没有足够的支付币。SOL 链 失败/成功 = 4:1，远高于 BSC 2.3:1。</li>
-        <li><strong>技术失败（~15%）中 CALLDATA_ERROR（code 6，8.3%）最值得关注</strong>：交易构建/Calldata 失败，结合 3.16.7+3.16.4 版本占 66% 的分布，疑是 SOL/Jupiter routing 在这两个版本上的 bug。</li>
-        <li><strong>ENTER_SPREAD_LOGIC（code 14，2.8%）是流程分流，不是失败</strong>：进入滑点弹窗后是否继续需单独追踪。</li>
-        <li style="color:var(--accent);"><strong>建议①</strong>：Flash Buy 点击时前置余额校验，余额不足灰显按钮或实时提示，减少无效点击（可解决 37%）。<br><strong>建议②</strong>：排查 3.16.7/3.16.4 在 SOL/Jupiter 上的 CALLDATA_ERROR，可能是版本 regression（可解决 8%）。</li>
-      </ul>
-    </div>
-    <div class="insight-box">
-      <div class="insight-title">埋点覆盖率警告：Sensors vs 订单系统差距 4.5x</div>
-      <ul>
-        <li><strong>DataWind 订单系统（W29）：718 个成功下单用户</strong></li>
-        <li><strong>Sensors buy_confirm code=0：158 UV</strong>（仅覆盖 22%）</li>
-        <li>原因：buy_confirm 是新埋点，可能只部署在 3.17+ 版本；3.16.x 用户（占 W29 主力）成功下单后不上报此事件。</li>
-        <li style="color:var(--accent);"><strong>结论</strong>：当前漏斗 ③→④ 转化率（13.9%）严重低估实际水平，需等埋点全量覆盖后才能得到真实数据。</li>
-      </ul>
-    </div>
-  </div>
-  <!-- flashbuy_button df_8 breakdown -->
-  <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
-    <div style="font-size:13px;font-weight:600;margin-bottom:10px;">③ Flash Buy 点击后路径拆分（df_8：是否设置买入金额）</div>
-    <table class="data-table" style="margin-bottom:0;">
-      <thead><tr><th>df_8</th><th>含义</th><th>W28 UV</th><th>W29 UV</th><th>W29 PV</th><th>W29 UV 占比</th></tr></thead>
-      <tbody>
-        <tr style="background:rgba(246,70,93,0.05)"><td><strong>not_set</strong></td><td>未设置买入金额 → 跳到金额设置页</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="num">15,824</td><td class="highlight-red">95.0%</td></tr>
-        <tr style="background:rgba(14,203,129,0.05)"><td><strong>set</strong></td><td>已设置买入金额 → 进入交易流程</td><td class="num">922</td><td class="num highlight-green">874</td><td class="num">4,758</td><td class="highlight-green">18.1%</td></tr>
-        <tr><td colspan="2" class="muted">合计（含跨类重叠 ~634 UV）</td><td class="num">5,605</td><td class="num">5,473</td><td class="num">20,582</td><td class="muted">—</td></tr>
-      </tbody>
-    </table>
-    <div style="font-size:11px;color:var(--muted);margin-top:8px">UV 合计 &gt; 总 UV（4,839），因部分用户本周同时有 set 和 not_set 点击 &nbsp;|&nbsp; not_set 中 SOL 占 68%（3,126 UV），BSC 34%</div>
-  </div>
-
-  <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
-    <div style="font-size:13px;font-weight:600;margin-bottom:14px;">App 漏斗关键转化率趋势（W27→W28→W29）</div>
-    <table class="data-table" style="margin-bottom:0;">
-      <thead><tr><th>转化步骤</th><th>W27</th><th>W28</th><th>W29</th><th>趋势</th></tr></thead>
-      <tbody>
-        <tr><td class="muted">① 列表 UV</td><td class="num">51,951</td><td class="num">56,327</td><td class="num">53,935</td><td class="muted">—</td></tr>
-        <tr><td class="muted">③ Flash Buy 点击 UV</td><td class="num">4,884</td><td class="num">4,966</td><td class="num">4,839</td><td class="muted">—</td></tr>
-        <tr><td class="muted">①→③ 转化率</td><td>9.4%</td><td>8.8%</td><td class="highlight-green">9.0%</td><td class="wow-up">▲ +0.2pp</td></tr>
-        <tr style="background:rgba(246,70,93,0.05)"><td class="muted">　├ not_set（跳金额设置）</td><td class="muted">—</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="muted">95%</td></tr>
-        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">　└ set（进入交易流程）</td><td class="muted">—</td><td class="num">922</td><td class="num highlight-green">874</td><td class="muted">18%</td></tr>
-        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">④ buy_confirm UV <span class="step-new-label">NEW ~22%覆盖</span></td><td class="muted">—</td><td class="muted">44*</td><td class="num">675</td><td class="muted">首周</td></tr>
-        <tr style="background:rgba(14,203,129,0.05)"><td class="muted">　└ 其中成功（code=0）</td><td class="muted">—</td><td class="muted">—</td><td class="num">158</td><td class="muted">44%</td></tr>
-        <tr><td class="muted">⑤ 实际成交（DataWind）</td><td class="muted">—</td><td class="muted">—</td><td class="num">718</td><td class="muted">App only</td></tr>
-      </tbody>
-    </table>
-    <div style="font-size:10px;color:var(--muted);margin-top:8px">*W28 的 44 UV 为埋点上线初期数据 &nbsp;|&nbsp; ④ 覆盖率 ≈ 22%（code=0: 158 UV / DataWind 成交 718 users）</div>
-  </div>
-</div>
-
-<!-- Web Funnel Insights + QB by Tab -->
-<div class="section">
-  <div class="section-title">Web 漏斗分析 + QB by Tab（首次可见）</div>
-  <div class="two-col">
-
-    <!-- QB by Tab -->
-    <div class="funnel-box">
-      <div class="funnel-title"><span class="tag-web">WEB</span> Quickbuy by Tab（W29 首周）<span class="new-badge">NEW</span></div>
-      <div style="margin-bottom:14px;">
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">fourmeme</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:85.7%"></div></div>
-          <span class="tab-bar-val">54</span>
-          <span class="tab-bar-pct">67.5%</span>
-        </div>
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">flap</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:29.6%"></div></div>
-          <span class="tab-bar-val">16</span>
-          <span class="tab-bar-pct">20.0%</span>
-        </div>
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">pump.fun</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:11.1%;background:linear-gradient(90deg,var(--purple),#c085ff)"></div></div>
-          <span class="tab-bar-val">6</span>
-          <span class="tab-bar-pct">7.5%</span>
-        </div>
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">openfour</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:3.7%"></div></div>
-          <span class="tab-bar-val">2</span>
-          <span class="tab-bar-pct">2.5%</span>
-        </div>
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">clanker</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:1.85%;background:linear-gradient(90deg,#3396ff,#69c0ff)"></div></div>
-          <span class="tab-bar-val">1</span>
-          <span class="tab-bar-pct">1.25%</span>
-        </div>
-        <div class="tab-bar-row">
-          <span class="tab-bar-label" style="font-size:12px;">dynamicbc</span>
-          <div class="tab-bar-bg"><div class="tab-bar-fill" style="width:1.85%;background:linear-gradient(90deg,var(--purple),#c085ff)"></div></div>
-          <span class="tab-bar-val">1</span>
-          <span class="tab-bar-pct">1.25%</span>
-        </div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);padding-top:10px;border-top:1px dashed var(--border);">
-        QB UV = 63 &nbsp;|&nbsp; Tab 点击数合计 = 80（差值 17 来自多 tab 用户）
-        <br>BSC（fourmeme+flap+openfour）合计 72 hits，占绝对主导
-        <br>W28 无 Tab 拆分基准，下周起可建立趋势
-      </div>
-    </div>
-
-    <!-- Web Insights -->
+<!-- ======================== KR3 ======================== -->
+<div class="kr-block">
+  <div class="kr-header">
+    <span class="kr-badge kr3">KR3 · 北极星</span>
     <div>
-      <div class="alert-box" style="margin-bottom:14px;">
-        <div class="insight-title">⚠ Web QB 大幅下滑 -31.5%（92→63）</div>
-        <ul>
-          <li><strong>流量端健康，问题在后半漏斗</strong>：列表 +3.0%、Hover +6.7%，用户进入和意向均增长，但 Token Card→QB 转化从 10.8% 降至 7.9%（-2.9pp），是主要漏点。</li>
-          <li><strong>Card→QB 跌幅超过 Card UV 跌幅</strong>：Card UV -6.4%（855→801）但 QB UV -31.5%（92→63），说明来的人"更不想买"，而非"来的人少了"。</li>
-          <li><strong>可能原因</strong>：W29 市场行情偏弱？特定高意向协议流量减少？或 QB 入口曝光/交互有变化？建议对比 QB 场景内的余额不足提示率。</li>
-        </ul>
+      <div class="kr-title">App 列表 → Flash Buy 转化率</div>
+      <div class="kr-sub">目标 12% &nbsp;·&nbsp; 基线 8.8%（W28）&nbsp;·&nbsp; 当前 9.0%（W29）</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-row">
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span>基线 8.8%</span>
+        <span>当前 9.0% ▲ +0.2pp</span>
+        <span>目标 12%</span>
       </div>
-      <div class="insight-box">
-        <div class="insight-title">QB by Tab 首周洞察</div>
-        <ul>
-          <li><strong>fourmeme（BSC）独大 67.5%</strong>：与 BSC 占 Web 列表流量 97%+ 的格局一致，fourmeme 是 Web QB 的核心场景。</li>
-          <li><strong>SOL（pump.fun+dynamicbc）合计仅 7 hits（11%）</strong>：Web 端 SOL 高 Hover 率但 QB 极低，延续历史规律。下一步可以重点看 SOL Tab 的 Card→QB 转化率是否更差。</li>
-          <li><strong>W28 无对比基准</strong>：W3W-48648 本周才正式生效，W29 是第一周数据，建立基准后从 W30 开始看趋势。</li>
-        </ul>
+      <div class="progress-bg">
+        <!-- baseline to current: (9.0-8.8)/(12-8.8) = 0.2/3.2 = 6.25% progress from baseline -->
+        <!-- current position: (9.0-8.8)/(12-8.8)*100 ~ fill to represent current vs target -->
+        <div class="progress-fill kr3" style="width: 6.25%"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">距目标还差 <strong style="color:var(--text)">3.0pp</strong>，已完成目标提升量的 6.25%</div>
+    </div>
+    <div class="progress-meta">
+      <div class="pm-item"><span class="pm-val" style="color:var(--green)">9.0%</span><span class="pm-label">W29</span></div>
+      <div class="pm-item"><span class="pm-val wow-up">+0.2pp</span><span class="pm-label">WoW</span></div>
+      <div class="pm-item"><span class="pm-val" style="color:var(--muted)">12%</span><span class="pm-label">目标</span></div>
+    </div>
+  </div>
+
+  <!-- Funnel -->
+  <div class="two-col">
+    <div class="card">
+      <div class="section-title">Flash Buy 完整漏斗 <span class="tag-app">App</span></div>
+
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">① 列表曝光</span><span class="num">53,935 UV <span class="muted" style="font-size:11px;font-weight:400">▼ -4.3%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:100%"></div></div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">② Token 详情弹窗 <span class="new-badge">NEW</span></span><span class="num">4,921 UV</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:9.1%"></div></div>
+        <div class="funnel-conv">①→② <strong>9.1%</strong>（W28: 4,736 UV）</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">③ Flash Buy 点击</span><span class="num">4,839 UV <span class="muted" style="font-size:11px;font-weight:400">▼ -2.6%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
+        <div class="funnel-conv">①→③ <strong class="highlight-green">9.0%</strong> ▲ +0.2pp（W28: 8.8%）</div>
+      </div>
+
+      <!-- DROPOUT BOX -->
+      <div class="dropout-box">
+        <div class="dropout-row">
+          <span style="color:var(--red);font-weight:600;">⚠ 未设买入金额 → 跳设置页，流失</span>
+          <span class="highlight-red">4,599 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">95%</span></span>
+        </div>
+        <div class="dropout-bar-bg"><div class="dropout-bar-fill" style="width:95%"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">buy_confirm 不触发，漏斗此处断开 &nbsp;·&nbsp; SOL 占 68%（3,126 UV）</div>
+      </div>
+
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">③' 已设金额，进交易流程</span><span class="num highlight-green">874 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">18%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:1.62%"></div></div>
+        <div class="funnel-conv">W28: 922 UV</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">④ 交易回调 <span class="new-badge">NEW ~22%覆盖</span></span><span class="num" style="color:var(--red)">675 UV</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
+        <div class="funnel-conv">含成功+失败，仅 3.17+ 版本上报</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">⑤ 实际成交（订单系统）</span><span class="num highlight-green">718 users</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:1.33%;background:linear-gradient(90deg,#0ecb81,#52e8a8)"></div></div>
+        <div class="funnel-conv"><strong>$170,828</strong> &nbsp;·&nbsp; 3,965 笔 &nbsp;·&nbsp; App only</div>
+      </div>
+
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px dashed var(--border);">
+        ④ code=0（成功）158 UV vs ⑤ DataWind 718 users → 覆盖率 ~22%，漏斗底部数据失真
       </div>
     </div>
 
+    <!-- buy_confirm error breakdown -->
+    <div class="card">
+      <div class="section-title">④ 交易回调结果分布（总 PV 3,058）<span class="new-badge">NEW</span></div>
+      <table class="error-table">
+        <tbody>
+          <tr>
+            <td><span style="color:var(--green)">● SUCCESS</span></td>
+            <td class="num" style="color:var(--green)">158 UV</td>
+            <td style="width:120px">
+              <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+                <div class="error-bar" style="width:44%;height:6px;background:var(--green);border-radius:3px;display:block;margin:0"></div>
+              </div>
+            </td>
+            <td class="num highlight-green">44.0%</td>
+          </tr>
+          <tr style="background:rgba(246,70,93,0.04)">
+            <td><span style="color:var(--red)">● NOT_ENOUGH_BALANCE</span></td>
+            <td class="num highlight-red">491 UV</td>
+            <td>
+              <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+                <div style="width:37.1%;height:6px;background:var(--red);border-radius:3px;"></div>
+              </div>
+            </td>
+            <td class="num highlight-red">37.1%</td>
+          </tr>
+          <tr>
+            <td><span style="color:var(--muted)">● CALLDATA_ERROR</span></td>
+            <td class="num muted">113 UV</td>
+            <td>
+              <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+                <div style="width:8.3%;height:6px;background:var(--muted);border-radius:3px;"></div>
+              </div>
+            </td>
+            <td class="num">8.3%</td>
+          </tr>
+          <tr>
+            <td><span style="color:var(--muted)">● ENTER_SPREAD_LOGIC</span></td>
+            <td class="num muted">27 UV</td>
+            <td>
+              <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+                <div style="width:2.8%;height:6px;background:var(--accent);border-radius:3px;"></div>
+              </div>
+            </td>
+            <td class="num">2.8%（分流，非失败）</td>
+          </tr>
+          <tr>
+            <td><span style="color:var(--muted)">● 其他（9 种）</span></td>
+            <td class="num muted">—</td>
+            <td>
+              <div style="background:var(--border);height:6px;border-radius:3px;overflow:hidden;">
+                <div style="width:7.8%;height:6px;background:var(--muted);border-radius:3px;opacity:0.5;"></div>
+              </div>
+            </td>
+            <td class="num">7.8%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;">NOT_ENOUGH_BALANCE 中 SOL 占 59%（308 UV）；CALLDATA_ERROR 集中在 3.16.7+3.16.4（66%），疑 SOL/Jupiter routing bug</div>
+
+      <div class="section-title" style="margin-top:14px;">③ Flash Buy 点击路径拆分（df_8）</div>
+      <table class="data-table">
+        <thead><tr><th>df_8</th><th>含义</th><th>W28 UV</th><th>W29 UV</th><th>占比</th></tr></thead>
+        <tbody>
+          <tr><td class="highlight-red">not_set</td><td class="muted">未设金额 → 跳设置页</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="highlight-red">95%</td></tr>
+          <tr><td class="highlight-green">set</td><td class="muted">已设金额 → 进交易</td><td class="num">922</td><td class="num highlight-green">874</td><td class="highlight-green">18%</td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">UV 合计 5,473 &gt; 4,839，因部分用户本周有两类点击</div>
+    </div>
   </div>
 
-  <!-- Web Funnel Trend Table -->
-  <div style="margin-top:20px;">
-    <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">Web 漏斗关键指标趋势（W27→W28→W29）</div>
-    <table class="data-table">
-      <thead><tr><th>指标</th><th>W27</th><th>W28</th><th>W29</th><th>WoW（W28→W29）</th></tr></thead>
-      <tbody>
-        <tr><td class="muted">① 列表 UV</td><td class="num">11,431</td><td class="num">11,190</td><td class="num">11,524</td><td class="wow-up">▲ +3.0%</td></tr>
-        <tr><td class="muted">② Hover UV</td><td class="num">1,195</td><td class="num">1,436</td><td class="num">1,532</td><td class="wow-up">▲ +6.7%</td></tr>
-        <tr><td class="muted">③ Token Card UV</td><td class="num">608</td><td class="num">855</td><td class="num">801</td><td class="wow-down">▼ -6.4%</td></tr>
-        <tr><td class="muted">④ QB UV</td><td class="num">51</td><td class="num">92</td><td class="num highlight-red">63</td><td class="wow-down highlight-red">▼ -31.5%</td></tr>
-        <tr><td class="muted">①→② 渗透率</td><td>10.5%</td><td>12.8%</td><td class="highlight-green">13.3%</td><td class="wow-up">▲ +0.5pp</td></tr>
-        <tr><td class="muted">②→③ 转化率</td><td>50.9%</td><td>59.6%</td><td>52.3%</td><td class="wow-down">▼ -7.3pp</td></tr>
-        <tr><td class="muted">③→④ 转化率（Card→QB）</td><td>8.4%</td><td>10.8%</td><td class="highlight-red">7.9%</td><td class="wow-down highlight-red">▼ -2.9pp</td></tr>
-        <tr><td class="muted">①→④ QB 总转化率</td><td>0.45%</td><td>0.82%</td><td class="highlight-red">0.55%</td><td class="wow-down highlight-red">▼ -0.27pp</td></tr>
-      </tbody>
-    </table>
+  <!-- KR3 suggestions -->
+  <div class="suggestions">
+    <div class="section-title">优化建议 — KR3</div>
+
+    <div class="suggestion p0">
+      <div class="sug-header"><span class="sug-priority p0">P0</span><span class="sug-title">解决「未设金额」流失：Flash Buy 内嵌快速金额选择</span></div>
+      <div class="sug-body">
+        <strong>数据依据：</strong>95%（4,599 UV）的 Flash Buy 点击因未设金额被跳出，是 KR3 最大阻力，远大于余额不足（37%）。<br>
+        <strong>方案：</strong>在 Flash Buy 弹层内增加快速金额选项（如 $10 / $50 / $100 / 自定义），无需跳出当前页面完成设置。<br>
+        <strong>预期：</strong>若 not_set 流失率从 95% 降至 50%，进入交易漏斗的用户从 874 升至约 2,600（+2x），转化率理论上从 9% 提升至 18%+ 区间（需 A/B 验证）。
+      </div>
+    </div>
+
+    <div class="suggestion p1">
+      <div class="sug-header"><span class="sug-priority p1">P1</span><span class="sug-title">余额前置检测：点击 Flash Buy 时实时校验余额</span></div>
+      <div class="sug-body">
+        <strong>数据依据：</strong>buy_confirm 失败中 37.1%（491 UV）是 NOT_ENOUGH_BALANCE，SOL 链失败/成功比 4:1。<br>
+        <strong>方案：</strong>前端在用户点击 Flash Buy 时实时检测对应链钱包余额，若不足则前置展示「余额不足，去充值」，避免走完流程才失败。<br>
+        <strong>预期：</strong>消除 NOT_ENOUGH_BALANCE 后，成功率从 44% 提升至约 55%，成交笔数同等用户量下提升 ~25%。
+      </div>
+    </div>
+
+    <div class="suggestion p1">
+      <div class="sug-header"><span class="sug-priority p1">P1</span><span class="sug-title">修复 CALLDATA_ERROR：排查 3.16.7 / 3.16.4 版本 SOL/Jupiter routing</span></div>
+      <div class="sug-body">
+        <strong>数据依据：</strong>CALLDATA_ERROR（8.3%，113 UV）集中在 3.16.7（225 UV）+ 3.16.4（100 UV），占 66%，疑版本 regression。<br>
+        <strong>方案：</strong>对这两个版本在 SOL 链 Jupiter 协议的 tx build 路径做 diff，定位构建失败根因。<br>
+        <strong>预期：</strong>技术修复后消除该 8% 失败，成功率进一步提升。
+      </div>
+    </div>
+
+    <div class="suggestion">
+      <div class="sug-header"><span class="sug-priority p2">数据</span><span class="sug-title">补齐 buy_confirm 埋点覆盖率（当前仅 ~22%）</span></div>
+      <div class="sug-body">
+        <strong>问题：</strong>buy_confirm 仅在 3.17+ 版本上报，DataWind 成交 718 users vs Sensors code=0 仅 158 UV。漏斗 ③'→④ 转化率严重低估。<br>
+        <strong>方案：</strong>与 Data / FE 确认 buy_confirm 的触发逻辑，推动老版本补齐或加速版本覆盖；在覆盖率达 80%+ 前，用 DataWind 订单系统作为⑤的权威数据源。
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Trade Volume by Chain -->
-<div class="section">
-  <div class="section-title">交易额链分布（W29，订单系统）</div>
+<hr class="kr-divider">
+
+<!-- ======================== KR2 ======================== -->
+<div class="kr-block">
+  <div class="kr-header">
+    <span class="kr-badge kr2">KR2</span>
+    <div>
+      <div class="kr-title">SOL 链买入占 BN Meme 内部总买入</div>
+      <div class="kr-sub">目标 40% &nbsp;·&nbsp; 基线 31%（$171K / $743K）&nbsp;·&nbsp; W29 Flash Buy 口径：SOL 24.2%</div>
+    </div>
+  </div>
+
+  <div class="data-missing" style="margin-bottom:14px;">
+    <strong>⚠ 数据缺口：</strong>KR2 基线使用「BN Meme 内部总买入」口径（含 Alpha 等其他场景），W29 仅有 MemeRush Flash Buy 数据（$170,828），无法直接计算 KR2 当前值。需 Data 团队补充完整内部口径，W30 起纳入报告。
+  </div>
+
+  <!-- Chain breakdown -->
+  <div class="section-title">MemeRush Flash Buy 交易额链分布（W29，App only）</div>
   <table class="data-table">
-    <thead>
-      <tr><th>链</th><th>交易额</th><th>占比</th><th>用户数</th><th>订单数</th><th>笔均金额</th></tr>
-    </thead>
+    <thead><tr><th>链</th><th>交易额</th><th>占比</th><th>用户数</th><th>订单数</th><th>笔均</th><th>OKR 相关性</th></tr></thead>
     <tbody>
-      <tr><td><span class="badge-bsc">BSC</span></td><td class="num">$126,890</td><td>74.3%</td><td class="num">483</td><td class="num">2,401</td><td class="num">$52.8</td></tr>
-      <tr><td><span class="badge-sol">SOL</span></td><td class="num">$41,265</td><td>24.2%</td><td class="num">225</td><td class="num">1,553</td><td class="num">$26.6</td></tr>
-      <tr><td><span class="badge-eth">ETH</span></td><td class="num">$2,614</td><td>1.5%</td><td class="num">5</td><td class="num">6</td><td class="num">$435.7</td></tr>
-      <tr><td><span class="badge-base">BASE</span></td><td class="num">$60</td><td class="muted">trace</td><td class="num">5</td><td class="num">5</td><td class="num">$11.9</td></tr>
-      <tr style="background:#22253a"><td><strong>合计</strong></td><td class="num"><strong>$170,828</strong></td><td><strong>100%</strong></td><td class="num"><strong>718</strong></td><td class="num"><strong>3,965</strong></td><td class="num">$43.1</td></tr>
+      <tr><td><span class="badge-bsc">BSC</span></td><td class="num">$126,890</td><td>74.3%</td><td class="num">483</td><td class="num">2,401</td><td class="num">$52.8</td><td class="muted">BSC 占比高，需逐步平衡</td></tr>
+      <tr style="background:rgba(153,69,255,0.04)"><td><span class="badge-sol">SOL</span></td><td class="num highlight-green">$41,265</td><td class="highlight-green">24.2%</td><td class="num">225</td><td class="num">1,553</td><td class="num">$26.6</td><td style="color:var(--purple)">KR2 核心，需提升至 40%</td></tr>
+      <tr><td><span class="badge-eth">ETH</span></td><td class="num">$2,614</td><td>1.5%</td><td class="num">5</td><td class="num">6</td><td class="num">$435.7</td><td class="muted">—</td></tr>
+      <tr><td><span class="badge-base">BASE</span></td><td class="num">$60</td><td class="muted">trace</td><td class="num">5</td><td class="num">5</td><td class="num">$11.9</td><td class="muted">—</td></tr>
+      <tr style="background:#22253a"><td><strong>合计</strong></td><td class="num"><strong>$170,828</strong></td><td>100%</td><td class="num"><strong>718</strong></td><td class="num"><strong>3,965</strong></td><td class="num">$43.1</td><td></td></tr>
     </tbody>
   </table>
-  <div class="insight-box" style="margin-top:14px">
-    <div class="insight-title">交易结构洞察</div>
-    <ul>
-      <li><strong>BSC 绝对主导（74.3%）</strong>：483 用户贡献 2,401 笔，笔均 $52.8；与 App Flash Buy BSC 占比一致。</li>
-      <li><strong>SOL 笔均最低（$26.6）但订单量占 39.2%</strong>：225 用户贡献 1,553 笔，平均每人 6.9 笔，交易频次最高，小额高频特征。</li>
-      <li><strong>ETH 笔均最高（$435.7）</strong>：虽然只有 6 笔，但单笔金额是 BSC 的 8 倍，高净值用户特征。</li>
-      <li><strong>BASE 近乎为零</strong>：与 Web 漏斗中 BASE QB 仅 1 hit 一致，Base 生态 Flash Buy 几乎无转化。</li>
-    </ul>
+
+  <div style="font-size:12px;color:var(--muted);margin-top:8px;">
+    SOL 笔均 $26.6（小额高频，人均 6.9 笔）；ETH 笔均 $435.7（高净值少量）；BSC 仍占 74.3%，KR2 要从 Flash Buy 侧提升 SOL 占比任重道远
+  </div>
+
+  <!-- KR2 suggestions -->
+  <div class="suggestions">
+    <div class="section-title">优化建议 — KR2</div>
+
+    <div class="suggestion p0">
+      <div class="sug-header"><span class="sug-priority p0">数据P0</span><span class="sug-title">建立完整 KR2 追踪口径，W30 起补入报告</span></div>
+      <div class="sug-body">
+        <strong>问题：</strong>KR2 基线是全 BN Meme 内部买入（含 Alpha 等），本报告只有 Flash Buy 部分，无法算 KR2 当前值。<br>
+        <strong>行动：</strong>与 robin 确认 BN Meme 内部口径范围，建立每周自动汇总表，W30 起补入报告进度仪表。
+      </div>
+    </div>
+
+    <div class="suggestion p1">
+      <div class="sug-header"><span class="sug-priority p1">P1</span><span class="sug-title">优化 SOL 链 Flash Buy 成功率（当前失败/成功 = 4:1）</span></div>
+      <div class="sug-body">
+        <strong>数据依据：</strong>SOL 链 NOT_ENOUGH_BALANCE 308 UV，成功 76 UV，失败/成功比 4:1，远高于 BSC 2.3:1。SOL not_set 占比也最高（68%）。<br>
+        <strong>方案：</strong>P0 的「余额前置检测」优先在 SOL 链落地；同时排查 SOL 链 CALLDATA_ERROR（Jupiter routing）。<br>
+        <strong>预期：</strong>SOL 链成功率提升，同等曝光下 SOL 交易量增加，推动 KR2 占比提升。
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Data Notes -->
-<div class="section">
-  <div class="section-title">数据说明</div>
-  <table class="data-table">
-    <thead><tr><th>来源</th><th>说明</th></tr></thead>
+<hr class="kr-divider">
+
+<!-- ======================== KR1 ======================== -->
+<div class="kr-block">
+  <div class="kr-header">
+    <span class="kr-badge kr1">KR1</span>
+    <div>
+      <div class="kr-title">Meme Trading Volume 外部 CP</div>
+      <div class="kr-sub">目标 23% &nbsp;·&nbsp; 基线 15.06%（App 13.32% + Web 1.74%）&nbsp;·&nbsp; W29 外部 CP 值待补充</div>
+    </div>
+  </div>
+
+  <div class="data-missing" style="margin-bottom:14px;">
+    <strong>⚠ 数据缺口：</strong>外部 CP 值（vs GMGN + OKX interface）本周未获取，需 Data 团队每周同步竞品数据。W30 起补入进度仪表。
+  </div>
+
+  <!-- Web QB Funnel -->
+  <div class="two-col">
+    <div class="card">
+      <div class="section-title">Web Quickbuy 漏斗 <span class="tag-web">Web</span> — KR1 Web 端分子</div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">① 列表曝光</span><span class="num">11,524 UV <span class="wow-up" style="font-size:11px;font-weight:400">▲ +3.0%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:100%"></div></div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">② Hover</span><span class="num">1,532 UV <span class="wow-up" style="font-size:11px;font-weight:400">▲ +6.7%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:13.3%"></div></div>
+        <div class="funnel-conv">①→② <strong>13.3%</strong> ▲ +0.5pp</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">③ Token Card 点击</span><span class="num">801 UV <span class="wow-down" style="font-size:11px;font-weight:400">▼ -6.4%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:6.95%"></div></div>
+        <div class="funnel-conv">②→③ <strong>52.3%</strong> ▼ -7.3pp</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label"><span class="name">④ Quickbuy 点击</span><span class="num highlight-red">63 UV <span class="wow-down" style="font-size:11px;font-weight:400">▼ -31.5%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill web-bar" style="width:0.55%"></div></div>
+        <div class="funnel-conv">①→④ <strong class="highlight-red">0.55%</strong> ▼ -0.27pp &nbsp;·&nbsp; ③→④ <strong class="highlight-red">7.9%</strong> ▼ -2.9pp</div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);">
+        列表和 Hover 均增长，QB 下滑 -31.5% 全部来自 Card→QB 转化下降（10.8%→7.9%），不是流量问题
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Web QB by Tab（W29 首周，W3W-48648）<span class="new-badge">NEW</span></div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+          <span style="width:80px;font-size:12px;">fourmeme</span>
+          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;"><div style="width:85.7%;height:8px;border-radius:3px;background:linear-gradient(90deg,var(--web-color),#69a8ff)"></div></div>
+          <span class="num" style="font-size:12px;min-width:24px;">54</span><span class="muted" style="font-size:11px;min-width:36px;">67.5%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+          <span style="width:80px;font-size:12px;">flap</span>
+          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;"><div style="width:29.6%;height:8px;border-radius:3px;background:linear-gradient(90deg,var(--web-color),#69a8ff)"></div></div>
+          <span class="num" style="font-size:12px;min-width:24px;">16</span><span class="muted" style="font-size:11px;min-width:36px;">20.0%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+          <span style="width:80px;font-size:12px;">pump.fun</span>
+          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;"><div style="width:11.1%;height:8px;border-radius:3px;background:linear-gradient(90deg,var(--purple),#c085ff)"></div></div>
+          <span class="num" style="font-size:12px;min-width:24px;">6</span><span class="muted" style="font-size:11px;min-width:36px;">7.5%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="width:80px;font-size:12px;">其他</span>
+          <div style="flex:1;background:var(--border);border-radius:3px;height:8px;overflow:hidden;"><div style="width:5%;height:8px;border-radius:3px;background:var(--border)"></div></div>
+          <span class="num" style="font-size:12px;min-width:24px;">4</span><span class="muted" style="font-size:11px;min-width:36px;">5%</span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);padding-top:8px;border-top:1px dashed var(--border);">
+        QB UV = 63，Tab 点击数合计 80（差值 17 为多 tab 用户） &nbsp;·&nbsp; BSC（fourmeme+flap+openfour）90% 主导 &nbsp;·&nbsp; W29 为首周基准，W30 起可看趋势
+      </div>
+
+      <div class="section-title" style="margin-top:14px;">Web Flash Buy 成交（BSC，W29）</div>
+      <table class="data-table">
+        <thead><tr><th>场景</th><th>交易额</th><th>订单</th><th>用户</th></tr></thead>
+        <tbody>
+          <tr><td>Meme Rush · <span class="badge-bsc">BSC</span></td><td class="num">$28,800</td><td class="num">407</td><td class="num">51</td></tr>
+          <tr><td>Multi-chain · <span class="badge-bsc">BSC</span></td><td class="num">$117</td><td class="num">3</td><td class="num">3</td></tr>
+          <tr><td colspan="4" class="muted" style="font-size:11px;">其他链 Web 数据待补充（用户仅提供 BSC 部分）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- KR1 suggestions -->
+  <div class="suggestions">
+    <div class="section-title">优化建议 — KR1</div>
+
+    <div class="suggestion p0">
+      <div class="sug-header"><span class="sug-priority p0">P0 止血</span><span class="sug-title">Web Card→QB 转化下滑 -27% WoW，立即排查</span></div>
+      <div class="sug-body">
+        <strong>数据依据：</strong>列表 +3.0%、Hover +6.7%，流量端健康；但 Card→QB 从 10.8% 跌至 7.9%（-2.9pp），QB UV -31.5%，下滑全部来自这一步。<br>
+        <strong>方案：</strong>检查 W29 Web 是否有版本上线（QB 按钮位置/样式变化）；对比 fourmeme / flap / pumpfun 各 Tab 的 WoW，定位哪个来源下滑最多。<br>
+        <strong>预期：</strong>若是版本问题回滚，QB UV 可从 63 恢复至约 90，Web 交易量回升 ~40%。
+      </div>
+    </div>
+
+    <div class="suggestion">
+      <div class="sug-header"><span class="sug-priority p2">数据</span><span class="sug-title">建立外部 CP 自动追踪，W30 起补入 KR1 进度</span></div>
+      <div class="sug-body">
+        KR1 是 O 下最核心的结果指标，但当前周报无法显示外部 CP 实际值。需与 Data 团队（robin）确认 GMGN / OKX 竞品数据获取方式，建立每周自动对比。
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="kr-divider">
+
+<!-- ======================== Data Notes ======================== -->
+<div class="kr-block">
+  <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px;">数据说明</div>
+  <table class="data-table" style="font-size:12px;">
+    <thead><tr><th>数据源</th><th>口径</th><th>查询时间</th></tr></thead>
     <tbody>
-      <tr><td>App ① 列表页 UV</td><td>Sensors <code>df_mpviewscreen</code>，<code>eventName = app_screen_view_mpcwallet_page_rank_meme_pump</code>，周去重 UV，2026-07-14 查询</td></tr>
-      <tr><td>App ② Flash Buy 点击 UV</td><td>Sensors <code>df_mpclick</code>，<code>eventName = app_click_mpcwallet_meme_rush_flashbuy_button</code></td></tr>
-      <tr><td>App ② Token 详情弹窗 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpviewscreen</code>，<code>eventName = app_screen_view_mpcwallet_meme_rush_token_info_pop_up</code>；此弹窗在列表页点击 Token 卡片后弹出，Flash Buy 按钮位于弹窗内部</td></tr>
-      <tr><td>App ④ 确认买入 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpclick</code>，<code>eventName = app_click_mpcwallet_meme_rush_buy_confirm</code>；W28 仅 44 UV（埋点上线初期），W29 为首个完整周</td></tr>
-      <tr><td>Web ①–④ 漏斗 UV</td><td>Sensors <code>pageView/webClick</code>，<code>elementID</code> 分别为 <code>web_screen_view_dex_page_meme_rush</code>、<code>web_click_dex_hover_meme_rush</code>、<code>web_click_dex_token_card_meme_rush</code>、<code>web_click_dex_quickbuy_meme_rush</code></td></tr>
-      <tr><td>Web QB by Tab <span class="step-new-label">NEW</span></td><td>Sensors <code>webClick</code>，<code>elementID = web_click_dex_quickbuy_meme_rush</code>，按 <code>tab</code>（<code>df_4</code>）字段拆分；W3W-48648 本周上线，W29 为首周基准，无 W28 对比</td></tr>
-      <tr><td>交易额 / 笔数 / 用户数</td><td>DataWind 订单系统，<code>dataQuery?appId=1&id=519146669&sid=25100</code>，App+Web 合并口径，2026-07-15 查询</td></tr>
-      <tr><td>App 链/Tab/协议归因</td><td>本周报未包含（需额外 Sensors 查询 <code>df_13</code>/<code>df_6</code>/<code>df_7</code> 字段），下版补充</td></tr>
+      <tr><td>App 漏斗 UV（①②③）</td><td>Sensors <code>df_mpviewscreen / df_mpclick</code>，周去重 UV</td><td>2026-07-15</td></tr>
+      <tr><td>Flash Buy df_8 路径拆分</td><td>Sensors <code>df_mpclick</code> eventName=meme_rush_flashbuy_button，df_8=set/not_set</td><td>2026-07-15</td></tr>
+      <tr><td>buy_confirm 结果分布 <span class="new-badge">NEW</span></td><td>Sensors <code>df_mpclick</code> eventName=meme_rush_buy_confirm，df_9=SignalErrorCode；仅覆盖 3.17+ 版本（~22%）</td><td>2026-07-15</td></tr>
+      <tr><td>App 成交额 / 笔数（⑤）</td><td>DataWind 订单系统，App only，<code>dataQuery id=519146669 sid=25100</code></td><td>2026-07-15</td></tr>
+      <tr><td>Web 漏斗 UV</td><td>Sensors <code>pageView / webClick</code>，elementID 分别为 web_screen_view_dex_page_meme_rush 等</td><td>2026-07-15</td></tr>
+      <tr><td>Web QB by Tab <span class="new-badge">NEW</span></td><td>Sensors webClick elementID=web_click_dex_quickbuy_meme_rush，按 tab(df_4) 分组；W29 为首周基准</td><td>2026-07-15</td></tr>
+      <tr><td>KR1 外部 CP</td><td style="color:var(--red)">⚠ 本周未获取，W30 起补入</td><td>—</td></tr>
+      <tr><td>KR2 内部总买入口径</td><td style="color:var(--red)">⚠ 本周未获取完整内部口径，W30 起补入</td><td>—</td></tr>
     </tbody>
   </table>
 </div>
 
 <div class="report-footer">
-  MemeRush Quickbuy 转化漏斗 · 周报 W29 &nbsp;|&nbsp; 2026-07-07~07-13 &nbsp;|&nbsp; 生成于 2026-07-15<br>
-  数据源：Sensors Analytics（df_mpviewscreen / df_mpclick / pageView / webClick）+ DataWind 订单系统 &nbsp;|&nbsp; 本周新增：App 弹窗漏斗（②③④⑤步）+ Web QB by Tab
+  MemeRush 周报 W29 &nbsp;·&nbsp; 2026-07-07~07-13 &nbsp;·&nbsp; 2026-07-15<br>
+  O：提升 Meme 业务 CP 占比 &nbsp;|&nbsp; KR1 外部 CP 15.06%→23% &nbsp;|&nbsp; KR2 SOL 占比 31%→40% &nbsp;|&nbsp; KR3 FB 转化率 8.8%→12%（当前 9.0%）
 </div>
 
 </body>
