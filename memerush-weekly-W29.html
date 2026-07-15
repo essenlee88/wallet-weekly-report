@@ -224,19 +224,50 @@
 <!-- App Funnel Insights -->
 <div class="section">
   <div class="section-title">App 漏斗分析</div>
+
+  <!-- buy_confirm 结果分布 -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">buy_confirm 回调结果分布（W29，总 PV 3,058）<span class="new-badge">NEW</span></div>
+    <table class="data-table">
+      <thead><tr><th>df_9</th><th>SignalErrorCode</th><th>含义</th><th>UV</th><th>PV</th><th>PV 占比</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(14,203,129,0.05)"><td class="num">0</td><td>SUCCESS</td><td>成功</td><td class="num highlight-green">158</td><td class="num highlight-green">1,346</td><td class="highlight-green">44.0%</td></tr>
+        <tr style="background:rgba(246,70,93,0.08)"><td class="num">4</td><td><strong>NOT_ENOUGH_BALANCE</strong></td><td><strong>支付币余额不足</strong></td><td class="num highlight-red">491</td><td class="num highlight-red">1,134</td><td class="highlight-red">37.1%</td></tr>
+        <tr><td class="num">6</td><td class="muted">—</td><td class="muted">未知</td><td class="num">113</td><td class="num">254</td><td>8.3%</td></tr>
+        <tr><td class="num">14</td><td>ENTER_SPREAD_LOGIC</td><td>进入 Spread 逻辑（滑点弹窗）</td><td class="num">27</td><td class="num">87</td><td>2.8%</td></tr>
+        <tr><td class="num">9</td><td class="muted">—</td><td class="muted">未知</td><td class="num">20</td><td class="num">82</td><td>2.7%</td></tr>
+        <tr><td class="num">7</td><td class="muted">—</td><td class="muted">未知</td><td class="num">29</td><td class="num">47</td><td>1.5%</td></tr>
+        <tr><td class="num">2</td><td>SERVER_ERROR</td><td>服务端错误</td><td class="num">17</td><td class="num">36</td><td>1.2%</td></tr>
+        <tr><td class="num">10</td><td>NATIVE_TOKEN_NOT_ENOUGH</td><td>Gas 不足（原生币）</td><td class="num">10</td><td class="num">35</td><td>1.1%</td></tr>
+        <tr><td class="num">3</td><td class="muted">—</td><td class="muted">未知</td><td class="num">10</td><td class="num">31</td><td>1.0%</td></tr>
+        <tr><td class="num">1</td><td>NETWORK_ERROR</td><td>网络错误</td><td class="num">2</td><td class="num">6</td><td>0.2%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px">code 6/7/9/3 枚举定义未在文档中找到；SOL 占 code 4 的 59%（308 UV），3.16.7+3.16.4 版本占 66%</div>
+  </div>
+
   <div class="two-col">
-    <div class="insight-box">
-      <div class="insight-title">新埋点首周：FB 确认率 13.9%，主要流失在确认步骤</div>
+    <div class="alert-box">
+      <div class="insight-title">⚠ #1 拦截原因：余额不足（code 4，37.1%）</div>
       <ul>
-        <li><strong>漏斗完整后，最大流失点清晰可见</strong>：4,839 人点击 Flash Buy 按钮 → 只有 675 人点击"确认买入"（<strong class="highlight-red">86.1% 在确认步骤流失</strong>）。这是埋点上线前完全不可见的瓶颈。</li>
-        <li><strong>Token 详情弹窗→Flash Buy 几乎 100% 转化</strong>：4,921 人打开 Token 详情 → 4,839 人点击 Flash Buy（②→③ 98.3%），说明弹窗本身不是流失点，用户看了就有强烈购买意愿。</li>
-        <li><strong>Flash Buy 整体入口稳定</strong>：列表→FB 转化率 9.0%（+0.2pp），说明高意向用户比例略有提升。</li>
-        <li style="color:var(--accent);"><strong>建议</strong>：重点排查确认步骤流失原因——余额不足提示？Gas 估算失败？金额未预填？建议补充确认弹窗内的余额不足率和 Gas 错误率埋点。</li>
+        <li><strong>491 UV 因余额不足失败</strong>，是成功用户（158 UV）的 3.1 倍。Flash Buy 点击前没有余额校验，用户设了金额但账户里没钱。</li>
+        <li><strong>SOL 链最严重</strong>：SOL 失败/成功比 = 4:1（308 失败 vs 76 成功 UV），远高于 BSC（2.3:1）。SOL 用户更容易余额不足，或 SOL 的余额检测逻辑有差异。</li>
+        <li><strong>版本集中在 3.16.x</strong>：3.16.7（225 UV）+ 3.16.4（100 UV）占 66%，建议排查这两个版本是否缺少余额预检。</li>
+        <li style="color:var(--accent);"><strong>建议</strong>：Flash Buy 点击时前置余额校验，余额不足时灰显按钮或展示"余额不足"提示，减少无效点击。</li>
       </ul>
     </div>
-    <div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
-        <div style="font-size:13px;font-weight:600;margin-bottom:14px;">App 漏斗关键转化率趋势</div>
+    <div class="insight-box">
+      <div class="insight-title">埋点覆盖率警告：Sensors vs 订单系统差距 4.5x</div>
+      <ul>
+        <li><strong>DataWind 订单系统（W29）：718 个成功下单用户</strong></li>
+        <li><strong>Sensors buy_confirm code=0：158 UV</strong>（仅覆盖 22%）</li>
+        <li>原因：buy_confirm 是新埋点，可能只部署在 3.17+ 版本；3.16.x 用户（占 W29 主力）成功下单后不上报此事件。</li>
+        <li style="color:var(--accent);"><strong>结论</strong>：当前漏斗 ③→④ 转化率（13.9%）严重低估实际水平，需等埋点全量覆盖后才能得到真实数据。</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:14px;">App 漏斗关键转化率趋势（W27→W28→W29）</div>
         <table class="data-table" style="margin-bottom:0;">
           <thead><tr><th>转化步骤</th><th>W27</th><th>W28</th><th>W29</th><th>趋势</th></tr></thead>
           <tbody>
@@ -250,8 +281,6 @@
           </tbody>
         </table>
         <div style="font-size:10px;color:var(--muted);margin-top:8px">*W28 的 44 UV 为埋点上线初期不完整数据，不计入趋势</div>
-      </div>
-    </div>
   </div>
 </div>
 
