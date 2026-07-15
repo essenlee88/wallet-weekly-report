@@ -143,20 +143,41 @@
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">③ Flash Buy 按钮点击（列表直接触发）</span>
+        <span class="step-name">③ Flash Buy 按钮点击</span>
         <span class="step-uv">4,839 UV <span class="funnel-wow wow-down">&#9660; -2.6%</span></span>
       </div>
       <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
-      <div class="funnel-step-conv">①→③ <strong>9.0%</strong> ▲ +0.2pp &nbsp;|&nbsp; 含首次设置浮窗用户，实际发起交易人数更少</div>
+      <div class="funnel-step-conv">①→③ <strong>9.0%</strong> ▲ +0.2pp（W28: 8.8%）</div>
+    </div>
+
+    <!-- not_set dropout -->
+    <div style="margin:-4px 0 8px 0; padding:10px 12px; background:rgba(246,70,93,0.06); border:1px dashed rgba(246,70,93,0.35); border-radius:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:12px;color:var(--muted)">↳ 未设置买入金额（df_8=not_set）→ 跳到金额设置页，流失</span>
+        <span style="font-size:13px;font-weight:600;color:var(--red)">4,599 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">95%</span></span>
+      </div>
+      <div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden;">
+        <div style="width:95%;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--red),#ff8095);opacity:0.7;"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">这批用户不进入交易流程，buy_confirm 不触发，漏斗此处断掉 &nbsp;|&nbsp; SOL 占 68%（3,126 UV）</div>
     </div>
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">④ 交易回调（buy_confirm）<span class="step-new-label">NEW</span></span>
-        <span class="step-uv" style="color:var(--red)">675 UV <span class="funnel-wow" style="color:var(--muted)">~22% 覆盖</span></span>
+        <span class="step-name">③' 已设置金额，进入交易流程（df_8=set）</span>
+        <span class="step-uv highlight-green">874 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">18%</span></span>
+      </div>
+      <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:1.62%"></div></div>
+      <div class="funnel-step-conv">③ 中真正进入交易流程的部分（W28: 922 UV）</div>
+    </div>
+
+    <div class="funnel-step">
+      <div class="funnel-step-label">
+        <span class="step-name">④ 交易回调（buy_confirm）<span class="step-new-label">NEW ~22%覆盖</span></span>
+        <span class="step-uv" style="color:var(--red)">675 UV</span>
       </div>
       <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
-      <div class="funnel-step-conv">实际发起交易后的回调，含成功+失败 &nbsp;|&nbsp; 埋点仅覆盖 3.17+ 版本（~22%），③→④ 转化率暂不可信</div>
+      <div class="funnel-step-conv">交易发出后回调，含成功+失败 &nbsp;|&nbsp; 仅覆盖 3.17+ 版本（~22%），③'→④ 转化率暂不可信</div>
     </div>
 
     <div class="funnel-step">
