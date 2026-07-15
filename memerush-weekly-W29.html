@@ -143,20 +143,20 @@
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">③ Flash Buy 按钮点击（弹窗内）</span>
+        <span class="step-name">③ Flash Buy 按钮点击（列表直接触发）</span>
         <span class="step-uv">4,839 UV <span class="funnel-wow wow-down">&#9660; -2.6%</span></span>
       </div>
       <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
-      <div class="funnel-step-conv">②→③ <strong>98.3%</strong> 看了详情几乎都点 Flash Buy &nbsp;|&nbsp; ①→③ <strong>9.0%</strong> ▲ +0.2pp</div>
+      <div class="funnel-step-conv">①→③ <strong>9.0%</strong> ▲ +0.2pp &nbsp;|&nbsp; 含首次设置浮窗用户，实际发起交易人数更少</div>
     </div>
 
     <div class="funnel-step">
       <div class="funnel-step-label">
-        <span class="step-name">④ 确认买入点击 <span class="step-new-label">NEW</span></span>
-        <span class="step-uv" style="color:var(--red)">675 UV <span class="funnel-wow" style="color:var(--muted)">首周</span></span>
+        <span class="step-name">④ 交易回调（buy_confirm）<span class="step-new-label">NEW</span></span>
+        <span class="step-uv" style="color:var(--red)">675 UV <span class="funnel-wow" style="color:var(--muted)">~22% 覆盖</span></span>
       </div>
       <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
-      <div class="funnel-step-conv">③→④ <strong class="highlight-red">13.9%</strong> FB 确认率 &nbsp;|&nbsp; ①→④ <strong class="highlight-red">1.25%</strong></div>
+      <div class="funnel-step-conv">实际发起交易后的回调，含成功+失败 &nbsp;|&nbsp; 埋点仅覆盖 3.17+ 版本（~22%），③→④ 转化率暂不可信</div>
     </div>
 
     <div class="funnel-step">
@@ -170,8 +170,10 @@
 
     <hr class="funnel-divider">
     <div style="font-size:11px;color:var(--muted)">
-      List PV: 178,379 &nbsp;|&nbsp; ② Token 详情弹窗 = 点击 Token 卡片后弹出，Flash Buy 按钮位于弹窗内
-      <br>④ W28 仅 44 UV（埋点本周正式上线），W29 为首个完整数据周 &nbsp;|&nbsp; ⑤ 来自订单系统（App+Web 合并，含重试订单）
+      List PV: 178,379
+      <br>③ <code>meme_rush_flashbuy_button</code>：列表页 Flash Buy 按钮（含首次设置浮窗），非弹窗内按钮；弹窗内 FB 按钮为 <code>meme_rush_token_info_button</code>（df_8=quickbuy），暂未纳入漏斗
+      <br>④ <code>meme_rush_buy_confirm</code>：交易发出后的回调结果，非"确认"按钮点击；仅覆盖 3.17+ 版本（~22%），③→④ 转化率低估实际水平；W28 仅 44 UV 为覆盖不完整数据
+      <br>⑤ 来自 DataWind 订单系统（App only），718 成功用户 vs ④ code=0 仅 158 UV，差距 4.5x 即埋点覆盖率差异
     </div>
   </div>
 
