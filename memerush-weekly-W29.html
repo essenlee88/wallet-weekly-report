@@ -91,22 +91,21 @@
 <!-- KPI Cards -->
 <div class="kpi-grid">
   <div class="kpi-card app">
-    <div class="kpi-label">App Flash Buy UV</div>
-    <div class="kpi-value">4,839</div>
-    <div class="kpi-wow wow-down">&#9660; -2.6% WoW（W28: 4,966）</div>
-    <div class="kpi-sub">List UV: 53,935 &nbsp;|&nbsp; PV: 178,379</div>
+    <div class="kpi-label">总交易额（W29）</div>
+    <div class="kpi-value">$170,828</div>
+    <div class="kpi-sub">3,965 笔 &nbsp;|&nbsp; 718 users &nbsp;|&nbsp; BSC $126,890 / SOL $41,265 / ETH $2,614 / BASE $60</div>
   </div>
   <div class="kpi-card web">
     <div class="kpi-label">Web Quickbuy UV</div>
     <div class="kpi-value">63</div>
     <div class="kpi-wow wow-down">&#9660; -31.5% WoW（W28: 92）</div>
-    <div class="kpi-sub">List UV: 11,524 &nbsp;|&nbsp; PV: 45,979</div>
+    <div class="kpi-sub">List UV: 11,524 &nbsp;|&nbsp; by Tab &#10003;</div>
   </div>
   <div class="kpi-card app">
     <div class="kpi-label">App FB 转化率（List→FB）</div>
     <div class="kpi-value">9.0%</div>
     <div class="kpi-wow wow-up">&#9650; +0.2pp WoW（W28: 8.8%）</div>
-    <div class="kpi-sub">FB确认率（③→④）: <strong style="color:var(--red)">13.9%</strong> <span class="step-new-label">首周</span></div>
+    <div class="kpi-sub">FB确认率（④→⑤）: <strong style="color:var(--red)">13.9%</strong> <span class="step-new-label">首周</span></div>
   </div>
   <div class="kpi-card web">
     <div class="kpi-label">Web QB 转化率（List→QB）</div>
@@ -160,10 +159,19 @@
       <div class="funnel-step-conv">③→④ <strong class="highlight-red">13.9%</strong> FB 确认率 &nbsp;|&nbsp; ①→④ <strong class="highlight-red">1.25%</strong></div>
     </div>
 
+    <div class="funnel-step">
+      <div class="funnel-step-label">
+        <span class="step-name">⑤ 实际成交（订单系统）</span>
+        <span class="step-uv highlight-green">718 users &nbsp;|&nbsp; 3,965 笔</span>
+      </div>
+      <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:1.33%;background:linear-gradient(90deg,#0ecb81,#52e8a8)"></div></div>
+      <div class="funnel-step-conv">总交易额 <strong class="highlight-green">$170,828</strong> &nbsp;|&nbsp; App+Web 合并口径</div>
+    </div>
+
     <hr class="funnel-divider">
     <div style="font-size:11px;color:var(--muted)">
       List PV: 178,379 &nbsp;|&nbsp; ② Token 详情弹窗 = 点击 Token 卡片后弹出，Flash Buy 按钮位于弹窗内
-      <br>④ W28 仅 44 UV（埋点本周正式上线），W29 为首个完整数据周
+      <br>④ W28 仅 44 UV（埋点本周正式上线），W29 为首个完整数据周 &nbsp;|&nbsp; ⑤ 来自订单系统（App+Web 合并，含重试订单）
     </div>
   </div>
 
@@ -341,6 +349,32 @@
   </div>
 </div>
 
+<!-- Trade Volume by Chain -->
+<div class="section">
+  <div class="section-title">交易额链分布（W29，订单系统）</div>
+  <table class="data-table">
+    <thead>
+      <tr><th>链</th><th>交易额</th><th>占比</th><th>用户数</th><th>订单数</th><th>笔均金额</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge-bsc">BSC</span></td><td class="num">$126,890</td><td>74.3%</td><td class="num">483</td><td class="num">2,401</td><td class="num">$52.8</td></tr>
+      <tr><td><span class="badge-sol">SOL</span></td><td class="num">$41,265</td><td>24.2%</td><td class="num">225</td><td class="num">1,553</td><td class="num">$26.6</td></tr>
+      <tr><td><span class="badge-eth">ETH</span></td><td class="num">$2,614</td><td>1.5%</td><td class="num">5</td><td class="num">6</td><td class="num">$435.7</td></tr>
+      <tr><td><span class="badge-base">BASE</span></td><td class="num">$60</td><td class="muted">trace</td><td class="num">5</td><td class="num">5</td><td class="num">$11.9</td></tr>
+      <tr style="background:#22253a"><td><strong>合计</strong></td><td class="num"><strong>$170,828</strong></td><td><strong>100%</strong></td><td class="num"><strong>718</strong></td><td class="num"><strong>3,965</strong></td><td class="num">$43.1</td></tr>
+    </tbody>
+  </table>
+  <div class="insight-box" style="margin-top:14px">
+    <div class="insight-title">交易结构洞察</div>
+    <ul>
+      <li><strong>BSC 绝对主导（74.3%）</strong>：483 用户贡献 2,401 笔，笔均 $52.8；与 App Flash Buy BSC 占比一致。</li>
+      <li><strong>SOL 笔均最低（$26.6）但订单量占 39.2%</strong>：225 用户贡献 1,553 笔，平均每人 6.9 笔，交易频次最高，小额高频特征。</li>
+      <li><strong>ETH 笔均最高（$435.7）</strong>：虽然只有 6 笔，但单笔金额是 BSC 的 8 倍，高净值用户特征。</li>
+      <li><strong>BASE 近乎为零</strong>：与 Web 漏斗中 BASE QB 仅 1 hit 一致，Base 生态 Flash Buy 几乎无转化。</li>
+    </ul>
+  </div>
+</div>
+
 <!-- Data Notes -->
 <div class="section">
   <div class="section-title">数据说明</div>
@@ -353,15 +387,15 @@
       <tr><td>App ④ 确认买入 UV <span class="step-new-label">NEW</span></td><td>Sensors <code>df_mpclick</code>，<code>eventName = app_click_mpcwallet_meme_rush_buy_confirm</code>；W28 仅 44 UV（埋点上线初期），W29 为首个完整周</td></tr>
       <tr><td>Web ①–④ 漏斗 UV</td><td>Sensors <code>pageView/webClick</code>，<code>elementID</code> 分别为 <code>web_screen_view_dex_page_meme_rush</code>、<code>web_click_dex_hover_meme_rush</code>、<code>web_click_dex_token_card_meme_rush</code>、<code>web_click_dex_quickbuy_meme_rush</code></td></tr>
       <tr><td>Web QB by Tab <span class="step-new-label">NEW</span></td><td>Sensors <code>webClick</code>，<code>elementID = web_click_dex_quickbuy_meme_rush</code>，按 <code>tab</code>（<code>df_4</code>）字段拆分；W3W-48648 本周上线，W29 为首周基准，无 W28 对比</td></tr>
-      <tr><td>交易额 / 笔数</td><td>本周报未包含，需从订单系统单独导出</td></tr>
+      <tr><td>交易额 / 笔数 / 用户数</td><td>DataWind 订单系统，<code>dataQuery?appId=1&id=519146669&sid=25100</code>，App+Web 合并口径，2026-07-15 查询</td></tr>
       <tr><td>App 链/Tab/协议归因</td><td>本周报未包含（需额外 Sensors 查询 <code>df_13</code>/<code>df_6</code>/<code>df_7</code> 字段），下版补充</td></tr>
     </tbody>
   </table>
 </div>
 
 <div class="report-footer">
-  MemeRush Quickbuy 转化漏斗 · 周报 W29 &nbsp;|&nbsp; 2026-07-07~07-13 &nbsp;|&nbsp; 生成于 2026-07-14<br>
-  数据源：Sensors Analytics（df_mpviewscreen / df_mpclick / pageView / webClick）&nbsp;|&nbsp; 本周新增：App 弹窗漏斗（③④步）+ Web QB by Tab
+  MemeRush Quickbuy 转化漏斗 · 周报 W29 &nbsp;|&nbsp; 2026-07-07~07-13 &nbsp;|&nbsp; 生成于 2026-07-15<br>
+  数据源：Sensors Analytics（df_mpviewscreen / df_mpclick / pageView / webClick）+ DataWind 订单系统 &nbsp;|&nbsp; 本周新增：App 弹窗漏斗（②③④⑤步）+ Web QB by Tab
 </div>
 
 </body>
