@@ -233,27 +233,30 @@
       <tbody>
         <tr style="background:rgba(14,203,129,0.05)"><td class="num">0</td><td>SUCCESS</td><td>成功</td><td class="num highlight-green">158</td><td class="num highlight-green">1,346</td><td class="highlight-green">44.0%</td></tr>
         <tr style="background:rgba(246,70,93,0.08)"><td class="num">4</td><td><strong>NOT_ENOUGH_BALANCE</strong></td><td><strong>支付币余额不足</strong></td><td class="num highlight-red">491</td><td class="num highlight-red">1,134</td><td class="highlight-red">37.1%</td></tr>
-        <tr><td class="num">6</td><td class="muted">—</td><td class="muted">未知</td><td class="num">113</td><td class="num">254</td><td>8.3%</td></tr>
-        <tr><td class="num">14</td><td>ENTER_SPREAD_LOGIC</td><td>进入 Spread 逻辑（滑点弹窗）</td><td class="num">27</td><td class="num">87</td><td>2.8%</td></tr>
-        <tr><td class="num">9</td><td class="muted">—</td><td class="muted">未知</td><td class="num">20</td><td class="num">82</td><td>2.7%</td></tr>
-        <tr><td class="num">7</td><td class="muted">—</td><td class="muted">未知</td><td class="num">29</td><td class="num">47</td><td>1.5%</td></tr>
+        <tr><td class="num">6</td><td>CALLDATA_ERROR</td><td>交易构建/Calldata 失败</td><td class="num">113</td><td class="num">254</td><td>8.3%</td></tr>
+        <tr><td class="num">14</td><td>ENTER_SPREAD_LOGIC</td><td>进入 Spread 逻辑（滑点弹窗，非失败）</td><td class="num">27</td><td class="num">87</td><td>2.8%</td></tr>
+        <tr><td class="num">9</td><td>CUSTOM_ERROR</td><td>自定义错误（后端/SAS 返回 message）</td><td class="num">20</td><td class="num">82</td><td>2.7%</td></tr>
+        <tr><td class="num">7</td><td>SIGN_ERROR</td><td>签名失败</td><td class="num">29</td><td class="num">47</td><td>1.5%</td></tr>
         <tr><td class="num">2</td><td>SERVER_ERROR</td><td>服务端错误</td><td class="num">17</td><td class="num">36</td><td>1.2%</td></tr>
         <tr><td class="num">10</td><td>NATIVE_TOKEN_NOT_ENOUGH</td><td>Gas 不足（原生币）</td><td class="num">10</td><td class="num">35</td><td>1.1%</td></tr>
-        <tr><td class="num">3</td><td class="muted">—</td><td class="muted">未知</td><td class="num">10</td><td class="num">31</td><td>1.0%</td></tr>
+        <tr><td class="num">3</td><td>NOT_SUPPORT_NETWORK</td><td>不支持网络</td><td class="num">10</td><td class="num">31</td><td>1.0%</td></tr>
         <tr><td class="num">1</td><td>NETWORK_ERROR</td><td>网络错误</td><td class="num">2</td><td class="num">6</td><td>0.2%</td></tr>
       </tbody>
     </table>
-    <div style="font-size:11px;color:var(--muted);margin-top:6px">code 6/7/9/3 枚举定义未在文档中找到；SOL 占 code 4 的 59%（308 UV），3.16.7+3.16.4 版本占 66%</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px">
+      失败分类：余额问题（code 4+10）= <strong>38.2%</strong> &nbsp;|&nbsp; 技术失败（code 6+9+7+2+3+1）= <strong>~15%</strong> &nbsp;|&nbsp; 流程分流（code 14）= 2.8%（进滑点弹窗，非失败）
+      <br>SOL 占 code 4 的 59%（308 UV）；code 6 集中在 3.16.7+3.16.4 版本（66%），疑 SOL/Jupiter routing bug &nbsp;|&nbsp; BI 字典建议补充 code 3/6/7/9/11/12/13 枚举映射
+    </div>
   </div>
 
   <div class="two-col">
     <div class="alert-box">
-      <div class="insight-title">⚠ #1 拦截原因：余额不足（code 4，37.1%）</div>
+      <div class="insight-title">⚠ 失败原因拆解：余额问题 38% + 技术失败 15%</div>
       <ul>
-        <li><strong>491 UV 因余额不足失败</strong>，是成功用户（158 UV）的 3.1 倍。Flash Buy 点击前没有余额校验，用户设了金额但账户里没钱。</li>
-        <li><strong>SOL 链最严重</strong>：SOL 失败/成功比 = 4:1（308 失败 vs 76 成功 UV），远高于 BSC（2.3:1）。SOL 用户更容易余额不足，或 SOL 的余额检测逻辑有差异。</li>
-        <li><strong>版本集中在 3.16.x</strong>：3.16.7（225 UV）+ 3.16.4（100 UV）占 66%，建议排查这两个版本是否缺少余额预检。</li>
-        <li style="color:var(--accent);"><strong>建议</strong>：Flash Buy 点击时前置余额校验，余额不足时灰显按钮或展示"余额不足"提示，减少无效点击。</li>
+        <li><strong>余额问题（code 4+10）合计 38.2%</strong>：NOT_ENOUGH_BALANCE（37.1%，491 UV）是最大拦截。Flash Buy 点击前无余额预检，用户设了金额但账户里没有足够的支付币。SOL 链 失败/成功 = 4:1，远高于 BSC 2.3:1。</li>
+        <li><strong>技术失败（~15%）中 CALLDATA_ERROR（code 6，8.3%）最值得关注</strong>：交易构建/Calldata 失败，结合 3.16.7+3.16.4 版本占 66% 的分布，疑是 SOL/Jupiter routing 在这两个版本上的 bug。</li>
+        <li><strong>ENTER_SPREAD_LOGIC（code 14，2.8%）是流程分流，不是失败</strong>：进入滑点弹窗后是否继续需单独追踪。</li>
+        <li style="color:var(--accent);"><strong>建议①</strong>：Flash Buy 点击时前置余额校验，余额不足灰显按钮或实时提示，减少无效点击（可解决 37%）。<br><strong>建议②</strong>：排查 3.16.7/3.16.4 在 SOL/Jupiter 上的 CALLDATA_ERROR，可能是版本 regression（可解决 8%）。</li>
       </ul>
     </div>
     <div class="insight-box">
