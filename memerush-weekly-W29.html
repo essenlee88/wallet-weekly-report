@@ -390,7 +390,43 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   </div>
 
   <div class="data-missing" style="margin-bottom:14px;">
-    <strong>⚠ 数据缺口：</strong>外部 CP 值（vs GMGN + OKX interface）本周未获取，需 Data 团队每周同步竞品数据。W30 起补入进度仪表。
+    <strong>⚠ 自动追踪待建：</strong>滚动外部 CP 值（vs GMGN + OKX interface）需 Data 团队每周同步，W30 起补入进度仪表。以下为 Token 级抽样快照（7/5–7/6 行情峰值窗口，Dashboard 56188）。
+  </div>
+
+  <!-- Token 级验证 -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="section-title">OKR 基线佐证 — Token 级验证：BN vs GMGN（7/5–7/6，Dashboard 56188 Token Breakdown）</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">数据口径：Dashboard 56188 按 Wallet Name 下钻 Token Breakdown，Trader Count 各自独立（非去重）· 刻意选取 BSC Meme 单日峰值窗口（7/5 = $68M），非随机截取 · 2026-07-15 采集</div>
+
+    <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px;">头部热点 Token — BN 占优（2.7–3.5×）</div>
+    <table class="data-table" style="margin-bottom:14px;font-size:12px;">
+      <thead><tr><th>Token</th><th>链</th><th style="color:#f0b90b">BN 交易量</th><th style="color:#f0b90b">BN 交易者</th><th style="color:#f0b90b">BN PoP</th><th style="color:#a78bfa">GMGN 交易量</th><th style="color:#a78bfa">GMGN 交易者</th><th style="color:#a78bfa">GMGN PoP</th><th>BN/GMGN</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CZ</strong> <span style="background:rgba(246,70,93,0.15);color:#f6465d;border-radius:3px;padding:1px 5px;font-size:10px;">🔥热点</span></td><td>BSC</td><td class="num">$52.65M</td><td class="num">25,009</td><td class="highlight-green">+628%</td><td class="num">$19.52M</td><td class="num">7,110</td><td class="highlight-green">+279%</td><td class="num highlight-green"><strong>3.5×</strong></td></tr>
+        <tr><td><strong>TCC</strong> <span style="background:rgba(246,70,93,0.15);color:#f6465d;border-radius:3px;padding:1px 5px;font-size:10px;">🔥热点</span></td><td>BSC</td><td class="num">$43.18M</td><td class="num">23,649</td><td class="muted">—</td><td class="num">$20.16M</td><td class="num">8,802</td><td class="muted">—</td><td class="num highlight-green"><strong>2.7×</strong></td></tr>
+        <tr><td><strong>WBNB</strong></td><td>BSC</td><td class="num">$250.5M</td><td class="num">479,705</td><td class="highlight-green">+261%</td><td class="num">$102.8M</td><td class="num">140,128</td><td class="highlight-green">+648%</td><td class="num">3.4×</td></tr>
+      </tbody>
+    </table>
+
+    <div style="font-size:12px;font-weight:600;color:#f6465d;margin-bottom:8px;">腰尾部 Meme Token — GMGN 占优（BN 缺失或量极小）</div>
+    <table class="data-table" style="margin-bottom:14px;font-size:12px;">
+      <thead><tr><th>Token</th><th>链</th><th style="color:#f0b90b">BN 交易者</th><th style="color:#f0b90b">BN PoP</th><th style="color:#a78bfa">GMGN 交易者</th><th style="color:#a78bfa">GMGN PoP</th><th>差距</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cedric</strong> <span style="background:rgba(14,203,129,0.1);color:#0ecb81;border-radius:3px;padding:1px 5px;font-size:10px;">+5241%</span></td><td>BSC</td><td class="num">1,949</td><td class="highlight-green">+9835%</td><td class="num highlight-green">3,568</td><td class="highlight-green">+5241%</td><td class="highlight-red">GMGN <strong>1.83×</strong></td></tr>
+        <tr><td><strong>HEYI</strong> <span style="background:rgba(14,203,129,0.1);color:#0ecb81;border-radius:3px;padding:1px 5px;font-size:10px;">+945%</span></td><td>BSC</td><td class="muted">—（前列未见）</td><td class="muted">—</td><td class="num highlight-green">2,011</td><td class="highlight-green">+945%</td><td class="highlight-red">GMGN 独占</td></tr>
+        <tr><td><strong>FREEDOM</strong></td><td>BSC</td><td class="muted">—（前列未见）</td><td class="muted">—</td><td class="num highlight-green">2,574</td><td class="muted">—</td><td class="highlight-red">GMGN 独占</td></tr>
+        <tr><td class="muted" style="font-size:11px;">黄猫股神 / 潜水观察员 / Broccoli / 川普 / Anndy Lian…</td><td>BSC</td><td colspan="2" class="muted" style="font-size:11px;">未出现在 BN 前列</td><td class="num">1,500–2,000 各</td><td class="muted">—</td><td class="highlight-red">GMGN 独占</td></tr>
+      </tbody>
+    </table>
+
+    <div style="background:rgba(246,70,93,0.08);border:1px solid rgba(246,70,93,0.25);border-radius:6px;padding:10px 14px;font-size:12px;">
+      <strong>Token 级结论（直接印证 KR1 差距来源）：</strong>
+      <ul style="margin:6px 0 0;padding-left:1.2rem;line-height:1.8;">
+        <li>头部热点 Token（CZ、TCC）：BN 买家数是 GMGN 的 <strong>2.7–3.5×</strong>，头部并不落后</li>
+        <li>腰尾部 Meme（Cedric、HEYI、FREEDOM 及十余个中文 BSC Meme）：GMGN 用户大量参与，BN 几乎缺席</li>
+        <li>KR1 CP 差距 = 腰尾部 Token 覆盖不足，而非头部热点竞争力弱</li>
+      </ul>
+    </div>
   </div>
 
   <!-- Web QB Funnel -->
@@ -497,7 +533,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
       <tr><td>App 成交额 / 笔数（⑤）</td><td>DataWind 订单系统，App only，<code>dataQuery id=519146669 sid=25100</code></td><td>2026-07-15</td></tr>
       <tr><td>Web 漏斗 UV</td><td>Sensors <code>pageView / webClick</code>，elementID 分别为 web_screen_view_dex_page_meme_rush 等</td><td>2026-07-15</td></tr>
       <tr><td>Web QB by Tab <span class="new-badge">NEW</span></td><td>Sensors webClick elementID=web_click_dex_quickbuy_meme_rush，按 tab(df_4) 分组；W29 为首周基准</td><td>2026-07-15</td></tr>
-      <tr><td>KR1 外部 CP</td><td style="color:var(--red)">⚠ 本周未获取，W30 起补入</td><td>—</td></tr>
+      <tr><td>KR1 外部 CP（Token 级快照）</td><td>DataWind Dashboard 56188，Token Breakdown 下钻，BSC 7/5–7/6（峰值窗口）；滚动周度 CP 值 W30 起补入</td><td>2026-07-15</td></tr>
       <tr><td>KR2 内部总买入口径</td><td style="color:var(--red)">⚠ 本周未获取完整内部口径，W30 起补入</td><td>—</td></tr>
     </tbody>
   </table>
