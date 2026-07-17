@@ -123,7 +123,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 
 <!-- One-line summary -->
 <div class="summary-bar">
-  本周摘要：<strong>KR3 转化率 9.0%（+0.2pp）</strong>，首次揭示漏斗核心卡点——95% 的 Flash Buy 点击因未设买入金额被跳出流程，是 KR3 达成的最大阻力；Web QB -31.5% WoW 需排查；buy_confirm 埋点覆盖率仅 ~22%，底层数据待补齐。
+  本周摘要：<strong>KR3 转化率 11.5%（PV 口径，+2.2pp WoW）</strong>，漏斗核心卡点——76.9% 的 Flash Buy 点击因未设买入金额被跳出流程；Flash Buy PV 增长 +31.6% 全来自 not_set 点击，set 点击几乎持平（+1.1%）；Web QB -31.5% WoW 需排查。
 </div>
 
 <!-- ======================== KR3 ======================== -->
@@ -132,7 +132,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
     <span class="kr-badge kr3">KR3 · 北极星</span>
     <div>
       <div class="kr-title">App 列表 → Flash Buy 转化率</div>
-      <div class="kr-sub">目标 12% &nbsp;·&nbsp; 基线 8.8%（W28）&nbsp;·&nbsp; 当前 9.0%（W29）</div>
+      <div class="kr-sub">目标 12% &nbsp;·&nbsp; 基线 9.3%（W28 PV）&nbsp;·&nbsp; 当前 11.5%（W29 PV）&nbsp;·&nbsp; <span style="color:var(--muted);font-size:11px;">口径已切换为 PV，UV 口径：W28=8.8% / W29=9.0%</span></div>
     </div>
   </div>
 
@@ -140,20 +140,19 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <div class="progress-row">
     <div class="progress-wrap">
       <div class="progress-labels">
-        <span>基线 8.8%</span>
-        <span>当前 9.0% ▲ +0.2pp</span>
+        <span>基线 9.3%（W28）</span>
+        <span>当前 11.5% ▲ +2.2pp</span>
         <span>目标 12%</span>
       </div>
       <div class="progress-bg">
-        <!-- baseline to current: (9.0-8.8)/(12-8.8) = 0.2/3.2 = 6.25% progress from baseline -->
-        <!-- current position: (9.0-8.8)/(12-8.8)*100 ~ fill to represent current vs target -->
-        <div class="progress-fill kr3" style="width: 6.25%"></div>
+        <!-- (11.5-9.3)/(12-9.3) = 2.2/2.7 = 81.5% progress from baseline -->
+        <div class="progress-fill kr3" style="width: 81.5%"></div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;">距目标还差 <strong style="color:var(--text)">3.0pp</strong>，已完成目标提升量的 6.25%</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;">距目标还差 <strong style="color:var(--text)">0.5pp</strong>，已完成目标提升量的 81.5%（PV 口径）</div>
     </div>
     <div class="progress-meta">
-      <div class="pm-item"><span class="pm-val" style="color:var(--green)">9.0%</span><span class="pm-label">W29</span></div>
-      <div class="pm-item"><span class="pm-val wow-up">+0.2pp</span><span class="pm-label">WoW</span></div>
+      <div class="pm-item"><span class="pm-val" style="color:var(--green)">11.5%</span><span class="pm-label">W29 PV</span></div>
+      <div class="pm-item"><span class="pm-val wow-up">+2.2pp</span><span class="pm-label">WoW</span></div>
       <div class="pm-item"><span class="pm-val" style="color:var(--muted)">12%</span><span class="pm-label">目标</span></div>
     </div>
   </div>
@@ -161,51 +160,52 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <!-- Funnel -->
   <div class="two-col">
     <div class="card">
-      <div class="section-title">Flash Buy 完整漏斗 <span class="tag-app">App</span></div>
+      <div class="section-title">Flash Buy 完整漏斗 <span class="tag-app">App</span> <span style="font-size:10px;color:var(--muted);font-weight:400;">口径：PV</span></div>
 
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">① 列表曝光</span><span class="num">53,935 UV <span class="muted" style="font-size:11px;font-weight:400">▼ -4.3%</span></span></div>
+        <div class="funnel-label"><span class="name">① 列表曝光</span><span class="num">178,424 PV <span class="highlight-green" style="font-size:11px;font-weight:400">▲ +6.1%</span></span></div>
         <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:100%"></div></div>
+        <div class="funnel-conv">W28: 168,114 PV</div>
       </div>
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">② Token 详情弹窗 <span class="new-badge">NEW</span></span><span class="num">4,921 UV</span></div>
-        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:9.1%"></div></div>
-        <div class="funnel-conv">①→② <strong>9.1%</strong>（W28: 4,736 UV）</div>
+        <div class="funnel-label"><span class="name">② Token 详情弹窗</span><span class="num">28,201 PV</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:15.8%"></div></div>
+        <div class="funnel-conv">①→② <strong>15.8%</strong> &nbsp;·&nbsp; W28: N/A（事件新上线）</div>
       </div>
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">③ Flash Buy 点击</span><span class="num">4,839 UV <span class="muted" style="font-size:11px;font-weight:400">▼ -2.6%</span></span></div>
-        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:9.0%"></div></div>
-        <div class="funnel-conv">①→③ <strong class="highlight-green">9.0%</strong> ▲ +0.2pp（W28: 8.8%）</div>
+        <div class="funnel-label"><span class="name">③ Flash Buy 点击</span><span class="num">20,582 PV <span class="highlight-green" style="font-size:11px;font-weight:400">▲ +31.6%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:11.5%"></div></div>
+        <div class="funnel-conv">①→③ <strong class="highlight-green">11.5%</strong> ▲ +2.2pp（W28: 9.3%）</div>
       </div>
 
       <!-- DROPOUT BOX -->
       <div class="dropout-box">
         <div class="dropout-row">
           <span style="color:var(--red);font-weight:600;">⚠ 未设买入金额 → 跳设置页，流失</span>
-          <span class="highlight-red">4,599 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">95%</span></span>
+          <span class="highlight-red">15,824 PV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">76.9%</span></span>
         </div>
-        <div class="dropout-bar-bg"><div class="dropout-bar-fill" style="width:95%"></div></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;">buy_confirm 不触发，漏斗此处断开 &nbsp;·&nbsp; SOL 占 68%（3,126 UV）</div>
+        <div class="dropout-bar-bg"><div class="dropout-bar-fill" style="width:76.9%"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">buy_confirm 不触发，漏斗此处断开 &nbsp;·&nbsp; W28: 10,929 PV（69.9%）→ not_set 占比上升 7pp</div>
       </div>
 
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">③' 已设金额，进交易流程</span><span class="num highlight-green">874 UV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">18%</span></span></div>
-        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:1.62%"></div></div>
-        <div class="funnel-conv">W28: 922 UV</div>
+        <div class="funnel-label"><span class="name">③' 已设金额，进交易流程</span><span class="num highlight-green">4,758 PV &nbsp;<span style="font-size:11px;font-weight:400;color:var(--muted)">23.1%</span></span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill app-bar" style="width:2.67%"></div></div>
+        <div class="funnel-conv">W28: 4,708 PV（30.1%）&nbsp;·&nbsp; set 点击几乎持平（+1.1%）</div>
       </div>
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">④ 交易回调 <span class="new-badge">NEW ~22%覆盖</span></span><span class="num" style="color:var(--red)">675 UV</span></div>
-        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.25%"></div></div>
-        <div class="funnel-conv">含成功+失败，仅 3.17+ 版本上报</div>
+        <div class="funnel-label"><span class="name">④ 交易回调 <span class="new-badge">~22%覆盖</span></span><span class="num" style="color:var(--red)">3,058 PV</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill new-bar" style="width:1.71%"></div></div>
+        <div class="funnel-conv">③→④ <strong>14.9%</strong>（含成功+失败）&nbsp;·&nbsp; 仅 3.17+ 版本上报</div>
       </div>
       <div class="funnel-step">
-        <div class="funnel-label"><span class="name">⑤ 实际成交（订单系统）</span><span class="num highlight-green">718 users</span></div>
-        <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:1.33%;background:linear-gradient(90deg,#0ecb81,#52e8a8)"></div></div>
-        <div class="funnel-conv"><strong>$170,828</strong> &nbsp;·&nbsp; 3,965 笔 &nbsp;·&nbsp; App only</div>
+        <div class="funnel-label"><span class="name">⑤ 实际成交（订单系统）</span><span class="num highlight-green">3,965 笔</span></div>
+        <div class="funnel-bar-bg"><div class="funnel-bar-fill" style="width:2.22%;background:linear-gradient(90deg,#0ecb81,#52e8a8)"></div></div>
+        <div class="funnel-conv"><strong>$170,828</strong> &nbsp;·&nbsp; 718 users &nbsp;·&nbsp; App only</div>
       </div>
 
       <div style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px dashed var(--border);">
-        ④ code=0（成功）158 UV vs ⑤ DataWind 718 users → 覆盖率 ~22%，漏斗底部数据失真
+        ⚠ Flash Buy PV +31.6% 增长全来自 not_set（+4,895 PV），set 仅 +50 PV，实际交易需求未增长
       </div>
     </div>
 
@@ -268,15 +268,16 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
       </table>
       <div style="font-size:11px;color:var(--muted);margin-top:8px;">NOT_ENOUGH_BALANCE 中 SOL 占 59%（308 UV）；CALLDATA_ERROR 集中在 3.16.7+3.16.4（66%），疑 SOL/Jupiter routing bug</div>
 
-      <div class="section-title" style="margin-top:14px;">③ Flash Buy 点击路径拆分（df_8）</div>
+      <div class="section-title" style="margin-top:14px;">③ Flash Buy 点击路径拆分（df_8，PV 口径）</div>
       <table class="data-table">
-        <thead><tr><th>df_8</th><th>含义</th><th>W28 UV</th><th>W29 UV</th><th>占比</th></tr></thead>
+        <thead><tr><th>df_8</th><th>含义</th><th>W28 PV</th><th>W29 PV</th><th>W29 占比</th><th>WoW</th></tr></thead>
         <tbody>
-          <tr><td class="highlight-red">not_set</td><td class="muted">未设金额 → 跳设置页</td><td class="num">4,683</td><td class="num highlight-red">4,599</td><td class="highlight-red">95%</td></tr>
-          <tr><td class="highlight-green">set</td><td class="muted">已设金额 → 进交易</td><td class="num">922</td><td class="num highlight-green">874</td><td class="highlight-green">18%</td></tr>
+          <tr><td class="highlight-red">not_set</td><td class="muted">未设金额 → 跳设置页</td><td class="num">10,929</td><td class="num highlight-red">15,824</td><td class="highlight-red">76.9%</td><td class="highlight-red">+44.8%</td></tr>
+          <tr><td class="highlight-green">set</td><td class="muted">已设金额 → 进交易</td><td class="num">4,708</td><td class="num highlight-green">4,758</td><td class="highlight-green">23.1%</td><td class="muted">+1.1%</td></tr>
+          <tr style="font-weight:600;"><td colspan="2">合计</td><td class="num">15,637</td><td class="num">20,582</td><td class="muted">100%</td><td class="highlight-green">+31.6%</td></tr>
         </tbody>
       </table>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px;">UV 合计 5,473 &gt; 4,839，因部分用户本周有两类点击</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">PV 口径下 not_set + set = 总 PV，可直接相加；WoW 增长 +4,945 PV 中 98.9% 来自 not_set</div>
     </div>
   </div>
 
@@ -289,7 +290,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
       <div class="sug-body">
         <strong>数据依据：</strong>95%（4,599 UV）的 Flash Buy 点击因未设金额被跳出，是 KR3 最大阻力，远大于余额不足（37%）。<br>
         <strong>方案：</strong>在 Flash Buy 弹层内增加快速金额选项（如 $10 / $50 / $100 / 自定义），无需跳出当前页面完成设置。<br>
-        <strong>预期：</strong>若 not_set 流失率从 95% 降至 50%，进入交易漏斗的用户从 874 升至约 2,600（+2x），转化率理论上从 9% 提升至 18%+ 区间（需 A/B 验证）。
+        <strong>预期：</strong>若 not_set 占比从 76.9% 降至 50%，set PV 从 4,758 升至约 10,291（+116%），①→③set 转化率从 2.67% 提升至约 5.77%，直接推动 KR3 大幅超越 12% 目标（需 A/B 验证）。
       </div>
     </div>
 
@@ -527,8 +528,8 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
   <table class="data-table" style="font-size:12px;">
     <thead><tr><th>数据源</th><th>口径</th><th>查询时间</th></tr></thead>
     <tbody>
-      <tr><td>App 漏斗 UV（①②③）</td><td>Sensors <code>df_mpviewscreen / df_mpclick</code>，周去重 UV</td><td>2026-07-15</td></tr>
-      <tr><td>Flash Buy df_8 路径拆分</td><td>Sensors <code>df_mpclick</code> eventName=meme_rush_flashbuy_button，df_8=set/not_set</td><td>2026-07-15</td></tr>
+      <tr><td>App 漏斗 PV（①②③）</td><td>Sensors <code>df_mpviewscreen / df_mpclick</code>，count(*)；①=178,424 ②=28,201 ③=20,582</td><td>2026-07-17</td></tr>
+      <tr><td>Flash Buy df_8 路径拆分</td><td>Sensors <code>df_mpclick</code> eventName=flashbuy_button，GROUP BY df_8，PV 口径；not_set 15,824 / set 4,758</td><td>2026-07-17</td></tr>
       <tr><td>buy_confirm 结果分布 <span class="new-badge">NEW</span></td><td>Sensors <code>df_mpclick</code> eventName=meme_rush_buy_confirm，df_9=SignalErrorCode；仅覆盖 3.17+ 版本（~22%）</td><td>2026-07-15</td></tr>
       <tr><td>App 成交额 / 笔数（⑤）</td><td>DataWind 订单系统，App only，<code>dataQuery id=519146669 sid=25100</code></td><td>2026-07-15</td></tr>
       <tr><td>Web 漏斗 UV</td><td>Sensors <code>pageView / webClick</code>，elementID 分别为 web_screen_view_dex_page_meme_rush 等</td><td>2026-07-15</td></tr>
@@ -540,8 +541,8 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 </div>
 
 <div class="report-footer">
-  MemeRush 周报 W29 &nbsp;·&nbsp; 2026-07-07~07-13 &nbsp;·&nbsp; 2026-07-15<br>
-  O：提升 Meme 业务 CP 占比 &nbsp;|&nbsp; KR1 外部 CP 15.06%→23% &nbsp;|&nbsp; KR2 SOL 占比 31%→40% &nbsp;|&nbsp; KR3 FB 转化率 8.8%→12%（当前 9.0%）
+  MemeRush 周报 W29 &nbsp;·&nbsp; 2026-07-07~07-13 &nbsp;·&nbsp; 更新于 2026-07-17<br>
+  O：提升 Meme 业务 CP 占比 &nbsp;|&nbsp; KR1 外部 CP 15.06%→23% &nbsp;|&nbsp; KR2 SOL 占比 31%→40% &nbsp;|&nbsp; KR3 FB 转化率（PV）9.3%→12%（当前 11.5%，距目标 0.5pp）
 </div>
 
 </body>
